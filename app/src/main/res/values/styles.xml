@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="defaultLink">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/link</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="defaultTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/medium_margin_padding</item>
+        <item name="android:textColor">@color/primaryText</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
+
+    <style name="secondaryTextView" parent="defaultTextView">
+        <item name="android:textColor">@color/secondaryText</item>
+    </style>
+
+    <style name="titleTextView" parent="defaultTextView">
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>

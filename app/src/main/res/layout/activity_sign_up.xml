@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUp">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:contentDescription="@string/forgot_password_image"
+            android:scaleType="fitEnd"
+            android:src="@drawable/circle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/verylarge_margin_padding"
+            android:layout_marginTop="@dimen/verylarge_margin_padding"
+            android:contentDescription="back button"
+            android:elevation="5dp"
+            android:src="@drawable/ic_arrow_back"
+            app:backgroundTint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/verylarge_margin_padding"
+            android:layout_marginEnd="@dimen/verylarge_margin_padding"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fab_back">
+
+            <TextView
+                style="@style/titleTextView"
+                android:layout_gravity="center"
+                android:layout_marginTop="0dp"
+                android:text="@string/sign_up" />
+
+            <TextView
+                style="@style/secondaryTextView"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/small_margin_padding"
+                android:text="Create An Account" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:elevation="5dp"
+                android:padding="@dimen/small_margin_padding"
+                android:src="@drawable/def_profile"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
