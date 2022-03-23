@@ -1,0 +1,8 @@
+<TextView android:id="@+id/tv_dropdown_item"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    style="@style/defaultTextView"
+    android:layout_marginTop="0dp"
+    android:text="Textview"
+    android:padding="@dimen/normal_margin_padding"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -10,4 +10,28 @@
     <string name="sign_up">Sign Up</string>
     <string name="forgot_password_image">forgot password image</string>
     <string name="forgotPasswordDescription">Please enter your e-mail address. We\'ll send you an email to reset your password</string>
+    <string name="err_msg_usr_role">Please select user role</string>
+    <string name="err_msg_name">Please enter your name</string>
+    <string name="err_msg_userName">Please enter your username</string>
+    <string name="err_msg_email">Please enter your email</string>
+    <string name="err_msg_password">Please enter your password</string>
+    <string name="err_msg_confirm_password">Please confirm your password</string>
+    <string name="err_msg_phone">Please enter your phone number</string>
+    <string name="err_msg_monthlyIncome">Please select your monthly income</string>
+    <string name="details_success">Your details are valid.</string>
+    <string name="err_password_not_match">Password not match!</string>
+
+
+    <string-array name="user_role">
+        <item>Beneficiary</item>
+        <item>Donator</item>
+    </string-array>
+
+    <string-array name="monthly_income">
+        <item>RM0 - RM500</item>
+        <item>RM500 - RM1000</item>
+        <item>RM1000 - RM2000</item>
+        <item>RM2000 - RM4000</item>
+        <item>Above RM4000</item>
+    </string-array>
 </resources>
