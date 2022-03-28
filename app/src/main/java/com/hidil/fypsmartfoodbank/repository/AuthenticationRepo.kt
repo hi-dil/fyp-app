@@ -1,15 +1,18 @@
 package com.hidil.fypsmartfoodbank.repository
 
+import android.app.Activity
+import android.net.Uri
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
 
 class AuthenticationRepo {
 
     private val mAuth = FirebaseAuth.getInstance()
 
-    fun createUser(activity: SignUp, email: String, password: String) {
+    fun createUser(activity: SignUp, email: String, password: String, user: User) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -21,8 +24,20 @@ class AuthenticationRepo {
                         false
                     )
 
-                    mAuth.signOut()
-                    activity.finish()
+                    val register = User(
+                        firebaseUser.uid,
+                        user.userRole,
+                        user.name,
+                        user.email,
+                        user.image,
+                        user.monthlyIncome,
+                        user.mobileNumber
+                    )
+
+                    DatabaseRepo().registerUser(activity, register)
+
+//                    mAuth.signOut()
+//                    activity.finish()
                 } else {
                     activity.hideProgressDialog()
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
@@ -33,11 +48,11 @@ class AuthenticationRepo {
     fun userLogin(activity: Login, email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
-                activity.hideProgressDialog()
 
                 if (task.isSuccessful) {
-                    activity.showErrorSnackBar("You are logged in successfully", false)
+                    DatabaseRepo().getUserDetails(activity)
                 } else {
+                    activity.hideProgressDialog()
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
                 }
             }
@@ -58,5 +73,16 @@ class AuthenticationRepo {
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
                 }
             }
+    }
+
+    fun getCurrentUserID(): String {
+        val currentUser = mAuth.currentUser
+
+        var currentUserID = ""
+        if (currentUser != null) {
+            currentUserID = currentUser.uid
+        }
+
+        return currentUserID
     }
 }

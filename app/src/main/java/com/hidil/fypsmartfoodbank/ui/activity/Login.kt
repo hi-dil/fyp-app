@@ -4,9 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ActivityLoginBinding
+import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
+import com.hidil.fypsmartfoodbank.utils.Constants
 
 class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -51,5 +54,15 @@ class Login : AppCompatActivity() {
 
             else -> true
         }
+    }
+
+    fun loginSuccessful(user: User) {
+        hideProgressDialog()
+        Log.i("Name: ", user.name)
+        Log.i("email: ", user.email)
+        val intent = Intent(this, ForgotPassword::class.java)
+        intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
+        startActivity(intent)
+        finish()
     }
 }

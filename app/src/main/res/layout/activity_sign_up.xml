@@ -56,15 +56,16 @@
                 android:layout_marginTop="@dimen/small_margin_padding"
                 android:text="Create An Account" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/medium_margin_padding"
-                android:elevation="5dp"
-                android:padding="@dimen/small_margin_padding"
-                android:src="@drawable/def_profile"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+<!--            <com.google.android.material.imageview.ShapeableImageView-->
+<!--                android:id="@+id/iv_imageProfile"-->
+<!--                android:layout_width="125dp"-->
+<!--                android:layout_height="125dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="@dimen/medium_margin_padding"-->
+<!--                android:elevation="5dp"-->
+<!--                android:padding="@dimen/small_margin_padding"-->
+<!--                android:src="@drawable/def_profile"-->
+<!--                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />-->
 
             <TextView
                 style="@style/defaultTextView"
@@ -114,21 +115,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:textColor="@color/primaryText" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin_padding"
-                android:hint="Username">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_userName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

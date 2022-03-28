@@ -14,4 +14,6 @@
     <dimen name="small_text_size">12sp</dimen>
     <dimen name="verysmall_text_size">8sp</dimen>
     <dimen name="btn_cornerradius">10dp</dimen>
+
+    <dimen name="dashboard_card_corner_radius">20dp</dimen>
 </resources>
