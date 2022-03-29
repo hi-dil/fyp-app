@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/dashboardFragment"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/locationFragment"
+        android:icon="@drawable/ic_map"
+        android:title="Location" />
+
+    <item
+        android:id="@+id/claimRequestFragment"
+        android:icon="@drawable/claim_request"
+        android:title="Claim Request" />
+
+    <item
+        android:id="@+id/userProfileFragment"
+        android:icon="@drawable/ic_profile"
+        android:title="Profile" />
+
+</menu>

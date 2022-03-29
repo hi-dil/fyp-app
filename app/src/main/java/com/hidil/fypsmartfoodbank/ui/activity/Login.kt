@@ -18,6 +18,12 @@ class Login : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val currentUserID = AuthenticationRepo().getCurrentUserID()
+
+        if (currentUserID.isNotEmpty()) {
+            startActivity(Intent(this, BeneficiaryMainActivity::class.java))
+        }
+
         binding.tvForgotPassword.setOnClickListener {
             Intent(this, ForgotPassword::class.java).also {
                 startActivity(it)
@@ -60,7 +66,7 @@ class Login : AppCompatActivity() {
         hideProgressDialog()
         Log.i("Name: ", user.name)
         Log.i("email: ", user.email)
-        val intent = Intent(this, ForgotPassword::class.java)
+        val intent = Intent(this, BeneficiaryMainActivity::class.java)
         intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
         startActivity(intent)
         finish()

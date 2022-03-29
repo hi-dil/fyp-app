@@ -1,12 +1,14 @@
 package com.hidil.fypsmartfoodbank.repository
 
 import android.app.Activity
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
+import com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment
 
 class AuthenticationRepo {
 
@@ -84,5 +86,11 @@ class AuthenticationRepo {
         }
 
         return currentUserID
+    }
+
+    fun logout(fragment: UserProfileFragment) {
+        mAuth.signOut()
+        fragment.activity?.finish()
+        fragment.startActivity(Intent(fragment.activity, Login::class.java))
     }
 }

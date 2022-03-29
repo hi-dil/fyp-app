@@ -23,7 +23,8 @@ import java.io.IOException
 
 class SignUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
-    private var mSelectedImageFileUri: Uri? = null
+//    private var mSelectedImageFileUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -51,7 +52,7 @@ class SignUp : AppCompatActivity() {
                     binding.acUserRole.text.toString().trim { it <= ' ' },
                     binding.etName.text.toString().trim { it <= ' ' },
                     binding.etEmail.text.toString().trim { it <= ' ' },
-                    "",
+                    "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
                     binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
                     binding.etPhoneNumber.text.toString().trim { it <= ' ' }
                 )
@@ -59,62 +60,62 @@ class SignUp : AppCompatActivity() {
             }
         }
 
-        binding.ivImageProfile.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(
-                    this, Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                Constants.showImageChooser(this)
-            } else {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    Constants.READ_STORAGE_PERMISSION_CODE
-                )
-            }
-        }
+//        binding.ivImageProfile.setOnClickListener {
+//            if (ContextCompat.checkSelfPermission(
+//                    this, Manifest.permission.READ_EXTERNAL_STORAGE
+//                ) == PackageManager.PERMISSION_GRANTED
+//            ) {
+//                Constants.showImageChooser(this)
+//            } else {
+//                ActivityCompat.requestPermissions(
+//                    this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+//                    Constants.READ_STORAGE_PERMISSION_CODE
+//                )
+//            }
+//        }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Constants.showImageChooser(this)
-        } else {
-            Toast.makeText(
-                this,
-                resources.getString(R.string.read_storage_permission_denied),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.PICK_IMAGE_REQUEST_CODE) {
-                if (data != null) {
-                    try {
-                        mSelectedImageFileUri = data.data!!
-                        GlideLoader(this).loadUserPicture(
-                            mSelectedImageFileUri!!,
-                            binding.ivImageProfile
-                        )
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        Toast.makeText(
-                            this,
-                            resources.getString(R.string.image_selection_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            Constants.showImageChooser(this)
+//        } else {
+//            Toast.makeText(
+//                this,
+//                resources.getString(R.string.read_storage_permission_denied),
+//                Toast.LENGTH_LONG
+//            ).show()
+//        }
+//    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == Constants.PICK_IMAGE_REQUEST_CODE) {
+//                if (data != null) {
+//                    try {
+//                        mSelectedImageFileUri = data.data!!
+//                        GlideLoader(this).loadUserPicture(
+//                            mSelectedImageFileUri!!,
+//                            binding.ivImageProfile
+//                        )
+//                    } catch (e: IOException) {
+//                        e.printStackTrace()
+//                        Toast.makeText(
+//                            this,
+//                            resources.getString(R.string.image_selection_failed),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private fun validateRegisterDetails(): Boolean {
         return when {
