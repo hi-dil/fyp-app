@@ -7,6 +7,8 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 
 object Constants {
+    val USER_CITY = "city"
+    val USER_STATE = "state"
     const val USERS: String = "users"
 
     const val APP_PREF: String = "AppPrefs"
@@ -17,6 +19,14 @@ object Constants {
     const val PICK_IMAGE_REQUEST_CODE = 1
 
     val USER_PROFILE_IMAGE: String = "User_Profile_Image"
+
+//    Firebase database field names
+    const val NAME: String = "name"
+    const val USER_ROLE: String = "userRole"
+    const val EMAIL: String = "email"
+    const val USER_IMAGE: String = "image"
+    const val MONTHLY_INCOME: String = "monthlyIncome"
+    const val MOBILE_NUMBER: String = "mobileNumber"
 
     fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(

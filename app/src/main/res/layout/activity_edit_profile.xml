@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:overScrollMode="never"
-    tools:context=".ui.activity.SignUp">
+    tools:context=".ui.activity.EditProfileActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,6 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:contentDescription="@string/forgot_password_image"
             android:scaleType="fitEnd"
             android:src="@drawable/circle"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,24 +47,18 @@
                 style="@style/titleTextView"
                 android:layout_gravity="center"
                 android:layout_marginTop="0dp"
-                android:text="@string/sign_up" />
+                android:text="Edit Profile" />
 
-            <TextView
-                style="@style/secondaryTextView"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_imageProfile"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/small_margin_padding"
-                android:text="Create An Account" />
-
-<!--            <com.google.android.material.imageview.ShapeableImageView-->
-<!--                android:id="@+id/iv_imageProfile"-->
-<!--                android:layout_width="125dp"-->
-<!--                android:layout_height="125dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginTop="@dimen/medium_margin_padding"-->
-<!--                android:elevation="5dp"-->
-<!--                android:padding="@dimen/small_margin_padding"-->
-<!--                android:src="@drawable/def_profile"-->
-<!--                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />-->
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:elevation="5dp"
+                android:padding="@dimen/small_margin_padding"
+                android:src="@drawable/def_profile"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
             <TextView
                 style="@style/defaultTextView"
@@ -135,36 +128,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin_padding"
-                android:hint="@string/password"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin_padding"
-                android:hint="Confirm Password"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_confirmPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="Phone Number">
 
@@ -198,11 +161,10 @@
                 android:hint="State">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etState"
+                    android:id="@+id/et_state"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -213,21 +175,19 @@
                 android:hint="City">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCity"
+                    android:id="@+id/et_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
-
             </com.google.android.material.textfield.TextInputLayout>
 
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_signUp"
+                android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/normal_margin_padding"
                 android:layout_marginBottom="@dimen/large_margin_padding"
-                android:text="Sign Up"
+                android:text="Save"
                 android:textColor="@color/primaryText"
                 app:backgroundTint="@color/secondaryColor"
                 app:cornerRadius="@dimen/btn_cornerradius" />

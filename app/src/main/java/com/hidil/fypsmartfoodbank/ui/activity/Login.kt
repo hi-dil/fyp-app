@@ -21,6 +21,7 @@ class Login : AppCompatActivity() {
         val currentUserID = AuthenticationRepo().getCurrentUserID()
 
         if (currentUserID.isNotEmpty()) {
+            finish()
             startActivity(Intent(this, BeneficiaryMainActivity::class.java))
         }
 

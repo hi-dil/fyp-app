@@ -33,7 +33,9 @@ class AuthenticationRepo {
                         user.email,
                         user.image,
                         user.monthlyIncome,
-                        user.mobileNumber
+                        user.mobileNumber,
+                        user.state,
+                        user.city
                     )
 
                     DatabaseRepo().registerUser(activity, register)

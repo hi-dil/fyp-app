@@ -5,16 +5,16 @@ import android.net.Uri
 import android.util.Log
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.hidil.fypsmartfoodbank.ui.activity.SignUp
+import com.hidil.fypsmartfoodbank.ui.activity.EditProfileActivity
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.utils.Constants
 
 class StorageRepo {
     val mStorage = FirebaseStorage.getInstance()
 
-    fun uploadImageToCloudStorage(activity: Activity, imageFileUri: Uri?) {
+    fun uploadImageToCloudStorage(activity: Activity, imageFileUri: Uri?, fileName: String) {
         val sRef: StorageReference = mStorage.reference.child(
-            Constants.USER_PROFILE_IMAGE + System.currentTimeMillis() + "." + Constants.getFileExtension(
+            fileName + System.currentTimeMillis() + "." + Constants.getFileExtension(
                 activity,
                 imageFileUri
             )
@@ -29,16 +29,16 @@ class StorageRepo {
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
                         Log.e("Image URL: ", uri.toString())
-//                        when (activity) {
-//                            is SignUp -> {
-//                                activity.imageUploadSuccess(uri.toString())
-//                            }
-//                        }
+                        when (activity) {
+                            is EditProfileActivity -> {
+                                activity.imageUploadSuccess(uri.toString())
+                            }
+                        }
                     }
             }
             .addOnFailureListener { exception ->
                 when (activity) {
-                    is SignUp -> {
+                    is EditProfileActivity -> {
                         activity.hideProgressDialog()
                     }
                 }

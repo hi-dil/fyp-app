@@ -2,6 +2,8 @@ package com.hidil.fypsmartfoodbank.ui.activity
 
 import android.app.Activity
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +33,7 @@ fun Activity.showProgressDialog() {
     mProgressDialog.setContentView(R.layout.alert_dialog)
     mProgressDialog.setCancelable(false)
     mProgressDialog.setCanceledOnTouchOutside(false)
+    mProgressDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     mProgressDialog.show()
 }
 

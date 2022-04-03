@@ -31,8 +31,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_imageProfile"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
+                android:layout_width="175dp"
+                android:layout_height="175dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/medium_margin_padding"
                 android:elevation="5dp"
@@ -41,12 +41,13 @@
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
             <TextView
+                android:id="@+id/tv_userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="User Name"
                 android:textColor="@color/primaryText"
-                android:textSize="@dimen/large_text_size"
+                android:textSize="@dimen/title_text_size"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -112,6 +113,7 @@
 
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/editProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/normal_margin_padding">
@@ -186,7 +188,7 @@
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="45dp"
                 android:text="Logout"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/danger"

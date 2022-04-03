@@ -54,7 +54,9 @@ class SignUp : AppCompatActivity() {
                     binding.etEmail.text.toString().trim { it <= ' ' },
                     "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
                     binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
-                    binding.etPhoneNumber.text.toString().trim { it <= ' ' }
+                    binding.etPhoneNumber.text.toString().trim { it <= ' ' },
+                    binding.etState.text.toString().trim { it <= ' '},
+                    binding.etCity.text.toString().trim { it <= ' '},
                 )
                 AuthenticationRepo().createUser(this, email, password, user)
             }
@@ -151,6 +153,16 @@ class SignUp : AppCompatActivity() {
 
             TextUtils.isEmpty(binding.acMonthlyIncome.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar(resources.getString(R.string.err_msg_monthlyIncome), true)
+                false
+            }
+
+            TextUtils.isEmpty(binding.etState.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_state), true)
+                false
+            }
+
+            TextUtils.isEmpty(binding.etCity.text.toString().trim { it <= ' ' }) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_city), true)
                 false
             }
 
