@@ -28,6 +28,10 @@ object Constants {
     const val MONTHLY_INCOME: String = "monthlyIncome"
     const val MOBILE_NUMBER: String = "mobileNumber"
 
+    const val USER_ID: String = "userID"
+    const val REQUEST: String = "request"
+    const val REQUEST_COMPLETE: String = "completed"
+
     fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(
             Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI

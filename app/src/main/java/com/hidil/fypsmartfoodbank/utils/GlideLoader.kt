@@ -21,4 +21,17 @@ class GlideLoader(val context: Context) {
             e.printStackTrace()
         }
     }
+
+    fun loadFoodBankPicture(foodBankImage: String, imageView: ImageView) {
+        try {
+            Glide
+                .with(context)
+                .load(foodBankImage)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder)
+                .into(imageView)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 }

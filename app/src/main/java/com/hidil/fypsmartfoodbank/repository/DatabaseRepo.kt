@@ -5,10 +5,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 
 class DatabaseRepo {
@@ -98,6 +101,52 @@ class DatabaseRepo {
             .addOnFailureListener {
                 activity.hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while updating the user details")
+            }
+    }
+
+    fun getActiveRequest(fragment: Fragment){
+        mFirestore.collection(Constants.REQUEST)
+            .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
+            .whereEqualTo(Constants.REQUEST_COMPLETE, false)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e("Active request", document.documents.toString())
+                val activeRequestList: ArrayList<Request> = ArrayList()
+                for (i in document.documents) {
+                    val request = i.toObject(Request::class.java)
+                    request!!.id = i.id
+
+                    activeRequestList.add(request)
+                }
+
+                when (fragment) {
+                    is DashboardFragment -> {
+                        fragment.successRequestFromFirestore(activeRequestList)
+                    }
+                }
+            }
+    }
+
+    fun getCompletedRequest(fragment: Fragment){
+        mFirestore.collection(Constants.REQUEST)
+            .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
+            .whereEqualTo(Constants.REQUEST_COMPLETE, true)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e("Active request", document.documents.toString())
+                val activeRequestList: ArrayList<Request> = ArrayList()
+                for (i in document.documents) {
+                    val request = i.toObject(Request::class.java)
+                    request!!.id = i.id
+
+                    activeRequestList.add(request)
+                }
+
+                when (fragment) {
+                    is DashboardFragment -> {
+                        fragment.successRequestFromFirestore(activeRequestList)
+                    }
+                }
             }
     }
 }

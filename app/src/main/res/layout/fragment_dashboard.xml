@@ -136,6 +136,7 @@
                 android:src="@drawable/high_voltage_sign" />
 
             <TextView
+                android:id="@+id/tv_activeRequest"
                 style="@style/defaultTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -146,23 +147,38 @@
                 android:textSize="@dimen/large_text_size"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="View All"
-                android:textColor="@color/link"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:id="@+id/tv_viewAllActiveRequest"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:layout_weight="1"-->
+<!--                android:visibility="gone"-->
+<!--                android:gravity="end"-->
+<!--                android:text="View All"-->
+<!--                android:textColor="@color/link"-->
+<!--                android:textStyle="bold" />-->
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_activeRequest"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/normal_margin_padding"
             android:layout_marginEnd="@dimen/normal_margin_padding" />
+
+        <TextView
+            android:id="@+id/tv_noActiveRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You does not have any active request"
+            android:textColor="@color/secondaryText"
+            android:textSize="@dimen/normal_text_size"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/normal_margin_padding"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -189,20 +205,34 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_viewAllFrequentlyVisit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="View All"
+                android:visibility="gone"
                 android:textColor="@color/link"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_noFrequentlyVisit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have not take any request yet"
+            android:textColor="@color/secondaryText"
+            android:textSize="@dimen/normal_text_size"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/normal_margin_padding"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_frequentlyVisit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/normal_margin_padding"
             android:layout_marginEnd="@dimen/normal_margin_padding" />
 
