@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class User(
-    val id: String = "",
+    var id: String = "",
     val userRole: String = "",
     val name: String = "",
     val email: String = "",
@@ -13,6 +13,7 @@ data class User(
     val monthlyIncome: String = "",
     val mobileNumber: String = "",
     val state: String = "",
-    val city: String = ""
+    val city: String = "",
+    val favouriteFoodBank: ArrayList<FavouriteFoodBank> = ArrayList()
 ) : Parcelable
 

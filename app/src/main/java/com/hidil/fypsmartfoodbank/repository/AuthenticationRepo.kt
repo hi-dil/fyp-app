@@ -1,8 +1,6 @@
 package com.hidil.fypsmartfoodbank.repository
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

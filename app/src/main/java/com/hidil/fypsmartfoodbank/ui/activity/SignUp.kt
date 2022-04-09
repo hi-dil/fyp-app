@@ -1,25 +1,13 @@
 package com.hidil.fypsmartfoodbank.ui.activity
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.ArrayAdapter
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ActivitySignUpBinding
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
-import com.hidil.fypsmartfoodbank.repository.StorageRepo
-import com.hidil.fypsmartfoodbank.utils.Constants
-import com.hidil.fypsmartfoodbank.utils.GlideLoader
-import java.io.IOException
 
 class SignUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding

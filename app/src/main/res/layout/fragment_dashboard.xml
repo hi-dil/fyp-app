@@ -20,7 +20,10 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/normal_margin_padding"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:layout_marginStart="@dimen/medium_margin_padding"
+                android:layout_marginEnd="@dimen/medium_margin_padding"
+                android:layout_marginBottom="@dimen/normal_margin_padding"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -125,9 +128,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginStart="@dimen/medium_margin_padding"
             android:layout_marginTop="@dimen/verylarge_margin_padding"
-            android:layout_marginEnd="@dimen/normal_margin_padding"
+            android:layout_marginEnd="@dimen/medium_margin_padding"
             android:orientation="horizontal">
 
             <ImageView
@@ -183,9 +186,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginStart="@dimen/medium_margin_padding"
             android:layout_marginTop="@dimen/verylarge_margin_padding"
-            android:layout_marginEnd="@dimen/normal_margin_padding"
+            android:layout_marginEnd="@dimen/medium_margin_padding"
             android:orientation="horizontal">
 
             <ImageView
@@ -199,13 +202,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin_padding"
                 android:layout_marginTop="0dp"
-                android:text="Frequently Visit"
+                android:text="Favourite FoodBank"
                 android:textColor="@color/primaryColor"
                 android:textSize="@dimen/large_text_size"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_viewAllFrequentlyVisit"
+                android:id="@+id/tv_viewAllFavouriteFoodBank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -218,10 +221,10 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_noFrequentlyVisit"
+            android:id="@+id/tv_noFavouriteFoodBank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="You have not take any request yet"
+            android:text="You does not have any favourite food bank yet"
             android:textColor="@color/secondaryText"
             android:textSize="@dimen/normal_text_size"
             android:gravity="center"
@@ -229,8 +232,9 @@
             />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_frequentlyVisit"
+            android:id="@+id/rv_favouriteFoodBank"
             android:layout_width="match_parent"
+            android:overScrollMode="never"
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_marginStart="@dimen/normal_margin_padding"
@@ -239,9 +243,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginStart="@dimen/medium_margin_padding"
             android:layout_marginTop="@dimen/verylarge_margin_padding"
-            android:layout_marginEnd="@dimen/normal_margin_padding"
+            android:layout_marginEnd="@dimen/medium_margin_padding"
             android:orientation="horizontal">
 
             <ImageView
@@ -278,7 +282,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/normal_margin_padding"
             android:layout_marginEnd="@dimen/normal_margin_padding"
-            android:layout_marginBottom="@dimen/verylarge_margin_padding" />
+            android:layout_marginBottom="70dp" />
     </LinearLayout>
 
 

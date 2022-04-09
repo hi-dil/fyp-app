@@ -11,6 +11,7 @@ import com.google.firebase.firestore.SetOptions
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 
@@ -123,6 +124,31 @@ class DatabaseRepo {
                     is DashboardFragment -> {
                         fragment.successRequestFromFirestore(activeRequestList)
                     }
+                    is ClaimRequestFragment -> fragment.successRequestFromFirestore(activeRequestList)
+                }
+            }
+    }
+
+    fun getFavouriteFoodBank(fragment: Fragment) {
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo("id", AuthenticationRepo().getCurrentUserID())
+            .get()
+            .addOnSuccessListener { document ->
+                Log.e("Favourite FoodBank", document.documents.toString())
+                val userDetails: ArrayList<User> = ArrayList()
+                for (i in document.documents) {
+                    val user = i.toObject(User::class.java)
+                    user!!.id = i.id
+
+                    userDetails.add(user)
+                }
+
+                Log.i("Favourite Foodbank", userDetails[0].favouriteFoodBank.toString())
+                val favouriteFoodBank = userDetails[0].favouriteFoodBank
+
+
+                when (fragment) {
+                    is DashboardFragment -> fragment.successGetFavouriteFoodBank(favouriteFoodBank)
                 }
             }
     }

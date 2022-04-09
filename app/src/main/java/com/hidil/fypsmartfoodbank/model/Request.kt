@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Request(
    var id: String = "",
    val completed: Boolean = false,
+   val approved: Boolean = false,
    val foodBankImage: String = "",
    val foodBankID: String = "",
    val foodBankName: String = "",

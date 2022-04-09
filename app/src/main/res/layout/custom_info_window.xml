@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/normal_margin_padding"
+    app:cardCornerRadius="@dimen/dashboard_card_corner_radius"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/normal_margin_padding">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/img_placeholder"
+            android:id="@+id/iv_placeImage"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginEnd="@dimen/normal_margin_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:textColor="@color/primaryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food Bank @ Kampung Tungku Fasa 2"
+                android:textStyle="bold"
+                android:textSize="@dimen/medium_text_size"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/secondaryText"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:text="Kampung Tunku Fasa 2, Kampung Tupong Tengah, 93050 Kuching, Sarawak Malaysia"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/secondaryColor"
+                android:text="show details"
+                android:textColor="@color/primaryText"
+                android:layout_marginTop="5dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

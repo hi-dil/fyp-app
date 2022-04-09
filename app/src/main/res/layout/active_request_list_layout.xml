@@ -2,10 +2,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/medium_margin_padding"
+    android:layout_marginStart="@dimen/medium_margin_padding"
+    android:layout_marginEnd="@dimen/medium_margin_padding"
+    android:layout_marginTop="@dimen/normal_margin_padding"
+    android:layout_marginBottom="@dimen/small_margin_padding"
     app:cardCornerRadius="10dp"
     android:overScrollMode="never"
-    app:cardElevation="10dp"
+    app:cardElevation="5dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
