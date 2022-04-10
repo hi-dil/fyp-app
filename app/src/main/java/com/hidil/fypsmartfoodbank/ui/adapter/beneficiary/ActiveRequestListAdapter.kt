@@ -1,44 +1,77 @@
 package com.hidil.fypsmartfoodbank.ui.adapter.beneficiary
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.hidil.fypsmartfoodbank.R
+import com.hidil.fypsmartfoodbank.databinding.RequestListLayoutBinding
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 open class ActiveRequestListAdapter(
     private val context: Context,
-    private var list: ArrayList<Request>
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var list: ArrayList<Request>,
+    private val fragment: Fragment
+): RecyclerView.Adapter<ActiveRequestListAdapter.MyViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MyViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.active_request_list_layout,
-                parent,
-                false
-            )
-        )
+    class MyViewHolder(val binding: RequestListLayoutBinding): RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        return MyViewHolder(RequestListLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model = list[position]
 
-        if (holder is MyViewHolder) {
-            GlideLoader(context).loadFoodBankPicture(model.foodBankImage, holder.itemView.findViewById<ImageView>(R.id.iv_foodBankImage))
-            holder.itemView.findViewById<TextView>(R.id.tv_fbName).text = model.foodBankName
-            holder.itemView.findViewById<TextView>(R.id.tv_address).text = model.address
+        GlideLoader(context).loadFoodBankPicture(model.foodBankImage, holder.binding.ivFoodBankImage)
+        holder.binding.tvFbName.text = model.foodBankName
+        holder.binding.tvAddress.text = model.address
+
+        holder.itemView.setOnClickListener { view ->
+            when (fragment) {
+                is DashboardFragment -> {
+                    view.findNavController().navigate(
+                        DashboardFragmentDirections.actionDashboardFragmentToClaimRequestDetailsFragment(
+                            model
+                        )
+                    )
+
+                    if(fragment.requireActivity() is BeneficiaryMainActivity) {
+                        (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
+                    }
+                }
+
+                is ClaimRequestFragment -> {
+                    view.findNavController().navigate(ClaimRequestFragmentDirections.actionClaimRequestFragmentToClaimRequestDetailsFragment(model))
+
+                    if(fragment.requireActivity() is BeneficiaryMainActivity) {
+                        (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
+                    }
+                }
+            }
         }
+
+        holder.binding.ivNavigate.setOnClickListener {
+            val gmmIntentUri =
+                Uri.parse("google.navigation:q=${model.lat},${model.long}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            fragment.requireActivity().startActivity(mapIntent)
+        }
+
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    class MyViewHolder(view: View): RecyclerView.ViewHolder(view)
 }

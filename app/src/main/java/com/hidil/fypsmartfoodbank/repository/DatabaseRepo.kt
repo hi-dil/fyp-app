@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
@@ -153,26 +154,45 @@ class DatabaseRepo {
             }
     }
 
-    fun getCompletedRequest(fragment: Fragment){
+    fun getPastRequest(fragment: Fragment){
         mFirestore.collection(Constants.REQUEST)
             .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
             .whereEqualTo(Constants.REQUEST_COMPLETE, true)
             .get()
             .addOnSuccessListener { document ->
-                Log.e("Active request", document.documents.toString())
-                val activeRequestList: ArrayList<Request> = ArrayList()
+                Log.i("Past request", document.documents.toString())
+                val pastRequestList: ArrayList<Request> = ArrayList()
                 for (i in document.documents) {
                     val request = i.toObject(Request::class.java)
                     request!!.id = i.id
 
-                    activeRequestList.add(request)
+                    pastRequestList.add(request)
                 }
 
                 when (fragment) {
-                    is DashboardFragment -> {
-                        fragment.successRequestFromFirestore(activeRequestList)
+                    is ClaimRequestFragment -> {
+                        fragment.successGetPastRequest(pastRequestList)
                     }
                 }
+            }
+            .addOnFailureListener { e ->
+                Log.e(fragment.javaClass.simpleName, "Error while getting past request " + e.message.toString())
+            }
+    }
+
+    fun getFoodBankDetails(fragment: Fragment) {
+        mFirestore.collection(Constants.FOODBANK)
+            .get()
+            .addOnSuccessListener { document ->
+                val foodBankDetails: ArrayList<FoodBank> = ArrayList()
+
+                for (i in document.documents) {
+                    val details = i.toObject(FoodBank::class.java)
+                    details!!.id = i.id
+
+                    foodBankDetails.add(details)
+                }
+
             }
     }
 }

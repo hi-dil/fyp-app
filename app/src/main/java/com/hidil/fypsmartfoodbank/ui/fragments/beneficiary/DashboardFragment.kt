@@ -12,6 +12,7 @@ import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.FavouriteFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -59,6 +60,13 @@ class DashboardFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(requireActivity() is BeneficiaryMainActivity){
+            (activity as BeneficiaryMainActivity?)!!.showBottomNavigationView()
+        }
+    }
+
     fun successRequestFromFirestore(activeRequestList: ArrayList<Request>) {
 //        requireActivity().hideProgressDialog()
 
@@ -68,7 +76,7 @@ class DashboardFragment : Fragment() {
 
             binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList)
+            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
         } else {
             binding.rvActiveRequest.visibility = View.GONE

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/medium_margin_padding"
-    android:layout_marginEnd="@dimen/medium_margin_padding"
     android:layout_marginTop="@dimen/normal_margin_padding"
+    android:layout_marginEnd="@dimen/medium_margin_padding"
     android:layout_marginBottom="@dimen/small_margin_padding"
-    app:cardCornerRadius="10dp"
     android:overScrollMode="never"
-    app:cardElevation="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:padding="@dimen/normal_margin_padding"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/normal_margin_padding">
 
         <ImageView
             android:id="@+id/iv_foodBankImage"
@@ -31,12 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/normal_margin_padding"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="0dp"
             android:text="Food Bank Name"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/imageView"
             app:layout_constraintHorizontal_bias="0.084"
-            app:layout_constraintStart_toEndOf="@id/iv_foodBankImage" />
+            app:layout_constraintStart_toEndOf="@id/iv_foodBankImage"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_address"
@@ -56,17 +56,15 @@
             android:paddingEnd="5dp"
             android:paddingBottom="2dp"
             android:text="pending"
+            android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_address"
-            app:layout_constraintStart_toStartOf="@id/tv_fbName"
-            />
+            app:layout_constraintStart_toStartOf="@id/tv_fbName" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/iv_navigate"
             android:layout_width="50dp"
             android:layout_height="40dp"
-
             android:src="@drawable/ic_nav"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

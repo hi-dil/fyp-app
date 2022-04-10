@@ -14,15 +14,32 @@
         android:id="@+id/dashboardFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_dashboardFragment_to_claimRequestDetailsFragment"
+            app:destination="@id/claimRequestDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/claimRequestFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment"
         android:label="fragment_claim_request"
-        tools:layout="@layout/fragment_claim_request" />
+        tools:layout="@layout/fragment_claim_request" >
+        <action
+            android:id="@+id/action_claimRequestFragment_to_claimRequestDetailsFragment"
+            app:destination="@id/claimRequestDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/locationFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
         android:label="fragment_location"
         tools:layout="@layout/fragment_location" />
+    <fragment
+        android:id="@+id/claimRequestDetailsFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment"
+        android:label="claim_request_details_fragment"
+        tools:layout="@layout/fragment_claim_request_details" >
+        <argument
+            android:name="currentRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+    </fragment>
 </navigation>

@@ -30,6 +30,7 @@ object Constants {
 
     const val USER_ID: String = "userID"
     const val REQUEST: String = "request"
+    const val FOODBANK: String = "foodBank"
     const val REQUEST_COMPLETE: String = "completed"
 
     fun showImageChooser(activity: Activity) {
