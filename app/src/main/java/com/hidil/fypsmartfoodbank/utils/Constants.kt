@@ -14,9 +14,11 @@ object Constants {
     const val APP_PREF: String = "AppPrefs"
     const val LOGGED_IN_USER: String = "LoggedInUser"
     const val EXTRA_USER_DETAILS: String = "ExtraUserDetails"
+    const val LOCATION_ARRAYLIST: String = "LocationArrayList"
 
     const val READ_STORAGE_PERMISSION_CODE = 2
     const val PICK_IMAGE_REQUEST_CODE = 1
+    const val LOCATION_REQUEST_CODE = 3
 
     val USER_PROFILE_IMAGE: String = "User_Profile_Image"
 

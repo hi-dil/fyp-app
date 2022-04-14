@@ -1,50 +1,181 @@
 package com.hidil.fypsmartfoodbank.ui.fragments
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.google.maps.android.clustering.ClusterManager
 import com.hidil.fypsmartfoodbank.R
+import com.hidil.fypsmartfoodbank.databinding.FragmentLocationBinding
+import com.hidil.fypsmartfoodbank.model.Location
+import com.hidil.fypsmartfoodbank.model.MarkerCluster
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
+import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
+import com.hidil.fypsmartfoodbank.ui.activity.Login
+import com.hidil.fypsmartfoodbank.ui.adapter.CustomInfoWindowAdapter
+import com.hidil.fypsmartfoodbank.utils.Constants
 
-class LocationFragment : Fragment() {
+class LocationFragment : Fragment(), OnMapReadyCallback,
+    ClusterManager.OnClusterItemClickListener<MarkerCluster> {
 
-    private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        val kuching = LatLng(1.5535, 110.3593)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.addMarker(MarkerOptions().position(kuching).title("FoodBank1"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kuching, 10f))
-    }
+    private var _binding: FragmentLocationBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var map: GoogleMap
+    private var mLocation = ArrayList<Location>()
+    private lateinit var clusterManager: ClusterManager<MarkerCluster>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_location, container, false)
+        _binding = FragmentLocationBinding.inflate(inflater, container, false)
+
+        val sharedPreferences = requireActivity().getSharedPreferences(
+            Constants.APP_PREF,
+            Context.MODE_PRIVATE
+        )
+        val location = sharedPreferences.getString(Constants.LOCATION_ARRAYLIST, null)
+        val type = object : TypeToken<ArrayList<Location>>() {}.type
+        mLocation = Gson().fromJson(location, type)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
+        mapFragment?.getMapAsync(this)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+
+        val malaysia = LatLng(1.435209, 107.960093)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(malaysia, 5f))
+
+        map.uiSettings.apply {
+            isMyLocationButtonEnabled = true
+        }
+        clusterManager = ClusterManager(requireActivity(), map)
+        map.setOnCameraIdleListener(clusterManager)
+        addMarkers()
+        clusterManager.markerCollection.setInfoWindowAdapter(
+            CustomInfoWindowAdapter(
+                requireActivity()
+            )
+        )
+        clusterManager.markerCollection.setOnInfoWindowClickListener { marker ->
+            val type = object : TypeToken<Location>() {}.type
+            val item: Location = Gson().fromJson(marker.snippet, type)
+
+            Toast.makeText(requireActivity(), "clicked! ${item.foodBankName}", Toast.LENGTH_SHORT)
+                .show()
+            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item)
+            findNavController().navigate(action)
+            (activity as BeneficiaryMainActivity).hideBottomNavigationView()
+        }
+
+        checkLocationPermission()
+
+    }
+
+    override fun onClusterItemClick(item: MarkerCluster?): Boolean {
+        if (item != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(item.position, 17f), 2000, null)
+
+        }
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BeneficiaryMainActivity).showBottomNavigationView()
+    }
+
+    private fun addMarkers() {
+        for (i in mLocation) {
+            val markerItem = MarkerCluster(
+                LatLng(i.lat.toDouble(), i.long.toDouble()),
+                i.foodBankName,
+                i
+            )
+            clusterManager.addItem(markerItem)
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            map.isMyLocationEnabled = true
+        } else {
+            requestPermission()
+        }
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            Constants.LOCATION_REQUEST_CODE
+        )
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode != Constants.LOCATION_REQUEST_CODE) {
+            return
+        }
+
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(requireActivity(), "Granted!", Toast.LENGTH_SHORT).show()
+            map.isMyLocationEnabled = true
+        } else {
+            Toast.makeText(
+                requireActivity(),
+                "Please enable location permission",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
 }

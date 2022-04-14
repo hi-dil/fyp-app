@@ -32,7 +32,11 @@
         android:id="@+id/locationFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
         android:label="fragment_location"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_locationFragment_to_foodBankInfoFragment"
+            app:destination="@id/foodBankInfoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/claimRequestDetailsFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment"
@@ -41,5 +45,14 @@
         <argument
             android:name="currentRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodBankInfoFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment"
+        android:label="food_bank_info_fragment"
+        tools:layout="@layout/food_bank_info_fragment" >
+        <argument
+            android:name="currentFoodBank"
+            app:argType="com.hidil.fypsmartfoodbank.model.Location" />
     </fragment>
 </navigation>

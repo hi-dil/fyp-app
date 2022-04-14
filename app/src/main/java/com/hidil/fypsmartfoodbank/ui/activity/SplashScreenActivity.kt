@@ -7,6 +7,7 @@ import android.view.WindowManager
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ActivitySplashScreenBinding
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 
 class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashScreenBinding
@@ -14,6 +15,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        DatabaseRepo().getLocation(this)
 
         val currentUserID = AuthenticationRepo().getCurrentUserID()
 

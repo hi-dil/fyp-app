@@ -102,7 +102,7 @@ class DashboardFragment : Fragment() {
                 maxSize++
             }
 
-            val favouriteFoodBankAdapter = FavouriteFoodBankListAdapter(requireActivity(), compactFavouriteFoodBankList)
+            val favouriteFoodBankAdapter = FavouriteFoodBankListAdapter(requireActivity(), compactFavouriteFoodBankList, this)
             binding.rvFavouriteFoodBank.adapter = favouriteFoodBankAdapter
         } else {
             binding.rvFavouriteFoodBank.visibility = View.GONE

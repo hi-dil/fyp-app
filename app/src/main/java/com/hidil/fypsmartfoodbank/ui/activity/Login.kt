@@ -18,13 +18,6 @@ class Login : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val currentUserID = AuthenticationRepo().getCurrentUserID()
-
-        if (currentUserID.isNotEmpty()) {
-            finish()
-            startActivity(Intent(this, BeneficiaryMainActivity::class.java))
-        }
-
         binding.tvForgotPassword.setOnClickListener {
             Intent(this, ForgotPassword::class.java).also {
                 startActivity(it)

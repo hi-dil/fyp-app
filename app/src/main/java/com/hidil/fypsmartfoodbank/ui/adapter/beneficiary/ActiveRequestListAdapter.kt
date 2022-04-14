@@ -21,18 +21,28 @@ open class ActiveRequestListAdapter(
     private val context: Context,
     private var list: ArrayList<Request>,
     private val fragment: Fragment
-): RecyclerView.Adapter<ActiveRequestListAdapter.MyViewHolder>() {
+) : RecyclerView.Adapter<ActiveRequestListAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: RequestListLayoutBinding): RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: RequestListLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(RequestListLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
+        return MyViewHolder(
+            RequestListLayoutBinding.inflate(
+                LayoutInflater.from(context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model = list[position]
 
-        GlideLoader(context).loadFoodBankPicture(model.foodBankImage, holder.binding.ivFoodBankImage)
+        GlideLoader(context).loadFoodBankPicture(
+            model.foodBankImage,
+            holder.binding.ivFoodBankImage
+        )
         holder.binding.tvFbName.text = model.foodBankName
         holder.binding.tvAddress.text = model.address
 
@@ -45,15 +55,19 @@ open class ActiveRequestListAdapter(
                         )
                     )
 
-                    if(fragment.requireActivity() is BeneficiaryMainActivity) {
+                    if (fragment.requireActivity() is BeneficiaryMainActivity) {
                         (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
                     }
                 }
 
                 is ClaimRequestFragment -> {
-                    view.findNavController().navigate(ClaimRequestFragmentDirections.actionClaimRequestFragmentToClaimRequestDetailsFragment(model))
+                    view.findNavController().navigate(
+                        ClaimRequestFragmentDirections.actionClaimRequestFragmentToClaimRequestDetailsFragment(
+                            model
+                        )
+                    )
 
-                    if(fragment.requireActivity() is BeneficiaryMainActivity) {
+                    if (fragment.requireActivity() is BeneficiaryMainActivity) {
                         (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
                     }
                 }

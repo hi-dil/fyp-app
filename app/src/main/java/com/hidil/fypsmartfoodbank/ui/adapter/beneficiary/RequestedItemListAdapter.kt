@@ -25,7 +25,7 @@ class RequestedItemListAdapter(
 
         GlideLoader(context).loadFoodBankPicture(model.itemImage, holder.binding.ivItemImage)
         holder.binding.tvItemName.text = model.itemName
-        holder.binding.tvStorageID.text = "FoodBank Storage ID - ${model.storageName}"
+        holder.binding.tvStorageID.text = "FoodBank StorageCompact ID - ${model.storageName}"
         holder.binding.tvAmount.text = model.itemQuantity.toString()
     }
 

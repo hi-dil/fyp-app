@@ -8,6 +8,7 @@ data class FavouriteFoodBank (
     val foodBankID: String = "",
     val foodBankImage: String = "",
     val foodBankName: String = "",
-    val location: String = "",
-    val address: String = ""
+    val address: String = "",
+    val lat: String = "",
+    val long: String = ""
 ) : Parcelable

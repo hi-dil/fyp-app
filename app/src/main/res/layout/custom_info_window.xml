@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/normal_margin_padding"
+    android:layout_margin="50dp"
     app:cardCornerRadius="@dimen/dashboard_card_corner_radius"
     app:cardElevation="5dp">
 
@@ -14,10 +14,11 @@
         android:padding="@dimen/normal_margin_padding">
 
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/img_placeholder"
-            android:id="@+id/iv_placeImage"/>
+            android:id="@+id/iv_placeImage"
+            android:layout_width="100dp"
+            android:layout_gravity="center"
+            android:layout_height="100dp"
+            android:src="@drawable/img_placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,27 +28,30 @@
             android:orientation="vertical">
 
             <TextView
-                android:textColor="@color/primaryText"
+                android:id="@+id/tv_ciwTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Food Bank @ Kampung Tungku Fasa 2"
-                android:textStyle="bold"
-                android:textSize="@dimen/medium_text_size"/>
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/medium_text_size"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_ciwDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/secondaryText"
                 android:layout_marginTop="@dimen/normal_margin_padding"
-                android:text="Kampung Tunku Fasa 2, Kampung Tupong Tengah, 93050 Kuching, Sarawak Malaysia"/>
+                android:text="Kampung Tunku Fasa 2, Kampung Tupong Tengah, 93050 Kuching, Sarawak Malaysia"
+                android:textColor="@color/secondaryText" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_showDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:layout_marginTop="5dp"
                 android:backgroundTint="@color/secondaryColor"
                 android:text="show details"
-                android:textColor="@color/primaryText"
-                android:layout_marginTop="5dp"/>
+                android:textColor="@color/primaryText" />
 
         </LinearLayout>
     </LinearLayout>
