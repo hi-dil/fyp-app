@@ -11,6 +11,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.model.*
 import com.hidil.fypsmartfoodbank.ui.activity.*
+import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
@@ -218,5 +219,19 @@ class DatabaseRepo {
                 editor.putString(Constants.LOCATION_ARRAYLIST, location)
                 editor.apply()
             }
+    }
+
+    fun getFoodBankDetails(fragment: FoodBankInfoFragment, id: String) {
+        mFirestore.collection(Constants.FOODBANK)
+            .whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { document ->
+                val foodBankRequest: ArrayList<FoodBank> = ArrayList()
+                for (i in document) {
+                    val data = i.toObject(FoodBank::class.java)
+                }
+
+            }
+
     }
 }

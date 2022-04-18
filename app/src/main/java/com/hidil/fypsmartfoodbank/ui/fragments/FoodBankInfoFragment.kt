@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FoodBankInfoFragmentBinding
 import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankLocationBinding
+import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.FoodBankInfoViewModel
 
@@ -33,6 +34,10 @@ class FoodBankInfoFragment : Fragment() {
             binding.ivHeader
         )
 
+        binding.fabBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         return binding.root
     }
 
@@ -41,5 +46,10 @@ class FoodBankInfoFragment : Fragment() {
         _binding = null
     }
 
+    fun getFoodBankData(foodBank: ArrayList<FoodBank>) {
+        if (foodBank.size > 0) {
+
+        }
+    }
 
 }
