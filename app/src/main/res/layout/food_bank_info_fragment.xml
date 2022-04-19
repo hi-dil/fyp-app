@@ -93,6 +93,13 @@
                 android:textColor="@color/secondaryText"
                 android:textSize="@dimen/normal_text_size" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_mostTakenItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never" />
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,43 +129,21 @@
                 android:textColor="@color/secondaryText"
                 android:textSize="@dimen/normal_text_size" />
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_availableItems"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/verylarge_text_size"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/normal_margin_padding"
-                    android:src="@drawable/cross_mark" />
-
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:text="Unavailable Items" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="See available items"
-                android:textColor="@color/secondaryText"
-                android:textSize="@dimen/normal_text_size" />
+                android:overScrollMode="never" />
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="I want to receive the  items"
-                android:backgroundTint="@color/secondaryColor"
-                android:textColor="@color/primaryText"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/medium_margin_padding"/>
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:layout_marginBottom="@dimen/verylarge_margin_padding"
+                android:backgroundTint="@color/secondaryColor"
+                android:text="I want to receive the  items"
+                android:textColor="@color/primaryText" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

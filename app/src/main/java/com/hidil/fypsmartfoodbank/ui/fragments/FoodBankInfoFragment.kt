@@ -6,11 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FoodBankInfoFragmentBinding
 import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankLocationBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.adapter.AvailableFoodBankItemsListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.FoodBankInfoViewModel
 
@@ -27,12 +31,7 @@ class FoodBankInfoFragment : Fragment() {
     ): View? {
         val foodBankInfoViewModel = ViewModelProvider(this).get(FoodBankInfoViewModel::class.java)
         _binding = FoodBankInfoFragmentBinding.inflate(inflater, container, false)
-        binding.tvTitle.text = args.currentFoodBank.foodBankName
-        binding.tvAddress.text = args.currentFoodBank.address
-        GlideLoader(requireContext()).loadFoodBankPicture(
-            args.currentFoodBank.foodBankImage,
-            binding.ivHeader
-        )
+        DatabaseRepo().searchFoodBankDetails(this, args.foodBankID)
 
         binding.fabBack.setOnClickListener {
             requireActivity().onBackPressed()
@@ -46,10 +45,16 @@ class FoodBankInfoFragment : Fragment() {
         _binding = null
     }
 
-    fun getFoodBankData(foodBank: ArrayList<FoodBank>) {
-        if (foodBank.size > 0) {
+    fun getFoodBankData(foodBank: FoodBank) {
+        GlideLoader(requireContext()).loadFoodBankPicture(foodBank.foodBankImage, binding.ivHeader)
+        binding.tvAddress.text = foodBank.address
+        binding.tvTitle.text = foodBank.foodBankName
 
-        }
+        binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
+        binding.rvAvailableItems.setHasFixedSize(true)
+        val availableListAdapter = AvailableFoodBankItemsListAdapter(requireActivity(), foodBank.storage, this)
+        binding.rvAvailableItems.adapter = availableListAdapter
     }
+
 
 }

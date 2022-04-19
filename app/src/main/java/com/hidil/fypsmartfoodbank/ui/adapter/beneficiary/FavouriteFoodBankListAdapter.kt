@@ -8,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.RequestListLayoutBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class FavouriteFoodBankListAdapter(
     private val context: Context,
     private var list: ArrayList<FavouriteFoodBank>,
-    private val fragment: Fragment
+    private val fragment: DashboardFragment
 ) : RecyclerView.Adapter<FavouriteFoodBankListAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: RequestListLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -39,6 +42,12 @@ class FavouriteFoodBankListAdapter(
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             fragment.requireActivity().startActivity(mapIntent)
+        }
+
+        holder.itemView.setOnClickListener { view ->
+            view.findNavController().navigate(
+                DashboardFragmentDirections.actionDashboardFragmentToFoodBankInfoFragment(model.foodBankID)
+            )
         }
     }
 

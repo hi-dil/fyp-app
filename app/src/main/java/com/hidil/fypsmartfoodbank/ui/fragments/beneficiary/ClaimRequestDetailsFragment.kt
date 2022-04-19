@@ -76,6 +76,7 @@ class ClaimRequestDetailsFragment : Fragment() {
             binding.btnUserAction.setOnClickListener {
                 Toast.makeText(requireContext(), "You already claim the items for this request", Toast.LENGTH_SHORT).show()
             }
+            binding.btnUserAction.background.setTint(ContextCompat.getColor(requireContext(), R.color.primaryColor))
         }
 
         return binding.root

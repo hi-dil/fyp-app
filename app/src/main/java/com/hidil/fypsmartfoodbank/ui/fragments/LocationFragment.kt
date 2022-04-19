@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterManager
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentLocationBinding
@@ -40,7 +41,7 @@ import com.hidil.fypsmartfoodbank.ui.adapter.CustomInfoWindowAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 
 class LocationFragment : Fragment(), OnMapReadyCallback,
-    ClusterManager.OnClusterItemClickListener<MarkerCluster> {
+    ClusterManager.OnClusterItemClickListener<MarkerCluster>, ClusterManager.OnClusterClickListener<MarkerCluster>{
 
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
@@ -97,10 +98,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         clusterManager.markerCollection.setOnInfoWindowClickListener { marker ->
             val type = object : TypeToken<Location>() {}.type
             val item: Location = Gson().fromJson(marker.snippet, type)
-
-            Toast.makeText(requireActivity(), "clicked! ${item.foodBankName}", Toast.LENGTH_SHORT)
-                .show()
-            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item)
+            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item.foodBankID)
             findNavController().navigate(action)
             (activity as BeneficiaryMainActivity).hideBottomNavigationView()
         }
@@ -112,7 +110,13 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
     override fun onClusterItemClick(item: MarkerCluster?): Boolean {
         if (item != null) {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(item.position, 17f), 2000, null)
+        }
+        return true
+    }
 
+    override fun onClusterClick(cluster: Cluster<MarkerCluster>?): Boolean {
+        if (cluster != null) {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.position, 17f), 2000, null)
         }
         return true
     }
@@ -176,6 +180,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
             ).show()
         }
     }
+
 
 
 }

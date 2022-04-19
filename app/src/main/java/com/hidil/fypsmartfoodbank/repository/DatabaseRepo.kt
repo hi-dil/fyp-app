@@ -223,15 +223,22 @@ class DatabaseRepo {
             }
     }
 
-    fun getFoodBankDetails(fragment: FoodBankInfoFragment, id: String) {
+    fun searchFoodBankDetails(fragment: FoodBankInfoFragment, id: String) {
         mFirestore.collection(Constants.FOODBANK)
             .whereEqualTo("id", id)
             .get()
             .addOnSuccessListener { document ->
                 val foodBankRequest: ArrayList<FoodBank> = ArrayList()
-                for (i in document) {
+                Log.i("test", document.documents.toString())
+                Log.i("test", id)
+                for (i in document.documents) {
                     val data = i.toObject(FoodBank::class.java)
+                    data!!.id = i.id
+
+                    foodBankRequest.add(data)
                 }
+                Log.i("test", foodBankRequest[0].toString())
+                fragment.getFoodBankData(foodBankRequest[0])
 
             }
 

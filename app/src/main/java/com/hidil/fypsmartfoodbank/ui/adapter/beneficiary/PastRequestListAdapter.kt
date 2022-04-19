@@ -1,7 +1,9 @@
 package com.hidil.fypsmartfoodbank.ui.adapter.beneficiary
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +47,14 @@ open class PastRequestListAdapter(
             if(fragment.requireActivity() is BeneficiaryMainActivity) {
                 (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
             }
+        }
+
+        holder.binding.ivNavigate.setOnClickListener {
+            val gmmIntentUri =
+                Uri.parse("google.navigation:q=${model.lat},${model.long}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            fragment.requireActivity().startActivity(mapIntent)
         }
     }
 

@@ -34,4 +34,17 @@ class GlideLoader(val context: Context) {
             e.printStackTrace()
         }
     }
+
+    fun loadStoragePicture(storageImage: String, imageView: ImageView) {
+        try {
+            Glide
+                .with(context)
+                .load(storageImage)
+                .centerCrop()
+                .placeholder(R.drawable.img_placeholder)
+                .into(imageView)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 }

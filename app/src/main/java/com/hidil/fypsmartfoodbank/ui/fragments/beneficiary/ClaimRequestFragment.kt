@@ -54,7 +54,7 @@ class ClaimRequestFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(requireActivity() is BeneficiaryMainActivity){
+        if (requireActivity() is BeneficiaryMainActivity) {
             (activity as BeneficiaryMainActivity?)!!.showBottomNavigationView()
         }
     }
@@ -66,7 +66,8 @@ class ClaimRequestFragment : Fragment() {
 
             binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
+            val activeRequestAdapter =
+                ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
         } else {
             binding.rvActiveRequest.visibility = View.GONE
@@ -88,7 +89,8 @@ class ClaimRequestFragment : Fragment() {
 
             binding.rvPastRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvPastRequest.setHasFixedSize(true)
-            val pastRequestAdapter = PastRequestListAdapter(requireActivity(), pastRequestList, this)
+            val pastRequestAdapter =
+                PastRequestListAdapter(requireActivity(), pastRequestList, this)
             binding.rvPastRequest.adapter = pastRequestAdapter
         } else {
             binding.rvPastRequest.visibility = View.GONE
