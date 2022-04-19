@@ -12,7 +12,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentClaimRequestDetailsBinding
+import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.PendingTakeItemListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.RequestedItemListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
@@ -23,6 +25,8 @@ class ClaimRequestDetailsFragment : Fragment() {
     private lateinit var viewModel: ClaimRequestDetailsViewModel
     private val binding get() = _binding!!
     private val args by navArgs<ClaimRequestDetailsFragmentArgs>()
+    private lateinit var itemList: ArrayList<ItemList>
+    private var takeItemButton = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +34,7 @@ class ClaimRequestDetailsFragment : Fragment() {
     ): View? {
         val claimRequestViewModel = ViewModelProvider(this).get(ClaimRequestDetailsViewModel::class.java)
         _binding = FragmentClaimRequestDetailsBinding.inflate(inflater, container, false)
+        itemList = args.currentRequest.items
 
         GlideLoader(requireContext()).loadUserPicture(args.currentRequest.foodBankImage, binding.ivHeader)
         binding.tvTitle.text = args.currentRequest.foodBankName
@@ -44,6 +49,10 @@ class ClaimRequestDetailsFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
+        binding.btnUserAction.setOnClickListener {
+            Toast.makeText(requireContext(), "You must wait for approval before claim the food bank items", Toast.LENGTH_SHORT).show()
+        }
+
         if (args.currentRequest.approved) {
             binding.tvProgress.text = "verified"
             binding.tvProgress.background = ContextCompat.getDrawable(requireContext(), R.drawable.complete_tag)
@@ -51,8 +60,14 @@ class ClaimRequestDetailsFragment : Fragment() {
             binding.btnUserAction.background.setTint(ContextCompat.getColor(requireContext(), R.color.secondaryColor))
 
             binding.btnUserAction.setOnClickListener {
-                val itemStatusAdapter = PendingTakeItemListAdapter(requireActivity(), args.currentRequest.items)
+                val itemStatusAdapter = PendingTakeItemListAdapter(requireActivity(), args.currentRequest.items, args.currentRequest)
                 binding.rvItems.adapter = itemStatusAdapter
+                takeItemButton = true
+                binding.btnUserAction.background.setTint(ContextCompat.getColor(requireContext(), R.color.gray))
+                binding.btnUserAction.text = "In Progress"
+                binding.btnUserAction.setOnClickListener {
+                    Toast.makeText(requireContext(), "Please claim all items to complete the request", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -62,7 +77,17 @@ class ClaimRequestDetailsFragment : Fragment() {
                 Toast.makeText(requireContext(), "You already claim the items for this request", Toast.LENGTH_SHORT).show()
             }
         }
+
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (args.currentRequest.approved && !args.currentRequest.completed && takeItemButton) {
+            DatabaseRepo().searchRequest(this, args.currentRequest.id)
+            Toast.makeText(requireContext(), "fragment continued", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     override fun onDestroyView() {
@@ -70,5 +95,9 @@ class ClaimRequestDetailsFragment : Fragment() {
         _binding = null
     }
 
+    fun refreshList(updatedList: ArrayList<ItemList>){
+        val itemStatusAdapter = PendingTakeItemListAdapter(requireActivity(), updatedList, args.currentRequest)
+        binding.rvItems.adapter = itemStatusAdapter
+    }
 
 }

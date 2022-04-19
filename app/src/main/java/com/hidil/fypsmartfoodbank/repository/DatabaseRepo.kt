@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import com.hidil.fypsmartfoodbank.model.*
 import com.hidil.fypsmartfoodbank.ui.activity.*
 import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -233,5 +235,25 @@ class DatabaseRepo {
 
             }
 
+    }
+
+    fun searchRequest(fragment: ClaimRequestDetailsFragment, id: String) {
+        mFirestore.collection(Constants.REQUEST)
+            .whereEqualTo(FieldPath.documentId(), id)
+            .get()
+            .addOnSuccessListener { document ->
+                val requestList: ArrayList<Request> = ArrayList()
+                Log.i("test", id)
+                Log.i("test", document.documents.toString())
+                for (i in document.documents) {
+                    val request = i.toObject(Request::class.java)
+                    request!!.id = i.id
+
+                    requestList.add(request)
+                }
+
+                fragment.refreshList(requestList[0].items)
+
+            }
     }
 }

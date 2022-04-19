@@ -45,6 +45,9 @@
         <argument
             android:name="currentRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <action
+            android:id="@+id/action_claimRequestDetailsFragment_to_unlockOptionsFragment"
+            app:destination="@id/unlockOptionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment"
@@ -54,5 +57,33 @@
         <argument
             android:name="currentFoodBank"
             app:argType="com.hidil.fypsmartfoodbank.model.Location" />
+        <action
+            android:id="@+id/action_foodBankInfoFragment_to_storageInfoFragment"
+            app:destination="@id/storageInfoFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/storageInfoFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment"
+        android:label="storage_info_fragment"
+        tools:layout="@layout/storage_info_fragment" />
+    <fragment
+        android:id="@+id/unlockOptionsFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.UnlockOptionsFragment"
+        android:label="unlock_options_fragment"
+        tools:layout="@layout/unlock_options_fragment" >
+        <argument
+            android:name="currentRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <argument
+            android:name="storagePosition"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_unlockOptionsFragment_to_QRScannerFragment"
+            app:destination="@id/QRScannerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/QRScannerFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.QRScannerFragment"
+        android:label="q_r_scanner_fragment"
+        tools:layout="@layout/q_r_scanner_fragment" />
 </navigation>

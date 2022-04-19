@@ -1,4 +1,4 @@
-package com.hidil.fypsmartfoodbank.ui.fragments
+package com.hidil.fypsmartfoodbank.viewModel
 
 import androidx.lifecycle.ViewModel
 

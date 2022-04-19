@@ -19,6 +19,7 @@ object Constants {
     const val READ_STORAGE_PERMISSION_CODE = 2
     const val PICK_IMAGE_REQUEST_CODE = 1
     const val LOCATION_REQUEST_CODE = 3
+    const val CAMERA_REQUEST_CODE = 4
 
     val USER_PROFILE_IMAGE: String = "User_Profile_Image"
 

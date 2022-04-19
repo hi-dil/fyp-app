@@ -15,4 +15,5 @@
     <color name="danger">#E04040</color>
     <color name="dangerFill">#FFEDED</color>
     <color name="background">#FAEDC6</color>
+    <color name="gray">#C2C2C2</color>
 </resources>

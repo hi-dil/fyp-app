@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.hidil.fypsmartfoodbank.R
+import com.hidil.fypsmartfoodbank.viewModel.LocationListViewViewModel
 
 class LocationListViewFragment : Fragment() {
 
