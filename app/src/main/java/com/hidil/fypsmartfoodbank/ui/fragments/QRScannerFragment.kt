@@ -3,6 +3,7 @@ package com.hidil.fypsmartfoodbank.ui.fragments
 import android.Manifest
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +14,10 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
+import com.google.firebase.database.FirebaseDatabase
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.QRScannerFragmentBinding
+import com.hidil.fypsmartfoodbank.model.ArduinoData
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.viewModel.QRScannerViewModel
@@ -78,7 +81,16 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         codeScanner.decodeCallback = DecodeCallback {
             requireActivity().runOnUiThread{
-               Toast.makeText(requireContext(), "Scan Results: ${it.text}", Toast.LENGTH_LONG).show()
+                if (it.text == "SfbClQ6PRR9UKREP5BwO") {
+                    val arduinoData = ArduinoData(123.53, "STORAGE 1","SfbClQ6PRR9UKREP5BwO", false)
+
+                    val realtimeDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("StorageData")
+                    realtimeDatabase.setValue(arduinoData).addOnSuccessListener {
+                        Log.i("test", "successfully saved to database")
+                    }.addOnFailureListener {
+                        Log.i("test", "Faield to save in database")
+                    }
+                }
             }
         }
 

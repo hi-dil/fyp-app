@@ -3,15 +3,19 @@ package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 import android.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.database.FirebaseDatabase
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.UnlockOptionsFragmentBinding
+import com.hidil.fypsmartfoodbank.model.ArduinoData
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.UnlockOptionsViewModel
 
@@ -45,6 +49,18 @@ class UnlockOptionsFragment : Fragment() {
         }
 
         binding.llEnterPIN.setOnClickListener {
+            val arduinoData = ArduinoData(123.53, "STORAGE 1","SfbClQ6PRR9UKREP5BwO", false)
+
+            val realtimeDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("StorageData")
+            realtimeDatabase.setValue(arduinoData).addOnSuccessListener {
+                Toast.makeText(requireContext(), "successfully saved to database", Toast.LENGTH_SHORT).show()
+                Log.i("test", "successfully saved to database")
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Failed to save in database", Toast.LENGTH_SHORT).show()
+                Log.i("test", "Faield to save in database")
+            }
+
+
             val views = View.inflate(requireContext(), R.layout.alert_dialog_pin_number, null)
             val builder = AlertDialog.Builder(requireActivity())
             builder.setView(views)

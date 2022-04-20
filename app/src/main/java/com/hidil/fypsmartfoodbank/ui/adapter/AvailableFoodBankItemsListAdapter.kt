@@ -3,11 +3,14 @@ package com.hidil.fypsmartfoodbank.ui.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.StorageItemListLayoutBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.StorageCompact
+import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class AvailableFoodBankItemsListAdapter(
@@ -35,11 +38,16 @@ class AvailableFoodBankItemsListAdapter(
             holder.binding.tvItemQuantity.text = "QTY - ${model.itemQuantity}/${model.maximumCapacity}"
             holder.binding.tvAmount.text = itemAmount[position].toString()
 
+            for (i in itemAmount) {
+                totalItem += i
+            }
+
             holder.binding.ivAdd.setOnClickListener {
-                if (itemAmount[position] <= model.itemQuantity-1){
+                if (itemAmount[position] <= model.itemQuantity-1 && totalItem <= 19){
                     itemAmount[position]++
                     totalItem++
                     holder.binding.tvAmount.text = itemAmount[position].toString()
+                    fragment.changeItemAmount(position, true)
                 }
             }
 
@@ -48,7 +56,18 @@ class AvailableFoodBankItemsListAdapter(
                     itemAmount[position]--
                     totalItem--
                     holder.binding.tvAmount.text = itemAmount[position].toString()
+                    fragment.changeItemAmount(position, false)
                 }
+            }
+
+            holder.itemView.setOnClickListener { view ->
+                view.findNavController().navigate(
+                    FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToStorageInfoFragment(model.id)
+                )
+            }
+
+            if (fragment.requireActivity() is BeneficiaryMainActivity) {
+                (fragment.activity as BeneficiaryMainActivity?)?.hideBottomNavigationView()
             }
         }
     }

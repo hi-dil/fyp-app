@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.beneficiary.ConfimRequestFragment">
+
+    tools:context=".ui.fragments.beneficiary.">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/circle_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/verylarge_margin_padding"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Make a Claim Request"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="@style/defaultTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin_padding"
+                    android:text="Lorong Juara 2B, Taman Sukma, Jalan Sultan Tengah, 93050 Kuching, Sarawak." />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/verylarge_margin_padding"
+                android:text="Food Bank Location"
+                android:textColor="@color/primaryColor"
+                android:textSize="@dimen/large_text_size" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/normal_margin_padding"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:layout_marginEnd="@dimen/normal_margin_padding"
+                android:layout_marginBottom="@dimen/small_margin_padding"
+                android:overScrollMode="never"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/normal_margin_padding">
+
+                    <ImageView
+                        android:id="@+id/iv_foodBankImage"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/img_placeholder"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_fbName"
+                        style="@style/defaultTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/normal_margin_padding"
+                        android:layout_marginTop="0dp"
+                        android:text="Food Bank Name"
+                        android:textStyle="bold"
+                        app:layout_constraintHorizontal_bias="0.084"
+                        app:layout_constraintStart_toEndOf="@id/iv_foodBankImage"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_fbAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        app:layout_constraintStart_toStartOf="@id/tv_fbName"
+                        app:layout_constraintTop_toBottomOf="@id/tv_fbName" />
+
+                    <TextView
+                        android:id="@+id/tv_progress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/pending_tag"
+                        android:paddingStart="5dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="2dp"
+                        android:text="pending"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/tv_fbName" />
+
+                    <ImageView
+                        android:id="@+id/iv_navigate"
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_nav"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/verylarge_margin_padding"
+                android:text="Request Item(s)"
+                android:textColor="@color/primaryColor"
+                android:textSize="@dimen/large_text_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please note that we may contact you for further verification"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/normal_text_size" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_requestedItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:overScrollMode="never" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/verylarge_margin_padding"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Items Request - "
+                    android:textColor="@color/primaryText"
+                    android:textSize="@dimen/normal_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_totalAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/20"
+                    android:textColor="@color/primaryText"
+                    android:textSize="@dimen/normal_text_size" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_addMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You can add 20 more items to your request"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/normal_text_size" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirmRequest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:layout_marginBottom="@dimen/verylarge_margin_padding"
+                android:backgroundTint="@color/primaryColor"
+                android:text="Confirm Request"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
