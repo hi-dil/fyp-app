@@ -16,6 +16,7 @@ import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 
@@ -129,6 +130,7 @@ class DatabaseRepo {
                         fragment.successRequestFromFirestore(activeRequestList)
                     }
                     is ClaimRequestFragment -> fragment.successRequestFromFirestore(activeRequestList)
+                    is ConfirmRequestFragment -> fragment.assignActiveRequest(activeRequestList)
                 }
             }
     }
@@ -237,7 +239,7 @@ class DatabaseRepo {
 
                     foodBankRequest.add(data)
                 }
-                Log.i("test", foodBankRequest[0].toString())
+                Log.i("test", foodBankRequest.toString())
                 fragment.getFoodBankData(foodBankRequest[0])
 
             }
@@ -261,6 +263,18 @@ class DatabaseRepo {
 
                 fragment.refreshList(requestList[0].items)
 
+            }
+    }
+
+    fun saveRequest(fragment: Fragment, request: Request){
+        mFirestore.collection(Constants.REQUEST)
+            .document()
+            .set(request, SetOptions.merge())
+            .addOnSuccessListener {
+                Toast.makeText(fragment.requireContext(), "You have successfully save the data to the firestore", Toast.LENGTH_LONG).show()
+            }
+            .addOnSuccessListener {
+                Log.e(fragment.javaClass.simpleName, "Error while uploading file to database")
             }
     }
 }

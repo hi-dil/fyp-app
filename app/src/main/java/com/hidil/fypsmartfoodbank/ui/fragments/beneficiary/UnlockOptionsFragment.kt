@@ -44,12 +44,12 @@ class UnlockOptionsFragment : Fragment() {
 
         binding.llScanQR.setOnClickListener { view
             view?.findNavController()?.navigate(
-                UnlockOptionsFragmentDirections.actionUnlockOptionsFragmentToQRScannerFragment()
+                UnlockOptionsFragmentDirections.actionUnlockOptionsFragmentToQRScannerFragment(args.currentRequest.items[args.storagePosition].storageID, args.currentRequest)
             )
         }
 
         binding.llEnterPIN.setOnClickListener {
-            val arduinoData = ArduinoData(123.53, "STORAGE 1","SfbClQ6PRR9UKREP5BwO", false)
+            val arduinoData = ArduinoData(123.53, "STORAGE 2","SfbClQ6PRR9UKREP5BwO", false)
 
             val realtimeDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("StorageData")
             realtimeDatabase.setValue(arduinoData).addOnSuccessListener {

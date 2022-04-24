@@ -7,13 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FoodBankInfoFragmentBinding
-import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankLocationBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.model.Request
@@ -44,11 +41,6 @@ class FoodBankInfoFragment : Fragment() {
         binding.fabBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
-        binding.btnConfirmRequest.setOnClickListener {
-            confirmRequest()
-        }
-
         return binding.root
     }
 
@@ -57,44 +49,53 @@ class FoodBankInfoFragment : Fragment() {
         _binding = null
     }
 
-    private fun confirmRequest() {
-
-        val requestItemList: ArrayList<ItemList> = ArrayList()
-        itemAmount.forEachIndexed { index, element ->
-            val storage = mFoodBank.storage[index]
-            if (element > 0) {
-                val itemList = ItemList(
-                    false,
-                    storage.item,
-                    element,
-                    storage.itemImage,
-                    storage.id,
-                    storage.storageName
-                )
-                requestItemList.add(itemList)
+    override fun onResume() {
+        super.onResume()
+        itemAmount = ArrayList()
+        binding.btnConfirmRequest.setOnClickListener { view ->
+            val requestItemList: ArrayList<ItemList> = ArrayList()
+            itemAmount.forEachIndexed { index, element ->
+                val storage = mFoodBank.storage[index]
+                if (element > 0) {
+                    val itemList = ItemList(
+                        false,
+                        storage.item,
+                        element,
+                        storage.itemImage,
+                        storage.id,
+                        storage.storageName
+                    )
+                    requestItemList.add(itemList)
+                }
             }
+
+            val currentRequest = Request(
+                "",
+                false,
+                false,
+                mFoodBank.foodBankImage,
+                mFoodBank.id,
+                mFoodBank.foodBankName,
+                0,
+                0,
+                AuthenticationRepo().getCurrentUserID(),
+                requestItemList,
+                mFoodBank.address,
+                mFoodBank.lat,
+                mFoodBank.long
+            )
+
+            view.findNavController().navigate(
+                FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToConfimRequestFragment(
+                    currentRequest
+                )
+            )
         }
-
-        val currentRequest = Request(
-            "",
-            false,
-            false,
-            mFoodBank.foodBankImage,
-            mFoodBank.id,
-            mFoodBank.foodBankName,
-            "",
-            "",
-            AuthenticationRepo().getCurrentUserID(),
-            requestItemList,
-            mFoodBank.address,
-            mFoodBank.lat,
-            mFoodBank.long
-        )
-
     }
 
     fun getFoodBankData(foodBank: FoodBank) {
         mFoodBank = foodBank
+        Log.i("test", mFoodBank.id)
         GlideLoader(requireContext()).loadFoodBankPicture(foodBank.foodBankImage, binding.ivHeader)
         binding.tvAddress.text = foodBank.address
         binding.tvTitle.text = foodBank.foodBankName

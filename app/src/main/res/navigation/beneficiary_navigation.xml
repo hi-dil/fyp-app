@@ -95,12 +95,22 @@
         android:id="@+id/QRScannerFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.QRScannerFragment"
         android:label="q_r_scanner_fragment"
-        tools:layout="@layout/q_r_scanner_fragment" />
+        tools:layout="@layout/q_r_scanner_fragment" >
+        <argument
+            android:name="storageID"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_QRScannerFragment_to_claimRequestDetailsFragment"
+            app:destination="@id/claimRequestDetailsFragment" />
+        <argument
+            android:name="currentRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+    </fragment>
     <fragment
         android:id="@+id/confimRequestFragment"
-        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfimRequestFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment"
         android:label="confim_request_fragment"
-        tools:layout="@layout/confim_request_fragment" >
+        tools:layout="@layout/confirm_request_fragment" >
         <argument
             android:name="proposedRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.beneficiary.ConfimRequestFragment">
+    tools:context=".ui.fragments.beneficiary.ConfirmRequestFragment">
 
     tools:context=".ui.fragments.beneficiary.">
 
@@ -44,13 +44,7 @@
                     android:textSize="@dimen/title_text_size"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tv_address"
-                    style="@style/defaultTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_margin_padding"
-                    android:text="Lorong Juara 2B, Taman Sukma, Jalan Sultan Tengah, 93050 Kuching, Sarawak." />
+                 Juara 2B, Taman Sukma, Jalan Sultan Tengah, 93050 Kuching, Sarawak." />
             </LinearLayout>
 
             <TextView
@@ -103,24 +97,13 @@
                         android:id="@+id/tv_fbAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:paddingRight="@dimen/normal_margin_padding"
                         android:text="Address"
+                        app:layout_constraintEnd_toStartOf="@id/iv_navigate"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="@id/tv_fbName"
                         app:layout_constraintTop_toBottomOf="@id/tv_fbName" />
-
-                    <TextView
-                        android:id="@+id/tv_progress"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/pending_tag"
-                        android:paddingStart="5dp"
-                        android:paddingTop="2dp"
-                        android:paddingEnd="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="pending"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="@id/tv_fbName" />
 
                     <ImageView
                         android:id="@+id/iv_navigate"

@@ -17,11 +17,18 @@ class AvailableFoodBankItemsListAdapter(
     private val context: Context,
     private val list: ArrayList<StorageCompact>,
     private val fragment: FoodBankInfoFragment
-): RecyclerView.Adapter<AvailableFoodBankItemsListAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding: StorageItemListLayoutBinding): RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.Adapter<AvailableFoodBankItemsListAdapter.MyViewHolder>() {
+    class MyViewHolder(val binding: StorageItemListLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(StorageItemListLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
+        return MyViewHolder(
+            StorageItemListLayoutBinding.inflate(
+                LayoutInflater.from(context),
+                parent,
+                false
+            )
+        )
     }
 
     private var itemAmount: ArrayList<Int> = ArrayList()
@@ -35,7 +42,8 @@ class AvailableFoodBankItemsListAdapter(
             GlideLoader(context).loadStoragePicture(model.itemImage, holder.binding.ivItemImage)
             holder.binding.tvItemName.text = model.item
             holder.binding.tvStorageID.text = model.storageName
-            holder.binding.tvItemQuantity.text = "QTY - ${model.itemQuantity}/${model.maximumCapacity}"
+            holder.binding.tvItemQuantity.text =
+                "QTY - ${model.itemQuantity}/${model.maximumCapacity}"
             holder.binding.tvAmount.text = itemAmount[position].toString()
 
             for (i in itemAmount) {
@@ -43,7 +51,7 @@ class AvailableFoodBankItemsListAdapter(
             }
 
             holder.binding.ivAdd.setOnClickListener {
-                if (itemAmount[position] <= model.itemQuantity-1 && totalItem <= 19){
+                if (itemAmount[position] <= model.itemQuantity - 1 && totalItem <= 19) {
                     itemAmount[position]++
                     totalItem++
                     holder.binding.tvAmount.text = itemAmount[position].toString()
@@ -60,9 +68,11 @@ class AvailableFoodBankItemsListAdapter(
                 }
             }
 
-            holder.itemView.setOnClickListener { view ->
+            holder.binding.ivItemImage.setOnClickListener { view ->
                 view.findNavController().navigate(
-                    FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToStorageInfoFragment(model.id)
+                    FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToStorageInfoFragment(
+                        model.id
+                    )
                 )
             }
 

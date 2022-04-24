@@ -64,18 +64,20 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         val type = object : TypeToken<ArrayList<Location>>() {}.type
         mLocation = Gson().fromJson(location, type)
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+
+        return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as BeneficiaryMainActivity).showBottomNavigationView()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -103,28 +105,27 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
             (activity as BeneficiaryMainActivity).hideBottomNavigationView()
         }
 
-        checkLocationPermission()
+        clusterManager.setOnClusterClickListener(this)
 
+        checkLocationPermission()
     }
 
     override fun onClusterItemClick(item: MarkerCluster?): Boolean {
         if (item != null) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(item.position, 17f), 2000, null)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(item.position, 15f), 2000, null)
         }
         return true
     }
 
     override fun onClusterClick(cluster: Cluster<MarkerCluster>?): Boolean {
         if (cluster != null) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.position, 17f), 2000, null)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.position, 12f), 2000, null)
+            Log.i("test", cluster.position.toString())
         }
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as BeneficiaryMainActivity).showBottomNavigationView()
-    }
+
 
     private fun addMarkers() {
         for (i in mLocation) {

@@ -5,11 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false"/>
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -20,7 +20,7 @@
         android:theme="@style/Theme.FYPSmartFoodBank">
         <activity
             android:name=".ui.activity.SplashScreenActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +48,8 @@
         <activity
             android:name=".ui.activity.BeneficiaryMainActivity"
             android:exported="false"
-            android:label="@string/title_activity_beneficiary_main" />
+            android:label="@string/title_activity_beneficiary_main"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activity.SignUp"
             android:exported="false"

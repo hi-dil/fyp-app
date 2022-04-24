@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.navArgs
 import com.budiyev.android.codescanner.AutoFocusMode
 import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
@@ -29,6 +30,7 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: QRScannerFragmentBinding? = null
     private val binding get() = _binding!!
     private lateinit var codeScanner: CodeScanner
+    private val args by navArgs<QRScannerFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,8 +83,8 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         codeScanner.decodeCallback = DecodeCallback {
             requireActivity().runOnUiThread{
-                if (it.text == "SfbClQ6PRR9UKREP5BwO") {
-                    val arduinoData = ArduinoData(123.53, "STORAGE 1","SfbClQ6PRR9UKREP5BwO", false)
+                if (it.text == args.storageID) {
+                    val arduinoData = ArduinoData(123.53, "STORAGE 2",args.storageID, false)
 
                     val realtimeDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("StorageData")
                     realtimeDatabase.setValue(arduinoData).addOnSuccessListener {
