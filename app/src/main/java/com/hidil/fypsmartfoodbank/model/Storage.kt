@@ -13,5 +13,6 @@ data class Storage(
     val itemQuantity: String = "",
     val maximumCapacity: Int = 0,
     val expiryDate: String = "",
-    val itemType: String = ""
+    val itemType: String = "",
+    val acessHistory: ArrayList<AccessHistory> = ArrayList()
 ): Parcelable

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,6 +42,14 @@ class FoodBankInfoFragment : Fragment() {
         binding.fabBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                view?.findNavController()?.navigate(
+                    FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToLocationFragment()
+                )
+            }
+        })
         return binding.root
     }
 
@@ -92,6 +101,8 @@ class FoodBankInfoFragment : Fragment() {
             )
         }
     }
+
+
 
     fun getFoodBankData(foodBank: FoodBank) {
         mFoodBank = foodBank

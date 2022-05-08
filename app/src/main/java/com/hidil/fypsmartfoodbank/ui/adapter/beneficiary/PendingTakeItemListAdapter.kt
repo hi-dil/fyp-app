@@ -37,7 +37,7 @@ class PendingTakeItemListAdapter(
         holder.itemView.setOnClickListener { view ->
 
             view.findNavController().navigate(
-            ClaimRequestDetailsFragmentDirections.actionClaimRequestDetailsFragmentToUnlockOptionsFragment(request, position))
+            ClaimRequestDetailsFragmentDirections.actionClaimRequestDetailsFragmentToUnlockOptionsFragment(request, position, model))
         }
 
         if (model.completed) {

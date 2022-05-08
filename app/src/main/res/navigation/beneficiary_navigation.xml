@@ -66,6 +66,9 @@
         <action
             android:id="@+id/action_foodBankInfoFragment_to_confimRequestFragment"
             app:destination="@id/confimRequestFragment" />
+        <action
+            android:id="@+id/action_foodBankInfoFragment_to_locationFragment"
+            app:destination="@id/locationFragment" />
     </fragment>
     <fragment
         android:id="@+id/storageInfoFragment"
@@ -90,6 +93,9 @@
         <action
             android:id="@+id/action_unlockOptionsFragment_to_QRScannerFragment"
             app:destination="@id/QRScannerFragment" />
+        <argument
+            android:name="currentItemlistRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.ItemList" />
     </fragment>
     <fragment
         android:id="@+id/QRScannerFragment"
@@ -105,6 +111,9 @@
         <argument
             android:name="currentRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <action
+            android:id="@+id/action_QRScannerFragment_self"
+            app:destination="@id/QRScannerFragment" />
     </fragment>
     <fragment
         android:id="@+id/confimRequestFragment"
