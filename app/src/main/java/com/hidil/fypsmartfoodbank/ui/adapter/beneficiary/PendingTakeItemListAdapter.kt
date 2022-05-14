@@ -8,11 +8,10 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.ItemListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutItemBinding
 import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragmentDirections
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class PendingTakeItemListAdapter(
@@ -20,10 +19,10 @@ class PendingTakeItemListAdapter(
     private val list: ArrayList<ItemList>,
     private val request: Request
 ) : RecyclerView.Adapter<PendingTakeItemListAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding: ItemListLayoutBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ListLayoutItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(ItemListLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
+        return MyViewHolder(ListLayoutItemBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

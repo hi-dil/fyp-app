@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.UnlockOptionsFragmentBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentUnlockOptionsBinding
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.UnlockOptionsViewModel
 
 class UnlockOptionsFragment : Fragment() {
-    private var _binding: UnlockOptionsFragmentBinding? = null
+    private var _binding: FragmentUnlockOptionsBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: UnlockOptionsViewModel
     private val args by navArgs<UnlockOptionsFragmentArgs>()
@@ -25,7 +25,7 @@ class UnlockOptionsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = UnlockOptionsFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentUnlockOptionsBinding.inflate(inflater, container, false)
 
 
         GlideLoader(requireContext()).loadUserPicture(

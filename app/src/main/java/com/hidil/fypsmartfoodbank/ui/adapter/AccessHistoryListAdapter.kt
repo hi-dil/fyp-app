@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.hidil.fypsmartfoodbank.databinding.UserAccessListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutUserAccessBinding
 import com.hidil.fypsmartfoodbank.model.AccessHistory
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragmentDirections
@@ -19,12 +19,12 @@ class AccessHistoryListAdapter(
     private val list: ArrayList<AccessHistory>,
     private val fragment: StorageInfoFragment
 ) : RecyclerView.Adapter<AccessHistoryListAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding: UserAccessListLayoutBinding) :
+    class MyViewHolder(val binding: ListLayoutUserAccessBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            UserAccessListLayoutBinding.inflate(
+            ListLayoutUserAccessBinding.inflate(
                 LayoutInflater.from(context),
                 parent,
                 false

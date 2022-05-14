@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.hidil.fypsmartfoodbank.databinding.StorageItemListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutStorageItemBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.StorageCompact
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
@@ -18,12 +18,12 @@ class AvailableFoodBankItemsListAdapter(
     private val list: ArrayList<StorageCompact>,
     private val fragment: FoodBankInfoFragment
 ) : RecyclerView.Adapter<AvailableFoodBankItemsListAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding: StorageItemListLayoutBinding) :
+    class MyViewHolder(val binding: ListLayoutStorageItemBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            StorageItemListLayoutBinding.inflate(
+            ListLayoutStorageItemBinding.inflate(
                 LayoutInflater.from(context),
                 parent,
                 false

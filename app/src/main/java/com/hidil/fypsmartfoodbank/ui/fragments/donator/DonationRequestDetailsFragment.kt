@@ -6,12 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.FragmentDonationRequestBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentDonationRequestDetailsBinding
 
 class DonationRequestDetailsFragment : Fragment() {
 
-    private var _binding: FragmentDonationRequestBinding? = null
+    private var _binding: FragmentDonationRequestDetailsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -19,7 +18,7 @@ class DonationRequestDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View{
-        _binding = FragmentDonationRequestBinding.inflate(inflater, container, false)
+        _binding = FragmentDonationRequestDetailsBinding.inflate(inflater, container, false)
 
         return binding.root
     }

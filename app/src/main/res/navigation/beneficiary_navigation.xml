@@ -9,7 +9,7 @@
         android:id="@+id/userProfileFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment"
         android:label="user_profile_fragment"
-        tools:layout="@layout/user_profile_fragment" />
+        tools:layout="@layout/fragment_user_profile" />
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment"
@@ -56,7 +56,7 @@
         android:id="@+id/foodBankInfoFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment"
         android:label="food_bank_info_fragment"
-        tools:layout="@layout/food_bank_info_fragment" >
+        tools:layout="@layout/fragment_food_bank_info" >
         <action
             android:id="@+id/action_foodBankInfoFragment_to_storageInfoFragment"
             app:destination="@id/storageInfoFragment" />
@@ -77,7 +77,7 @@
         android:id="@+id/storageInfoFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment"
         android:label="storage_info_fragment"
-        tools:layout="@layout/storage_info_fragment" >
+        tools:layout="@layout/fragment_storage_info" >
         <argument
             android:name="storageID"
             app:argType="string" />
@@ -89,7 +89,7 @@
         android:id="@+id/unlockOptionsFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.UnlockOptionsFragment"
         android:label="unlock_options_fragment"
-        tools:layout="@layout/unlock_options_fragment" >
+        tools:layout="@layout/fragment_unlock_options" >
         <argument
             android:name="currentRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
@@ -107,7 +107,7 @@
         android:id="@+id/QRScannerFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.QRScannerFragment"
         android:label="q_r_scanner_fragment"
-        tools:layout="@layout/q_r_scanner_fragment" >
+        tools:layout="@layout/fragment_qr_scanner" >
         <argument
             android:name="storageID"
             app:argType="string" />
@@ -125,7 +125,7 @@
         android:id="@+id/confimRequestFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment"
         android:label="confim_request_fragment"
-        tools:layout="@layout/confirm_request_fragment" >
+        tools:layout="@layout/fragment_confirm_request" >
         <argument
             android:name="proposedRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />

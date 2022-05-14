@@ -27,7 +27,7 @@
         android:id="@+id/userProfileFragment2"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment"
         android:label="user_profile_fragment"
-        tools:layout="@layout/user_profile_fragment" />
+        tools:layout="@layout/fragment_user_profile" />
     <fragment
         android:id="@+id/donationRequestDetailsFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestDetailsFragment"

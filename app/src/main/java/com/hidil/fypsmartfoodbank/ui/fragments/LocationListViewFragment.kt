@@ -21,7 +21,7 @@ class LocationListViewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.location_list_view_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_location_list_view, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

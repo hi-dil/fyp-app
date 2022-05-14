@@ -11,7 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.databinding.FoodBankInfoFragmentBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankInfoBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.model.Request
@@ -22,7 +22,7 @@ import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.FoodBankInfoViewModel
 
 class FoodBankInfoFragment : Fragment() {
-    private var _binding: FoodBankInfoFragmentBinding? = null
+    private var _binding: FragmentFoodBankInfoBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<FoodBankInfoFragmentArgs>()
 
@@ -36,7 +36,7 @@ class FoodBankInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val foodBankInfoViewModel = ViewModelProvider(this).get(FoodBankInfoViewModel::class.java)
-        _binding = FoodBankInfoFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentFoodBankInfoBinding.inflate(inflater, container, false)
         DatabaseRepo().searchFoodBankDetails(this, args.foodBankID)
 
         binding.fabBack.setOnClickListener {

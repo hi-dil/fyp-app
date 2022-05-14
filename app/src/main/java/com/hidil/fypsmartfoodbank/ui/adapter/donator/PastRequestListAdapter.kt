@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.RequestListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
@@ -19,10 +19,10 @@ class PastRequestListAdapter(
     private val fragment: Fragment
 ): RecyclerView.Adapter<PastRequestListAdapter.MyViewHolder>()  {
 
-    class MyViewHolder(val binding: RequestListLayoutBinding): RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ListLayoutRequestBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(RequestListLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
+        return MyViewHolder(ListLayoutRequestBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

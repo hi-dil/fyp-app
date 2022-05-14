@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hidil.fypsmartfoodbank.databinding.ItemListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutItemBinding
 import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
@@ -14,10 +14,10 @@ class RequestedItemListAdapter(
     private val list: ArrayList<ItemList>
 ): RecyclerView.Adapter<RequestedItemListAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: ItemListLayoutBinding): RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ListLayoutItemBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(ItemListLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MyViewHolder(ListLayoutItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {

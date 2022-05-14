@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hidil.fypsmartfoodbank.databinding.FragmentUserProfileBinding
 
-import com.hidil.fypsmartfoodbank.databinding.UserProfileFragmentBinding
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.ui.activity.EditProfileActivity
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -18,16 +18,14 @@ import com.hidil.fypsmartfoodbank.viewModel.UserProfileViewModel
 
 class UserProfileFragment : Fragment() {
 
-    private var _binding: UserProfileFragmentBinding? = null
+    private var _binding: FragmentUserProfileBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val userProfileViewModel = ViewModelProvider(this)[UserProfileViewModel::class.java]
-
-        _binding = UserProfileFragmentBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentUserProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.StorageInfoFragmentBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentStorageInfoBinding
 import com.hidil.fypsmartfoodbank.model.Storage
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.AccessHistoryListAdapter
@@ -18,15 +18,15 @@ import com.hidil.fypsmartfoodbank.viewModel.StorageInfoViewModel
 
 class StorageInfoFragment : Fragment() {
 
-    private var _binding: StorageInfoFragmentBinding? = null
+    private var _binding: FragmentStorageInfoBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<StorageInfoFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = StorageInfoFragmentBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentStorageInfoBinding.inflate(inflater, container, false)
         DatabaseRepo().searchStorageDetails(this, args.storageID)
 
         return binding.root

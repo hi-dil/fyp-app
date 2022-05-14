@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.hidil.fypsmartfoodbank.databinding.RequestListLayoutBinding
+import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
@@ -23,12 +23,12 @@ open class ActiveRequestListAdapter(
     private val fragment: Fragment
 ) : RecyclerView.Adapter<ActiveRequestListAdapter.MyViewHolder>() {
 
-    class MyViewHolder(val binding: RequestListLayoutBinding) :
+    class MyViewHolder(val binding: ListLayoutRequestBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
-            RequestListLayoutBinding.inflate(
+            ListLayoutRequestBinding.inflate(
                 LayoutInflater.from(context),
                 parent,
                 false

@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.databinding.ConfirmRequestFragmentBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentConfirmRequestBinding
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
@@ -20,18 +20,18 @@ import com.hidil.fypsmartfoodbank.viewModel.ConfimRequestViewModel
 
 class ConfirmRequestFragment : Fragment() {
 
-    private var _binding: ConfirmRequestFragmentBinding? = null
+    private var _binding: FragmentConfirmRequestBinding? = null
     private val binding get() = _binding!!
+
     private val args by navArgs<ConfirmRequestFragmentArgs>()
     private lateinit var activeRequest: ArrayList<Request>
 
-    private lateinit var viewModel: ConfimRequestViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = ConfirmRequestFragmentBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentConfirmRequestBinding.inflate(inflater, container, false)
 
         DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
 

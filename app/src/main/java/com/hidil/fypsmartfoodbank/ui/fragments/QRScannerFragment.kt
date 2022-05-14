@@ -21,7 +21,7 @@ import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.databinding.QRScannerFragmentBinding
+import com.hidil.fypsmartfoodbank.databinding.FragmentQrScannerBinding
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -30,7 +30,7 @@ import com.vmadalin.easypermissions.dialogs.SettingsDialog
 
 class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
-    private var _binding: QRScannerFragmentBinding? = null
+    private var _binding: FragmentQrScannerBinding? = null
     private val binding get() = _binding!!
     private lateinit var codeScanner: CodeScanner
     private val args by navArgs<QRScannerFragmentArgs>()
@@ -39,7 +39,7 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = QRScannerFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentQrScannerBinding.inflate(inflater, container, false)
         requestCameraPermission()
 
         if (hasCameraPermission()) {
