@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentClaimRequestBinding
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
@@ -41,8 +42,8 @@ class ClaimRequestFragment : Fragment() {
         val state = sp.getString(Constants.USER_STATE, "")!!
         binding.tvAddress.text = "$city, $state"
 
-        DatabaseRepo().getActiveRequest(this)
-        DatabaseRepo().getPastRequest(this)
+        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
+        DatabaseRepo().getPastRequest(this, AuthenticationRepo().getCurrentUserID())
 
         return binding.root
     }
@@ -72,13 +73,6 @@ class ClaimRequestFragment : Fragment() {
         } else {
             binding.rvActiveRequest.visibility = View.GONE
             binding.tvNoActiveRequest.visibility = View.VISIBLE
-        }
-
-        for (i in activeRequestList) {
-            Log.i("Food Bank Name", i.foodBankName)
-            Log.i("Food Bank Image", i.foodBankImage)
-            Log.i("Food Bank ID", i.foodBankID)
-            Log.i("User ID", i.userID)
         }
     }
 

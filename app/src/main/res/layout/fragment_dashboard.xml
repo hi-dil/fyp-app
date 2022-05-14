@@ -67,7 +67,6 @@
                             <TextView
                                 style="@style/defaultTextView"
                                 android:layout_width="wrap_content"
-
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="0dp"
                                 android:layout_weight="1"

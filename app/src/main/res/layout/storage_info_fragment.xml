@@ -35,19 +35,8 @@
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/fab_back"
+            app:layout_constraintBottom_toBottomOf="@id/fab_back"
             app:layout_constraintTop_toTopOf="@id/fab_back" />
-
-        <TextView
-            android:id="@+id/tv_foodBankName"
-            style="@style/defaultTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:text="FoodBank @ Kampng Tungku Fasa 2"
-            android:textColor="@color/secondaryText"
-            app:layout_constraintStart_toStartOf="@id/tv_title"
-            app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
 
         <TextView
             android:id="@+id/tv_storageInfoTitle"
@@ -188,7 +177,7 @@
             app:layout_constraintTop_toBottomOf="@id/ll_ultrasonicDetails">
 
             <ImageView
-                android:id="@+id/img_storageItem"
+                android:id="@+id/iv_storageItem"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:scaleType="fitCenter"

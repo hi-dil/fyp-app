@@ -1,7 +1,7 @@
 package com.hidil.fypsmartfoodbank.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Storage(
@@ -10,9 +10,8 @@ data class Storage(
     val itemImage: String = "",
     val item: String = "",
     val itemTypes: String = "",
-    val itemQuantity: String = "",
+    val itemQuantity: Int = 0,
     val maximumCapacity: Int = 0,
-    val expiryDate: String = "",
-    val itemType: String = "",
-    val acessHistory: ArrayList<AccessHistory> = ArrayList()
+    val expiryDate: Long = 0,
+    val accessHistory: ArrayList<AccessHistory> = ArrayList()
 ): Parcelable

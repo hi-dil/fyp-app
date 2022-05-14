@@ -43,13 +43,17 @@ class FoodBankInfoFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                view?.findNavController()?.navigate(
-                    FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToLocationFragment()
-                )
-            }
-        })
+        if (args.fromLocationFragment) {
+            requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    view?.findNavController()?.navigate(
+                        FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToLocationFragment()
+                    )
+                }
+            })
+        }
+
+
         return binding.root
     }
 

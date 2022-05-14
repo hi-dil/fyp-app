@@ -20,15 +20,11 @@ import com.budiyev.android.codescanner.CodeScanner
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
-import com.google.firebase.database.FirebaseDatabase
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.QRScannerFragmentBinding
-import com.hidil.fypsmartfoodbank.model.ArduinoData
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.UnlockOptionsFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.Constants
-import com.hidil.fypsmartfoodbank.viewModel.QRScannerViewModel
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 

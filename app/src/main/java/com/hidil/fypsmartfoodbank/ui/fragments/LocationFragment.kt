@@ -36,6 +36,7 @@ import com.hidil.fypsmartfoodbank.model.MarkerCluster
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
+import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.activity.Login
 import com.hidil.fypsmartfoodbank.ui.adapter.CustomInfoWindowAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -77,7 +78,10 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
 
     override fun onResume() {
         super.onResume()
-        (activity as BeneficiaryMainActivity).showBottomNavigationView()
+        when (activity) {
+            is BeneficiaryMainActivity -> (activity as BeneficiaryMainActivity).showBottomNavigationView()
+            is DonatorActivity -> (activity as DonatorActivity).showBottomNavigationView()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -100,7 +104,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         clusterManager.markerCollection.setOnInfoWindowClickListener { marker ->
             val type = object : TypeToken<Location>() {}.type
             val item: Location = Gson().fromJson(marker.snippet, type)
-            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item.foodBankID)
+            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item.foodBankID, true)
             findNavController().navigate(action)
             (activity as BeneficiaryMainActivity).hideBottomNavigationView()
         }

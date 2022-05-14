@@ -46,7 +46,7 @@ class FavouriteFoodBankListAdapter(
 
         holder.itemView.setOnClickListener { view ->
             view.findNavController().navigate(
-                DashboardFragmentDirections.actionDashboardFragmentToFoodBankInfoFragment(model.foodBankID)
+                DashboardFragmentDirections.actionDashboardFragmentToFoodBankInfoFragment(model.foodBankID, false)
             )
         }
     }

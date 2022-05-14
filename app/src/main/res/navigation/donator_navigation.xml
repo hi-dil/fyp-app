@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/dashboardDonatorFragment">
+    <fragment
+        android:id="@+id/dashboardDonatorFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.donator.DashboardDonatorFragment"
+        android:label="fragment_dashboard_donator"
+        tools:layout="@layout/fragment_dashboard_donator" />
+    <fragment
+        android:id="@+id/locationFragment2"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" />
+    <fragment
+        android:id="@+id/donationRequestFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment"
+        android:label="fragment_donation_request"
+        tools:layout="@layout/fragment_donation_request" >
+        <action
+            android:id="@+id/action_donationRequestFragment_to_donationRequestDetailsFragment"
+            app:destination="@id/donationRequestDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment2"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment"
+        android:label="user_profile_fragment"
+        tools:layout="@layout/user_profile_fragment" />
+    <fragment
+        android:id="@+id/donationRequestDetailsFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestDetailsFragment"
+        android:label="fragment_donation_request_details"
+        tools:layout="@layout/fragment_donation_request_details" />
+</navigation>

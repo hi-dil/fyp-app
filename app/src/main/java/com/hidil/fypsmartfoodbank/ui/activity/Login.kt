@@ -58,9 +58,11 @@ class Login : AppCompatActivity() {
 
     fun loginSuccessful(user: User) {
         hideProgressDialog()
-        Log.i("Name: ", user.name)
-        Log.i("email: ", user.email)
-        val intent = Intent(this, BeneficiaryMainActivity::class.java)
+        val intent = if (user.userRole == "Beneficiary") {
+            Intent(this, BeneficiaryMainActivity::class.java)
+        } else {
+            Intent(this, DonatorActivity::class.java)
+        }
         intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
         startActivity(intent)
         finish()

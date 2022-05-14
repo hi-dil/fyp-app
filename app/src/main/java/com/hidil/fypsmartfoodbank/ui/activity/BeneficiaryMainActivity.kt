@@ -31,7 +31,10 @@ class BeneficiaryMainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.dashboardFragment, R.id.locationFragment, R.id.claimRequestFragment, R.id.userProfileFragment
+                R.id.dashboardFragment,
+                R.id.locationFragment,
+                R.id.claimRequestFragment,
+                R.id.userProfileFragment
             )
         )
 
@@ -54,8 +57,4 @@ class BeneficiaryMainActivity : AppCompatActivity() {
         binding.navView.animate().translationY(0f).duration = 300
         binding.navView.visibility = View.VISIBLE
     }
-
-//    override fun onBackPressed() {
-//        doubleBackToExit()
-//    }
 }

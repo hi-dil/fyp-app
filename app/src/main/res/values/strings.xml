@@ -45,4 +45,5 @@
     <string name="please_click_back_again_to_exit">Please click back again to exit the app</string>
     <string name="err_msg_state">Please enter your state</string>
     <string name="err_msg_city">Please enter your city</string>
+    <string name="title_activity_donator">DonatorActivity</string>
 </resources>

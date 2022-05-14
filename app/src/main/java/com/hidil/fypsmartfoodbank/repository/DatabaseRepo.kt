@@ -14,15 +14,20 @@ import com.hidil.fypsmartfoodbank.model.*
 import com.hidil.fypsmartfoodbank.ui.activity.*
 import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.UserInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.donator.DashboardDonatorFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 
 class DatabaseRepo {
     private val mFirestore = FirebaseFirestore.getInstance()
 
+//  ------------- Claim Request --------------
     fun registerUser(activity: SignUp, user: User) {
         mFirestore.collection(Constants.USERS)
             .document(user.id)
@@ -72,6 +77,7 @@ class DatabaseRepo {
                 )
 
                 editor.putString(Constants.USER_STATE, user.state)
+                editor.putString(Constants.USER_ROLE, user.userRole)
                 editor.apply()
 
 
@@ -110,9 +116,9 @@ class DatabaseRepo {
             }
     }
 
-    fun getActiveRequest(fragment: Fragment){
+    fun getActiveRequest(fragment: Fragment, id: String){
         mFirestore.collection(Constants.REQUEST)
-            .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
+            .whereEqualTo(Constants.USER_ID, id)
             .whereEqualTo(Constants.REQUEST_COMPLETE, false)
             .get()
             .addOnSuccessListener { document ->
@@ -131,6 +137,7 @@ class DatabaseRepo {
                     }
                     is ClaimRequestFragment -> fragment.successRequestFromFirestore(activeRequestList)
                     is ConfirmRequestFragment -> fragment.assignActiveRequest(activeRequestList)
+                    is UserInfoFragment -> fragment.getActiveRequest(activeRequestList)
                 }
             }
     }
@@ -158,9 +165,9 @@ class DatabaseRepo {
             }
     }
 
-    fun getPastRequest(fragment: Fragment){
+    fun getPastRequest(fragment: Fragment, id: String){
         mFirestore.collection(Constants.REQUEST)
-            .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
+            .whereEqualTo(Constants.USER_ID, id)
             .whereEqualTo(Constants.REQUEST_COMPLETE, true)
             .get()
             .addOnSuccessListener { document ->
@@ -177,6 +184,7 @@ class DatabaseRepo {
                     is ClaimRequestFragment -> {
                         fragment.successGetPastRequest(pastRequestList)
                     }
+                    is UserInfoFragment -> fragment.getPastRequest(pastRequestList)
                 }
             }
             .addOnFailureListener { e ->
@@ -231,8 +239,6 @@ class DatabaseRepo {
             .get()
             .addOnSuccessListener { document ->
                 val foodBankRequest: ArrayList<FoodBank> = ArrayList()
-                Log.i("test", document.documents.toString())
-                Log.i("test", id)
                 for (i in document.documents) {
                     val data = i.toObject(FoodBank::class.java)
                     data!!.id = i.id
@@ -246,14 +252,28 @@ class DatabaseRepo {
 
     }
 
+    fun searchStorageDetails(fragment: StorageInfoFragment, id: String) {
+        mFirestore.collection(Constants.STORAGE)
+            .whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { document ->
+                val storageList: ArrayList<Storage> = ArrayList()
+                for(i in document.documents) {
+                    val data = i.toObject(Storage::class.java)
+                    data!!.id = i.id
+                    storageList.add(data)
+                }
+                Log.i("storage", storageList.toString())
+                fragment.getStorageData(storageList[0])
+            }
+    }
+
     fun searchRequest(fragment: ClaimRequestDetailsFragment, id: String) {
         mFirestore.collection(Constants.REQUEST)
             .whereEqualTo(FieldPath.documentId(), id)
             .get()
             .addOnSuccessListener { document ->
                 val requestList: ArrayList<Request> = ArrayList()
-                Log.i("test", id)
-                Log.i("test", document.documents.toString())
                 for (i in document.documents) {
                     val request = i.toObject(Request::class.java)
                     request!!.id = i.id
@@ -266,6 +286,23 @@ class DatabaseRepo {
             }
     }
 
+    fun searchUser(fragment: UserInfoFragment, id: String) {
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo(FieldPath.documentId(), id)
+            .get()
+            .addOnSuccessListener { document ->
+                val usersList: ArrayList<User> = ArrayList()
+
+                for (i in document.documents) {
+                    val user = i.toObject(User::class.java)
+                    user!!.id = i.id
+
+                    usersList.add(user)
+                }
+                fragment.getUserInfo(usersList[0])
+            }
+    }
+
     fun saveRequest(fragment: Fragment, request: Request){
         mFirestore.collection(Constants.REQUEST)
             .document()
@@ -275,6 +312,51 @@ class DatabaseRepo {
             }
             .addOnSuccessListener {
                 Log.e(fragment.javaClass.simpleName, "Error while uploading file to database")
+            }
+    }
+
+
+    // ------------ Donation Request --------------
+    fun getDonationActiveRequest(fragment: Fragment, id: String) {
+        mFirestore.collection(Constants.DONATION_REQUEST)
+            .whereEqualTo(Constants.USER_ID, id)
+            .whereEqualTo(Constants.REQUEST_COMPLETE, false)
+            .get()
+            .addOnSuccessListener { document ->
+                val activeRequestList: ArrayList<DonationRequest> = ArrayList()
+                for (i in document.documents) {
+                    val request = i.toObject(DonationRequest::class.java)
+                    request!!.id = i.id
+
+                    activeRequestList.add(request)
+                }
+
+                when (fragment) {
+                    is DashboardDonatorFragment -> fragment.getActiveRequest(activeRequestList)
+                    is DonationRequestFragment -> fragment.getActiveRequest(activeRequestList)
+                }
+            }
+    }
+
+    fun getPastDonationRequest(fragment: Fragment, id: String){
+        mFirestore.collection(Constants.DONATION_REQUEST)
+            .whereEqualTo(Constants.USER_ID, id)
+            .whereEqualTo(Constants.REQUEST_COMPLETE, true)
+            .get()
+            .addOnSuccessListener { document ->
+                val pastRequestList: ArrayList<DonationRequest> = ArrayList()
+                for (i in document.documents) {
+                    val request = i.toObject(DonationRequest::class.java)
+                    request!!.id = i.id
+                    pastRequestList.add(request)
+                }
+
+                when (fragment) {
+                    is DonationRequestFragment -> fragment.getPastRequest(pastRequestList)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(fragment.javaClass.simpleName, "Error while getting past request " + e.message.toString())
             }
     }
 }

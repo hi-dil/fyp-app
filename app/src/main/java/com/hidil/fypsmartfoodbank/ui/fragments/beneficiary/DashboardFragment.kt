@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
@@ -48,8 +49,7 @@ class DashboardFragment : Fragment() {
         binding.tvUserGreeting.text = "Welcome back $name"
         binding.tvAddress.text = "$city, $state"
         GlideLoader(requireContext()).loadUserPicture(userImage, binding.ivUserProfile)
-//        requireActivity().showProgressDialog()
-        DatabaseRepo().getActiveRequest(this)
+        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
         DatabaseRepo().getFavouriteFoodBank(this)
 
         return root

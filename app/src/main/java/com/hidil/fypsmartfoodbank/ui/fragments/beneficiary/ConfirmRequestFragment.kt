@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.ConfirmRequestFragmentBinding
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ClaimRequestItemListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
@@ -32,7 +33,7 @@ class ConfirmRequestFragment : Fragment() {
     ): View? {
         _binding = ConfirmRequestFragmentBinding.inflate(inflater, container, false)
 
-        DatabaseRepo().getActiveRequest(this)
+        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
 
         binding.tvFbName.text = args.proposedRequest.foodBankName
         binding.tvFbAddress.text = args.proposedRequest.address
