@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/medium_margin_padding"
+    android:layout_marginTop="@dimen/normal_margin_padding"
+    android:layout_marginEnd="@dimen/medium_margin_padding"
+    android:layout_marginBottom="@dimen/small_margin_padding"
+    android:overScrollMode="never"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/normal_margin_padding">
+
+        <ImageView
+            android:id="@+id/iv_itemImage"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_placeholder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_itemName"
+            style="@style/defaultTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginTop="0dp"
+            android:text="Item Name"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toEndOf="@id/iv_itemImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_storageID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="@dimen/normal_margin_padding"
+            android:text="storageID"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@id/tv_itemName"
+            app:layout_constraintTop_toBottomOf="@id/tv_itemName" />
+
+        <TextView
+            android:id="@+id/tv_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border"
+            android:paddingStart="@dimen/small_margin_padding"
+            android:paddingEnd="@dimen/small_margin_padding"
+            android:text="1"
+            android:textColor="@color/primaryText"
+            android:textSize="@dimen/large_text_size"
+            app:layout_constraintBottom_toBottomOf="@id/iv_itemImage"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_itemStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/normal_margin_padding"
+            android:src="@drawable/ic_pending"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_amount"
+            app:layout_constraintEnd_toStartOf="@id/tv_amount"
+            app:layout_constraintTop_toTopOf="@id/tv_amount" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_brand"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Brand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_itemImage">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_datePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/til_brand">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_expiryDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Nearest expiry date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_expiryDate"
+                    android:layout_width="match_parent"
+                    android:drawableRight="@drawable/ic_date"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:layout_height="wrap_content"
+                    android:inputType="datetime" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

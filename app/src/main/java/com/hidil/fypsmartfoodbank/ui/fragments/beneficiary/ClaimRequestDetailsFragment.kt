@@ -22,8 +22,8 @@ import com.hidil.fypsmartfoodbank.viewModel.beneficiary.ClaimRequestDetailsViewM
 
 class ClaimRequestDetailsFragment : Fragment() {
     private var _binding: FragmentClaimRequestDetailsBinding? = null
-    private lateinit var viewModel: ClaimRequestDetailsViewModel
     private val binding get() = _binding!!
+
     private val args by navArgs<ClaimRequestDetailsFragmentArgs>()
     private lateinit var itemList: ArrayList<ItemList>
     private var takeItemButton = false
@@ -32,7 +32,6 @@ class ClaimRequestDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val claimRequestViewModel = ViewModelProvider(this).get(ClaimRequestDetailsViewModel::class.java)
         _binding = FragmentClaimRequestDetailsBinding.inflate(inflater, container, false)
         itemList = args.currentRequest.items
 
@@ -86,7 +85,6 @@ class ClaimRequestDetailsFragment : Fragment() {
         super.onResume()
         if (args.currentRequest.approved && !args.currentRequest.completed && takeItemButton) {
             DatabaseRepo().searchRequest(this, args.currentRequest.id)
-            Toast.makeText(requireContext(), "fragment continued", Toast.LENGTH_SHORT).show()
         }
 
     }

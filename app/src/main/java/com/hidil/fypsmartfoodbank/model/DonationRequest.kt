@@ -17,5 +17,6 @@ data class DonationRequest(
     val items: ArrayList<ItemListDonation> = ArrayList(),
     val address: String = "",
     val lat: String = "",
-    val long: String = ""
+    val long: String = "",
+    val requestImages: ArrayList<String> = ArrayList()
 ) : Parcelable

@@ -59,6 +59,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tv_fbName" />
 
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 km"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_fbName"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/iv_navigate"
             android:layout_width="50dp"

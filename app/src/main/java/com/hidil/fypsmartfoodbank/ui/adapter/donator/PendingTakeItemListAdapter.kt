@@ -1,4 +1,4 @@
-package com.hidil.fypsmartfoodbank.ui.adapter.beneficiary
+package com.hidil.fypsmartfoodbank.ui.adapter.donator
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,16 +9,18 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutItemBinding
-import com.hidil.fypsmartfoodbank.model.ItemList
-import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.model.DonationRequest
+import com.hidil.fypsmartfoodbank.model.ItemListDonation
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestDetailsFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class PendingTakeItemListAdapter(
     private val context: Context,
-    private val list: ArrayList<ItemList>,
-    private val request: Request
+    private val list: ArrayList<ItemListDonation>,
+    private val request: DonationRequest
 ) : RecyclerView.Adapter<PendingTakeItemListAdapter.MyViewHolder>() {
+
     class MyViewHolder(val binding: ListLayoutItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -36,7 +38,7 @@ class PendingTakeItemListAdapter(
         holder.itemView.setOnClickListener { view ->
 
             view.findNavController().navigate(
-            ClaimRequestDetailsFragmentDirections.actionClaimRequestDetailsFragmentToUnlockOptionsFragment(request, position, model))
+                DonationRequestDetailsFragmentDirections.actionDonationRequestDetailsFragmentToUnlockOptionsDonatorFragment(request, position, model))
         }
 
         if (model.completed) {
@@ -51,5 +53,4 @@ class PendingTakeItemListAdapter(
     override fun getItemCount(): Int {
         return list.size
     }
-
 }

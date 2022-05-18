@@ -56,6 +56,7 @@ class ConfirmRequestFragment : Fragment() {
         )
 
         binding.tvTotalAmount.text = totalItems.toString()
+
         binding.tvAddMore.text = "You can add ${20 - totalItems} more items to your request"
 
         binding.rvRequestedItem.layoutManager = LinearLayoutManager(activity)

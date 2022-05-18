@@ -33,6 +33,7 @@ import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentLocationBinding
 import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.model.MarkerCluster
+import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
@@ -40,9 +41,16 @@ import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.activity.Login
 import com.hidil.fypsmartfoodbank.ui.adapter.CustomInfoWindowAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LocationFragment : Fragment(), OnMapReadyCallback,
-    ClusterManager.OnClusterItemClickListener<MarkerCluster>, ClusterManager.OnClusterClickListener<MarkerCluster>{
+    ClusterManager.OnClusterItemClickListener<MarkerCluster>,
+    ClusterManager.OnClusterClickListener<MarkerCluster> {
+
 
     private var _binding: FragmentLocationBinding? = null
     private val binding get() = _binding!!
@@ -104,9 +112,26 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         clusterManager.markerCollection.setOnInfoWindowClickListener { marker ->
             val type = object : TypeToken<Location>() {}.type
             val item: Location = Gson().fromJson(marker.snippet, type)
-            val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(item.foodBankID, true)
-            findNavController().navigate(action)
-            (activity as BeneficiaryMainActivity).hideBottomNavigationView()
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val user = DatabaseRepo().getUserDetailAsync()
+                    requireActivity().runOnUiThread {
+
+                        val action = LocationFragmentDirections.actionLocationFragmentToFoodBankInfoFragment(
+                            user,
+                            item.foodBankID,
+                            true,
+                        )
+                        findNavController().navigate(action)
+                        when (activity) {
+                            is BeneficiaryMainActivity -> (activity as BeneficiaryMainActivity).hideBottomNavigationView()
+                            is DonatorActivity -> (activity as DonatorActivity).hideBottomNavigationView()
+                        }
+                    }
+
+                }
+            }
+
         }
 
         clusterManager.setOnClusterClickListener(this)
@@ -128,7 +153,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         }
         return true
     }
-
 
 
     private fun addMarkers() {
@@ -185,7 +209,6 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
             ).show()
         }
     }
-
 
 
 }

@@ -12,5 +12,6 @@ data class ItemListDonation(
     val storageID: String = "",
     val storageName: String = "",
     val storagePIN: Int = 0,
-    val expiryDate: Long = 0
+    val expiryDate: Long = 0,
+    val itemBrand: String = "",
 ): Parcelable

@@ -1,4 +1,4 @@
-package com.hidil.fypsmartfoodbank.ui.fragments
+package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
 import android.app.AlertDialog
 import android.os.Bundle

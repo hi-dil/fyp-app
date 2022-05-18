@@ -14,6 +14,6 @@ data class User(
     val mobileNumber: String = "",
     val state: String = "",
     val city: String = "",
-    val favouriteFoodBank: ArrayList<FavouriteFoodBank> = ArrayList()
+    var favouriteFoodBank: ArrayList<FavouriteFoodBank> = ArrayList()
 ) : Parcelable
 

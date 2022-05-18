@@ -62,7 +62,8 @@
             app:destination="@id/storageInfoFragment" />
         <argument
             android:name="foodBankID"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue='""' />
         <action
             android:id="@+id/action_foodBankInfoFragment_to_confimRequestFragment"
             app:destination="@id/confimRequestFragment" />
@@ -71,7 +72,11 @@
             app:destination="@id/locationFragment" />
         <argument
             android:name="fromLocationFragment"
-            app:argType="boolean" />
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="userData"
+            app:argType="com.hidil.fypsmartfoodbank.model.User" />
     </fragment>
     <fragment
         android:id="@+id/storageInfoFragment"
@@ -87,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/unlockOptionsFragment"
-        android:name="com.hidil.fypsmartfoodbank.ui.fragments.UnlockOptionsFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.UnlockOptionsFragment"
         android:label="unlock_options_fragment"
         tools:layout="@layout/fragment_unlock_options" >
         <argument
@@ -105,7 +110,7 @@
     </fragment>
     <fragment
         android:id="@+id/QRScannerFragment"
-        android:name="com.hidil.fypsmartfoodbank.ui.fragments.QRScannerFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.QRScannerFragment"
         android:label="q_r_scanner_fragment"
         tools:layout="@layout/fragment_qr_scanner" >
         <argument

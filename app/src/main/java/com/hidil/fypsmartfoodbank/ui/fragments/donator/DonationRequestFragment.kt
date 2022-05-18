@@ -24,8 +24,6 @@ class DonationRequestFragment : Fragment() {
     private var _binding: FragmentDonationRequestBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: DonationRequestViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,7 +37,6 @@ class DonationRequestFragment : Fragment() {
         binding.tvAddress.text = "$city, $state"
 
         DatabaseRepo().getDonationActiveRequest(this, AuthenticationRepo().getCurrentUserID())
-        DatabaseRepo().getPastDonationRequest(this, AuthenticationRepo().getCurrentUserID())
 
         return binding.root
     }
@@ -63,12 +60,7 @@ class DonationRequestFragment : Fragment() {
 
             binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter =
-                ActiveRequestListAdapter(
-                    requireActivity(),
-                    activeRequestList,
-                    this
-                )
+            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
         } else {
             binding.rvActiveRequest.visibility = View.GONE

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
@@ -28,6 +29,8 @@ class DashboardFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var currentLat: Double = 0.0
+    private var currentLong: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,17 +43,45 @@ class DashboardFragment : Fragment() {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val activeRequest = requireActivity().intent.getParcelableExtra<Request>("activeRequest")
+        val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
+
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
-        val name = sp?.getString(Constants.LOGGED_IN_USER, "")!!
-        val userImage = sp.getString(Constants.USER_PROFILE_IMAGE, "")!!
-        val city = sp.getString(Constants.USER_CITY, "")!!
-        val state = sp.getString(Constants.USER_STATE, "")!!
+        val name = sp?.getString(Constants.LOGGED_IN_USER, "")
+        val userImage = sp!!.getString(Constants.USER_PROFILE_IMAGE, "")
+        val city = sp.getString(Constants.USER_CITY, "")
+        val state = sp.getString(Constants.USER_STATE, "")
+        currentLat = sp.getString(Constants.CURRENT_LAT, "")!!.toDouble()
+        currentLong = sp.getString(Constants.CURRENT_LONG, "")!!.toDouble()
 
         binding.tvUserGreeting.text = "Welcome back $name"
         binding.tvAddress.text = "$city, $state"
-        GlideLoader(requireContext()).loadUserPicture(userImage, binding.ivUserProfile)
-        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
-        DatabaseRepo().getFavouriteFoodBank(this)
+        if (userImage != null) {
+            GlideLoader(requireContext()).loadUserPicture(userImage, binding.ivUserProfile)
+        }
+
+        val activeRequestList: ArrayList<Request> = ArrayList()
+        if (activeRequest != null){
+            activeRequestList.add(activeRequest)
+            binding.rvActiveRequest.visibility = View.VISIBLE
+            binding.tvNoActiveRequest.visibility = View.GONE
+
+            binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
+            binding.rvActiveRequest.setHasFixedSize(true)
+            val activeRequestAdapter =
+                ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
+            binding.rvActiveRequest.adapter = activeRequestAdapter
+        } else {
+            binding.rvActiveRequest.visibility = View.GONE
+            binding.tvNoActiveRequest.visibility = View.VISIBLE
+        }
+
+        val favouriteFoodBankList = userDetails!!.favouriteFoodBank
+        successGetFavouriteFoodBank(favouriteFoodBankList)
+
+
+//        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
+//        DatabaseRepo().getFavouriteFoodBank(this)
 
         return root
     }
@@ -62,7 +93,7 @@ class DashboardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(requireActivity() is BeneficiaryMainActivity){
+        if (requireActivity() is BeneficiaryMainActivity) {
             (activity as BeneficiaryMainActivity?)!!.showBottomNavigationView()
         }
     }
@@ -76,7 +107,8 @@ class DashboardFragment : Fragment() {
 
             binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
+            val activeRequestAdapter =
+                ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
         } else {
             binding.rvActiveRequest.visibility = View.GONE
@@ -95,14 +127,25 @@ class DashboardFragment : Fragment() {
             binding.rvFavouriteFoodBank.setHasFixedSize(true)
 
             var maxSize = 0
-            val compactFavouriteFoodBankList: ArrayList<FavouriteFoodBank> = ArrayList()
+            var compactFavouriteFoodBankList: ArrayList<FavouriteFoodBank> = ArrayList()
 
-            while (maxSize < 3) {
-                compactFavouriteFoodBankList.add(favouriteFoodBankList[maxSize])
-                maxSize++
+            if (favouriteFoodBankList.size > 3) {
+                while (maxSize < 3) {
+                    compactFavouriteFoodBankList.add(favouriteFoodBankList[maxSize])
+                    maxSize++
+                }
+            } else {
+                compactFavouriteFoodBankList = favouriteFoodBankList
             }
 
-            val favouriteFoodBankAdapter = FavouriteFoodBankListAdapter(requireActivity(), compactFavouriteFoodBankList, this)
+
+            val favouriteFoodBankAdapter = FavouriteFoodBankListAdapter(
+                requireActivity(),
+                compactFavouriteFoodBankList,
+                this,
+                currentLat,
+                currentLong
+            )
             binding.rvFavouriteFoodBank.adapter = favouriteFoodBankAdapter
         } else {
             binding.rvFavouriteFoodBank.visibility = View.GONE

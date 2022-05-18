@@ -32,7 +32,7 @@ class DonatorActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.dashboardDonatorFragment,
-                R.id.locationFragment2,
+                R.id.locationFragment,
                 R.id.donationRequestFragment,
                 R.id.userProfileFragment2
             )
