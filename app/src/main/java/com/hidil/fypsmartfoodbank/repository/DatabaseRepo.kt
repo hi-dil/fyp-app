@@ -82,12 +82,6 @@ class DatabaseRepo {
                     user.city
                 )
 
-                if (user.userRole.lowercase() == "beneficiary") {
-                    editor.putBoolean(Constants.IS_BENEFICIARY, true)
-                } else {
-                    editor.putBoolean(Constants.IS_BENEFICIARY, false)
-                }
-
                 editor.putString(Constants.USER_STATE, user.state)
                 editor.putString(Constants.USER_ROLE, user.userRole)
                 editor.apply()
@@ -266,7 +260,6 @@ class DatabaseRepo {
                 }
 //                fragment.successLocation(dataChunk[0].location)
 
-                Log.i("datachunk", dataChunk[0].location.toString())
                 val sharedPreferences = activity.getSharedPreferences(
                     Constants.APP_PREF,
                     Context.MODE_PRIVATE
@@ -277,6 +270,22 @@ class DatabaseRepo {
                 editor.putString(Constants.LOCATION_ARRAYLIST, location)
                 editor.apply()
             }
+    }
+
+    suspend fun getLocationAsync(): ArrayList<Location> {
+        val dataChunk: ArrayList<DataChunk> = ArrayList()
+        return withContext(Dispatchers.IO) {
+            val query = mFirestore.collection("dataChunk")
+                .get()
+                .await()
+
+            for (i in query.documents) {
+                val data = i.toObject(DataChunk::class.java)
+                dataChunk.add(data!!)
+            }
+
+            return@withContext dataChunk[0].location
+        }
     }
 
     fun searchFoodBankDetails(fragment: FoodBankInfoFragment, id: String) {
@@ -406,7 +415,12 @@ class DatabaseRepo {
                 activeRequest.add(request)
             }
 
-            return@withContext activeRequest[0]
+            if (activeRequest.size > 0) {
+                return@withContext activeRequest[0]
+            } else {
+                return@withContext DonationRequest()
+            }
+
         }
     }
 

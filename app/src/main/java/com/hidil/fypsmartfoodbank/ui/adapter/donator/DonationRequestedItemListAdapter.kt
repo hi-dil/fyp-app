@@ -32,32 +32,45 @@ class DonationRequestedItemListAdapter(
         holder.binding.tvItemName.text = model.itemName
         holder.binding.tvStorageID.text = "FoodBank StorageCompact ID - ${model.storageName}"
         holder.binding.tvAmount.text = model.itemQuantity.toString()
+        holder.binding.etBrand.setText(model.itemBrand)
 
-        holder.binding.etExpiryDate.setOnClickListener {
-            // Initiation date picker with
-            // MaterialDatePicker.Builder.datePicker()
-            // and building it using build()
-            val datePicker = MaterialDatePicker.Builder.datePicker().build()
-            datePicker.show(fragment.requireActivity().supportFragmentManager, "DatePicker")
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
 
-            // Setting up the event for when ok is clicked
-            datePicker.addOnPositiveButtonClickListener {
-                // formatting date in dd-mm-yyyy format.
-                val dateFormatter = SimpleDateFormat("dd MMMM yyyy")
-                val date = dateFormatter.format(Date(it))
-                holder.binding.etExpiryDate.setText(date)
-            }
+        calendar.timeInMillis = model.expiryDate
+        val date = formatter.format(calendar.time)
 
-            // Setting up the event for when cancelled is clicked
-            datePicker.addOnNegativeButtonClickListener {
-                Toast.makeText(context, "${datePicker.headerText} is cancelled", Toast.LENGTH_LONG).show()
-            }
+        holder.binding.etExpiryDate.setText(date)
 
-            // Setting up the event for when back button is pressed
-            datePicker.addOnCancelListener {
-                Toast.makeText(context, "Date Picker Cancelled", Toast.LENGTH_LONG).show()
-            }
-        }
+        holder.binding.etBrand.isEnabled = false
+        holder.binding.etExpiryDate.isEnabled = false
+
+//        holder.binding.etExpiryDate.setOnClickListener {
+//            // Initiation date picker with
+//            // MaterialDatePicker.Builder.datePicker()
+//            // and building it using build()
+//            val datePicker = MaterialDatePicker.Builder.datePicker().build()
+//            datePicker.show(fragment.requireActivity().supportFragmentManager, "DatePicker")
+//
+//            // Setting up the event for when ok is clicked
+//            datePicker.addOnPositiveButtonClickListener {
+//                // formatting date in dd-mm-yyyy format.
+//                val dateFormatter = SimpleDateFormat("dd MMMM yyyy")
+//                val date = dateFormatter.format(Date(it))
+//                holder.binding.etExpiryDate.setText(date)
+//            }
+//
+//            // Setting up the event for when cancelled is clicked
+//            datePicker.addOnNegativeButtonClickListener {
+//                Toast.makeText(context, "${datePicker.headerText} is cancelled", Toast.LENGTH_LONG).show()
+//            }
+//
+//            // Setting up the event for when back button is pressed
+//            datePicker.addOnCancelListener {
+//                Toast.makeText(context, "Date Picker Cancelled", Toast.LENGTH_LONG).show()
+//            }
+//        }
     }
 
     override fun getItemCount(): Int {

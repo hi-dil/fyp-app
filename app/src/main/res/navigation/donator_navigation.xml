@@ -13,7 +13,7 @@
             android:id="@+id/action_dashboardDonatorFragment_to_donationRequestDetailsFragment"
             app:destination="@id/donationRequestDetailsFragment" />
         <action
-            android:id="@+id/action_dashboardDonatorFragment_to_foodBankInfoFragment3"
+            android:id="@+id/action_dashboardFragment_to_foodBankInfoFragment"
             app:destination="@id/foodBankInfoFragment3" />
     </fragment>
     <fragment

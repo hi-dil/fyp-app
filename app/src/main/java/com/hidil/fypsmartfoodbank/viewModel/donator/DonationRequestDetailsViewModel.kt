@@ -1,4 +1,4 @@
-package com.hidil.fypsmartfoodbank.ui.fragments.donator
+package com.hidil.fypsmartfoodbank.viewModel.donator
 
 import androidx.lifecycle.ViewModel
 

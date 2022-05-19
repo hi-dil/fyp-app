@@ -1,18 +1,16 @@
 package com.hidil.fypsmartfoodbank.ui.adapter.donator
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutImageBinding
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
-class ShowImagesItemListAdapter(
+class ShowImageLinkAdapter(
     private val context: Context,
-    private val list: ArrayList<Uri>
-) : RecyclerView.Adapter<ShowImagesItemListAdapter.MyViewHolder>() {
+    private val list: ArrayList<String>
+): RecyclerView.Adapter<ShowImageLinkAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: ListLayoutImageBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -23,7 +21,7 @@ class ShowImagesItemListAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model = list[position]
-        GlideLoader(context).loadUserPicture(model, holder.binding.ivImage)
+        GlideLoader(context).loadFoodBankPicture(model, holder.binding.ivImage)
     }
 
     override fun getItemCount(): Int {

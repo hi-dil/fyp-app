@@ -62,7 +62,7 @@ class LocationFragment : Fragment(), OnMapReadyCallback,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLocationBinding.inflate(inflater, container, false)
 
         val sharedPreferences = requireActivity().getSharedPreferences(

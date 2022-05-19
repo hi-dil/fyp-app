@@ -8,7 +8,7 @@ import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.QRScannerFragmentDire
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.QRScannerDonatorFragment
 
 class RealtimeDBRepo {
-    val mDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app")
+    private val mDatabase = FirebaseDatabase.getInstance("https://smart-foodbank-default-rtdb.asia-southeast1.firebasedatabase.app")
 
     fun unlockStorage(fragment: Fragment, storageID: String) {
         val ref = mDatabase.getReference(storageID)

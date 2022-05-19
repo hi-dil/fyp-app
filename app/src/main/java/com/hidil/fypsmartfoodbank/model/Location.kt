@@ -11,5 +11,6 @@ data class Location(
     val foodBankImage: String = "",
     val foodBankName: String = "",
     val lat: String = "",
-    val long: String = ""
+    val long: String = "",
+    var distance: Double = 0.0
 ): Parcelable

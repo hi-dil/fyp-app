@@ -14,6 +14,7 @@ import com.hidil.fypsmartfoodbank.databinding.FragmentDonationRequestDetailsBind
 import com.hidil.fypsmartfoodbank.model.ItemListDonation
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.DonationRequestedItemListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.PendingTakeItemListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.donator.ShowImageLinkAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class DonationRequestDetailsFragment : Fragment() {
@@ -50,6 +51,11 @@ class DonationRequestDetailsFragment : Fragment() {
         binding.btnUserAction.setOnClickListener {
             Toast.makeText(requireContext(), "You must wait for approval before donate the food bank items", Toast.LENGTH_SHORT).show()
         }
+
+        binding.rvRequestImage.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvRequestImage.setHasFixedSize(true)
+        val adapter = ShowImageLinkAdapter(requireContext(), args.currentRequest.requestImages)
+        binding.rvRequestImage.adapter = adapter
 
         if (args.currentRequest.approved) {
             binding.tvProgress.text = "verified"

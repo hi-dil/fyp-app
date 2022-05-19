@@ -10,13 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
+import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.model.User
-import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
-import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
-import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.FavouriteFoodBankListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.FavouriteFoodBankListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.NearbyFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.beneficiary.DashboardViewModel
@@ -45,6 +45,7 @@ class DashboardFragment : Fragment() {
 
         val activeRequest = requireActivity().intent.getParcelableExtra<Request>("activeRequest")
         val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
+        val locationList = requireActivity().intent.getParcelableArrayListExtra<Location>("locationList")
 
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val name = sp?.getString(Constants.LOGGED_IN_USER, "")
@@ -74,6 +75,10 @@ class DashboardFragment : Fragment() {
         } else {
             binding.rvActiveRequest.visibility = View.GONE
             binding.tvNoActiveRequest.visibility = View.VISIBLE
+        }
+
+        if (locationList != null) {
+            attachNearbyFoodBank(locationList)
         }
 
         val favouriteFoodBankList = userDetails!!.favouriteFoodBank
@@ -152,5 +157,26 @@ class DashboardFragment : Fragment() {
             binding.tvNoFavouriteFoodBank.visibility = View.VISIBLE
             binding.tvViewAllFavouriteFoodBank.visibility = View.GONE
         }
+    }
+
+    private fun attachNearbyFoodBank(locationList: ArrayList<Location>) {
+        binding.rvNearbyFoodBank.layoutManager = LinearLayoutManager(activity)
+        binding.rvNearbyFoodBank.setHasFixedSize(true)
+
+        var maxSize = 0
+        var compactLocationList: ArrayList<Location> = ArrayList()
+
+        if (locationList.size > 3) {
+            while (maxSize < 3) {
+                compactLocationList.add(locationList[maxSize])
+                maxSize++
+            }
+        } else {
+            compactLocationList = locationList
+        }
+
+        val nearbyFoodBankAdapter =
+            NearbyFoodBankListAdapter(requireContext(), compactLocationList, this)
+        binding.rvNearbyFoodBank.adapter = nearbyFoodBankAdapter
     }
 }
