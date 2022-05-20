@@ -13,6 +13,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -50,6 +52,8 @@ class ConfirmDonationRequestFragment : Fragment() {
 
     private var itemListDonation: ArrayList<ItemListDonation> = ArrayList()
     private lateinit var mProgressDialog: Dialog
+    private lateinit var mAlertDialog: Dialog
+    private lateinit var alertDialogView: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,6 +71,16 @@ class ConfirmDonationRequestFragment : Fragment() {
             mapIntent.setPackage("com.google.android.apps.maps")
             requireActivity().startActivity(mapIntent)
         }
+
+        mAlertDialog = Dialog(requireContext())
+        mAlertDialog.setContentView(R.layout.alert_dialog_complete_request)
+        mAlertDialog.setCancelable(false)
+        mAlertDialog.setCanceledOnTouchOutside(false)
+        mAlertDialog.window?.setBackgroundDrawable(
+            ColorDrawable(Color.TRANSPARENT)
+        )
+
+        alertDialogView = inflater.inflate(R.layout.alert_dialog_complete_request, container, false)
 
         var totalItems = 0
         for (i in args.proposedRequest.items) {
@@ -236,9 +250,20 @@ class ConfirmDonationRequestFragment : Fragment() {
             mProgressDialog.show()
 
             CoroutineScope(IO).launch {
-                withContext(Dispatchers.Default) { uploadImages() }
-                Log.i("size", "uri: ${imagesURI.size} url: ${imageURL.size}")
-                uploadRequest()
+                val activeRequest = DatabaseRepo().getActiveRequestDonatorAsync()
+
+                if (activeRequest.size > 1) {
+                    mProgressDialog.dismiss()
+                    requireActivity().runOnUiThread {
+                        mAlertDialog.show()
+                    }
+                    requireActivity().findViewById<Button>(R.id.btn_okadcr).setOnClickListener {
+                        mAlertDialog.dismiss()
+                    }
+                } else {
+                    withContext(Dispatchers.Default) { uploadImages() }
+                    uploadRequest()
+                }
             }
         }
     }
@@ -259,7 +284,11 @@ class ConfirmDonationRequestFragment : Fragment() {
         if (imagesURI.size == imageURL.size) {
             mProgressDialog.dismiss()
             requireActivity().runOnUiThread {
-                Toast.makeText(requireContext(), "Successfully uploaded all the item", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Successfully uploaded all the item",
+                    Toast.LENGTH_LONG
+                ).show()
             }
             currentRequest = DonationRequest(
                 args.proposedRequest.id,
@@ -286,8 +315,10 @@ class ConfirmDonationRequestFragment : Fragment() {
         } else {
             mProgressDialog.dismiss()
             requireActivity().runOnUiThread {
-                Toast.makeText(requireContext(), "Failed uploading the files", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Failed uploading the files", Toast.LENGTH_LONG)
+                    .show()
             }
+
         }
     }
 

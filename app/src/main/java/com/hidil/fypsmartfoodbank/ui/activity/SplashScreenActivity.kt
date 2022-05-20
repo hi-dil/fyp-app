@@ -46,7 +46,6 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         val sp = getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val userRole = sp.getString(Constants.USER_ROLE, "")
 
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         if (hasLocationPermission()) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
@@ -64,7 +63,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
 
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
-                if (userRole != null) {
+                if (userRole != null && userRole.isNotEmpty()) {
                     val location = DatabaseRepo().getLocationAsync()
                     val sortList = sortLocation(location)
                     val locationList = ArrayList(sortList)
@@ -94,7 +93,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                                 this@SplashScreenActivity,
                                 DonatorActivity::class.java
                             )
-                            intent.putExtra("activeRequest", activeRequest)
+                            intent.putExtra("activeRequest", activeRequest[0])
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)

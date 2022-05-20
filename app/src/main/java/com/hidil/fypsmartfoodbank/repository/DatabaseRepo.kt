@@ -179,29 +179,6 @@ class DatabaseRepo {
 
     }
 
-    fun getFavouriteFoodBank(fragment: Fragment) {
-        mFirestore.collection(Constants.USERS)
-            .whereEqualTo("id", AuthenticationRepo().getCurrentUserID())
-            .get()
-            .addOnSuccessListener { document ->
-                Log.e("Favourite FoodBank", document.documents.toString())
-                val userDetails: ArrayList<User> = ArrayList()
-                for (i in document.documents) {
-                    val user = i.toObject(User::class.java)
-                    user!!.id = i.id
-
-                    userDetails.add(user)
-                }
-
-                val favouriteFoodBank = userDetails[0].favouriteFoodBank
-
-
-                when (fragment) {
-                    is DashboardFragment -> fragment.successGetFavouriteFoodBank(favouriteFoodBank)
-                }
-            }
-    }
-
     fun getPastRequest(fragment: Fragment, id: String) {
         mFirestore.collection(Constants.REQUEST)
             .whereEqualTo(Constants.USER_ID, id)
@@ -229,22 +206,6 @@ class DatabaseRepo {
                     fragment.javaClass.simpleName,
                     "Error while getting past request " + e.message.toString()
                 )
-            }
-    }
-
-    fun getFoodBankDetails(fragment: Fragment) {
-        mFirestore.collection(Constants.FOODBANK)
-            .get()
-            .addOnSuccessListener { document ->
-                val foodBankDetails: ArrayList<FoodBank> = ArrayList()
-
-                for (i in document.documents) {
-                    val details = i.toObject(FoodBank::class.java)
-                    details!!.id = i.id
-
-                    foodBankDetails.add(details)
-                }
-
             }
     }
 
@@ -398,7 +359,7 @@ class DatabaseRepo {
             }
     }
 
-    suspend fun getActiveRequestDonatorAsync(): DonationRequest {
+    suspend fun getActiveRequestDonatorAsync(): ArrayList<DonationRequest> {
         return withContext(Dispatchers.IO) {
             val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
                 .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
@@ -415,11 +376,8 @@ class DatabaseRepo {
                 activeRequest.add(request)
             }
 
-            if (activeRequest.size > 0) {
-                return@withContext activeRequest[0]
-            } else {
-                return@withContext DonationRequest()
-            }
+            return@withContext activeRequest
+
 
         }
     }
