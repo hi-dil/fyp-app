@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_navigation"
+    app:startDestination="@id/dashboardAdminFragment">
+
+    <fragment
+        android:id="@+id/dashboardAdminFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.DashboardAdminFragment"
+        android:label="fragment_dashboard_admin"
+        tools:layout="@layout/fragment_dashboard_admin" >
+        <action
+            android:id="@+id/action_dashboardAdminFragment_to_detailVerificationClaimFragment"
+            app:destination="@id/detailVerificationClaimFragment" />
+        <action
+            android:id="@+id/action_dashboardAdminFragment_to_detailVerificationDonationFragment"
+            app:destination="@id/detailVerificationDonationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestVerificationFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.RequestVerificationFragment"
+        android:label="fragment_request_verification_claim"
+        tools:layout="@layout/fragment_request_verification_claim" />
+    <fragment
+        android:id="@+id/locationFragment3"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
+        android:label="fragment_location"
+        tools:layout="@layout/fragment_location" />
+    <fragment
+        android:id="@+id/userProfileFragment3"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment"
+        android:label="fragment_user_profile"
+        tools:layout="@layout/fragment_user_profile" />
+    <fragment
+        android:id="@+id/detailVerificationClaimFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.DetailVerificationClaimFragment"
+        android:label="fragment_detail_verification_claim"
+        tools:layout="@layout/fragment_detail_verification_claim" >
+        <argument
+            android:name="currentRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <action
+            android:id="@+id/action_detailVerificationClaimFragment_to_dashboardAdminFragment"
+            app:destination="@id/dashboardAdminFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailVerificationDonationFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.DetailVerificationDonationFragment"
+        android:label="fragment_detail_verification_donation"
+        tools:layout="@layout/fragment_detail_verification_donation" >
+        <argument
+            android:name="currentRequest"
+            app:argType="com.hidil.fypsmartfoodbank.model.DonationRequest" />
+        <action
+            android:id="@+id/action_detailVerificationDonationFragment_to_dashboardAdminFragment"
+            app:destination="@id/dashboardAdminFragment" />
+    </fragment>
+</navigation>

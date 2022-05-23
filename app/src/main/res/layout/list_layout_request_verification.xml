@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/normal_margin_padding"
+    android:layout_marginBottom="@dimen/small_margin_padding"
+    android:overScrollMode="never"
+    app:cardCornerRadius="10dp"
+    android:layout_marginStart="@dimen/small_margin_padding"
+    android:layout_marginEnd="@dimen/small_margin_padding"
+    app:cardElevation="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/normal_margin_padding">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="75dp"
+            android:id="@+id/iv_userImage"
+            android:layout_height="75dp"
+            android:src="@drawable/def_profile"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <TextView
+            android:id="@+id/tv_userName"
+            style="@style/defaultTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/normal_margin_padding"
+            android:layout_marginTop="0dp"
+            android:text="Name"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.084"
+            app:layout_constraintStart_toEndOf="@id/iv_userImage"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_fbName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Foodbank Name"
+            android:textColor="@color/secondaryText"
+            app:layout_constraintStart_toStartOf="@id/tv_userName"
+            app:layout_constraintTop_toBottomOf="@id/tv_userName" />
+
+        <TextView
+            android:id="@+id/tv_itemAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Amount"
+            android:textColor="@color/secondaryText"
+            app:layout_constraintStart_toStartOf="@id/tv_userName"
+            app:layout_constraintTop_toBottomOf="@id/tv_fbName" />
+
+        <TextView
+            android:id="@+id/tv_requestDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request Date - 1/1/2022"
+            android:textColor="@color/secondaryText"
+            app:layout_constraintStart_toStartOf="@id/tv_userName"
+            app:layout_constraintTop_toBottomOf="@id/tv_itemAmount" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -43,6 +43,7 @@ object Constants {
     const val FOODBANK: String = "foodBank"
     const val STORAGE: String = "foodBankStorage"
     const val REQUEST_COMPLETE: String = "completed"
+    const val REQUEST_APPROVED: String = "approved"
 
     fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(

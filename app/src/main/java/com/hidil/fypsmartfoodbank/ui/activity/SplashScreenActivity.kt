@@ -77,7 +77,9 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                                 this@SplashScreenActivity,
                                 BeneficiaryMainActivity::class.java
                             )
-                            intent.putExtra("activeRequest", activeRequest)
+                            if (activeRequest.size > 0) {
+                                intent.putExtra("activeRequest", activeRequest[0])
+                            }
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)
@@ -93,13 +95,30 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                                 this@SplashScreenActivity,
                                 DonatorActivity::class.java
                             )
-                            intent.putExtra("activeRequest", activeRequest[0])
+                            if (activeRequest.size > 0) {
+                                intent.putExtra("activeRequest", activeRequest[0])
+                            }
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)
                         }
 
                         finish()
+                    } else if (userRole.lowercase() == "admin") {
+                        val oldestDonationRequest = DatabaseRepo().getOldDonationRequest()
+                        val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest()
+
+                        Log.i("request", oldestClaimRequest.toString())
+                        Log.i("request", oldestDonationRequest.toString())
+                        if (currentUserID.isNotEmpty()) {
+                            val intent =
+                                Intent(this@SplashScreenActivity, AdminMainActivity::class.java)
+                            intent.putExtra("claimRequest", oldestClaimRequest)
+                            intent.putExtra("donationRequest", oldestDonationRequest)
+                            startActivity(intent)
+                        }
+                        finish()
+
                     }
                 } else {
                     startActivity(Intent(this@SplashScreenActivity, Login::class.java))

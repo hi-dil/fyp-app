@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.admin.RequestVerificationFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/circle_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/verylarge_margin_padding"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Request Verification"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/title_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="@style/defaultTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin_padding"
+                    android:text="Lorong Juara 2B, Taman Sukma, Jalan Sultan Tengah, 93050 Kuching, Sarawak." />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Request Form"
+                android:textColor="@color/primaryColor"
+                android:textStyle="bold"
+                android:textSize="@dimen/verylarge_text_size"
+                android:layout_marginStart="@dimen/verylarge_margin_padding"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_marginStart="@dimen/verylarge_margin_padding"
+                android:layout_marginEnd="@dimen/verylarge_margin_padding"
+                android:layout_height="wrap_content"
+                android:hint="Request"
+                android:overScrollMode="never">
+
+                <AutoCompleteTextView
+                    android:id="@+id/ac_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/verylarge_margin_padding"
+                android:layout_marginTop="@dimen/verylarge_margin_padding"
+                android:layout_marginEnd="@dimen/verylarge_margin_padding"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/high_voltage_sign" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Active Request"
+                    android:textColor="@color/primaryColor"
+                    android:textSize="@dimen/medium_text_size"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_activeClaimRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:overScrollMode="never"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_noActiveClaimRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:gravity="center"
+                android:text="Sorry, no active request for claim request"
+                android:textColor="@color/secondaryText"
+                android:textSize="@dimen/normal_text_size" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_activeDonationRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin_padding"
+                android:overScrollMode="never"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_noActiveDonationRequests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin_padding"
+                android:gravity="center"
+                android:text="Sorry, no active request for claim request"
+                android:textColor="@color/secondaryText"
+                android:visibility="gone"
+                android:textSize="@dimen/normal_text_size" />
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

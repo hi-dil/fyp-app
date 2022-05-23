@@ -1,5 +1,6 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,7 @@ import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ClaimRequestItemListAdapter
+import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.ConfimRequestViewModel
 
@@ -65,6 +67,11 @@ class ConfirmRequestFragment : Fragment() {
             ClaimRequestItemListAdapter(requireActivity(), args.proposedRequest.items, this)
         binding.rvRequestedItem.adapter = itemListAdapter
 
+        val sp = requireActivity().getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+        val name = sp.getString(Constants.LOGGED_IN_USER, "")
+        val userImage = sp.getString(Constants.USER_PROFILE_IMAGE, "")
+        val mobileNumber = sp.getString(Constants.MOBILE_NUMBER, "")
+
         binding.btnConfirmRequest.setOnClickListener {
             if (activeRequest.size > 0) {
                 Toast.makeText(
@@ -83,12 +90,14 @@ class ConfirmRequestFragment : Fragment() {
                     requestDate = System.currentTimeMillis(),
                     lastUpdate = System.currentTimeMillis(),
                     userID = args.proposedRequest.userID,
+                    userImage.toString(),
+                    name.toString(),
+                    mobileNumber.toString(),
                     items = args.proposedRequest.items,
                     address = args.proposedRequest.address,
                     lat = args.proposedRequest.lat,
                     long = args.proposedRequest.long
                 )
-
                 DatabaseRepo().saveRequest(this, request)
             }
 

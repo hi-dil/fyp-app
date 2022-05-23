@@ -180,6 +180,9 @@ class FoodBankInfoFragment : Fragment() {
                     0,
                     0,
                     AuthenticationRepo().getCurrentUserID(),
+                    "",
+                    "",
+                    "",
                     requestItemList,
                     mFoodBank.address,
                     mFoodBank.lat,
@@ -221,6 +224,7 @@ class FoodBankInfoFragment : Fragment() {
         } else {
             itemAmount[position]--
         }
+        totalItems = 0
 
         for (i in itemAmount) {
             totalItems += i

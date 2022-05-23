@@ -58,13 +58,22 @@ class Login : AppCompatActivity() {
 
     fun loginSuccessful(user: User) {
         hideProgressDialog()
-        val intent = if (user.userRole == "Beneficiary") {
-            Intent(this, BeneficiaryMainActivity::class.java)
-        } else {
-            Intent(this, DonatorActivity::class.java)
+//        val intent = if (user.userRole == "Beneficiary") {
+//            Intent(this, BeneficiaryMainActivity::class.java)
+//        } else {
+//            Intent(this, DonatorActivity::class.java)
+//        }
+        if (user.userRole.lowercase() == "beneficiary" || user.userRole.lowercase() == "donator" || user.userRole.lowercase() == "admin") {
+            val intent = Intent(this, SplashScreenActivity::class.java)
+            startActivity(intent)
+            finish()
         }
-        intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
-        startActivity(intent)
-        finish()
+
+//        val intent = if (user.userRole.lowercase() == "beneficiary" || user.userRole.lowercase() == "donator") {
+//            Intent(this, SplashScreenActivity::class.java)
+//        }
+//       intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
+//        startActivity(intent)
+//        finish()
     }
 }

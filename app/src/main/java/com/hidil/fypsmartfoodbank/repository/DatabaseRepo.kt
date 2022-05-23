@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.model.*
@@ -23,7 +23,6 @@ import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFr
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.donator.DashboardDonatorFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -80,6 +79,11 @@ class DatabaseRepo {
                 editor.putString(
                     Constants.USER_CITY,
                     user.city
+                )
+
+                editor.putString(
+                    Constants.MOBILE_NUMBER,
+                    user.mobileNumber
                 )
 
                 editor.putString(Constants.USER_STATE, user.state)
@@ -160,7 +164,7 @@ class DatabaseRepo {
             }
     }
 
-    suspend fun getActiveRequestAsync(): Request {
+    suspend fun getActiveRequestAsync(): ArrayList<Request> {
         return withContext(Dispatchers.IO) {
             val querySnapshot = mFirestore.collection(Constants.REQUEST)
                 .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
@@ -174,7 +178,7 @@ class DatabaseRepo {
                 request!!.id = i.id
                 activeRequest.add(request)
             }
-            return@withContext activeRequest[0]
+            return@withContext activeRequest
         }
 
     }
@@ -262,7 +266,7 @@ class DatabaseRepo {
 
                     foodBankRequest.add(data)
                 }
-                if (foodBankRequest.size> 0) {
+                if (foodBankRequest.size > 0) {
                     fragment.getFoodBankData(foodBankRequest[0])
                 }
             }
@@ -368,7 +372,6 @@ class DatabaseRepo {
                 .await()
 
 
-
             val activeRequest: ArrayList<DonationRequest> = ArrayList()
             for (i in querySnapshot.documents) {
                 val request = i.toObject(DonationRequest::class.java)
@@ -433,13 +436,98 @@ class DatabaseRepo {
     }
 
     fun updateUserProfile(fragment: Fragment, user: User) {
-        Log.i("test", "sending data")
         mFirestore.collection(Constants.USERS)
             .document(AuthenticationRepo().getCurrentUserID())
             .set(user)
             .addOnSuccessListener {
                 Log.i("test", "success update profile")
             }
+    }
+
+    // admin
+
+    suspend fun getOldestClaimRequest(): ArrayList<Request> {
+        return withContext(Dispatchers.IO) {
+            val querySnapshot = mFirestore.collection(Constants.REQUEST)
+                .whereEqualTo(Constants.REQUEST_APPROVED, false)
+                .orderBy("requestDate", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .await()
+
+            val claimRequest: ArrayList<Request> = ArrayList()
+            for (i in querySnapshot.documents) {
+                val request = i.toObject(Request::class.java)
+                request!!.id = i.id
+                claimRequest.add(request)
+            }
+
+            return@withContext claimRequest
+        }
+    }
+
+    suspend fun getOldDonationRequest(): ArrayList<DonationRequest> {
+        return withContext(Dispatchers.IO) {
+            val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
+                .whereEqualTo(Constants.REQUEST_APPROVED, false)
+                .orderBy("requestDate", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .await()
+
+            val donationRequest: ArrayList<DonationRequest> = ArrayList()
+            for (i in querySnapshot.documents) {
+                val request = i.toObject(DonationRequest::class.java)
+                request!!.id = i.id
+                donationRequest.add(request)
+            }
+
+            return@withContext donationRequest
+        }
+    }
+
+    suspend fun updateUserDonationRequest(
+        currentRequest: DonationRequest,
+        fragment: Fragment
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+            mFirestore.collection(Constants.DONATION_REQUEST)
+                .document(currentRequest.id)
+                .set(currentRequest)
+                .addOnSuccessListener { success = true }
+                .addOnFailureListener {
+                    Log.e(
+                        fragment.javaClass.simpleName.toString(),
+                        it.message.toString()
+                    )
+                }
+                .await()
+
+            return@withContext success
+        }
+    }
+
+    suspend fun updateUserClaimRequest(
+        currentRequest: Request,
+        fragment: Fragment
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+            mFirestore.collection(Constants.REQUEST)
+                .document(currentRequest.id)
+                .set(currentRequest)
+                .addOnSuccessListener { success = true }
+                .addOnFailureListener {
+                    Log.e(
+                        fragment.javaClass.simpleName.toString(),
+                        it.message.toString()
+                    )
+                }
+                .await()
+
+            return@withContext success
+        }
     }
 
 }

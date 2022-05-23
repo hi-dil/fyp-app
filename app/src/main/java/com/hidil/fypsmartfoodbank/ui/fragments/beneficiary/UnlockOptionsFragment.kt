@@ -57,7 +57,7 @@ class UnlockOptionsFragment : Fragment() {
 
             val dialog = builder.create()
             views.findViewById<TextView>(R.id.tv_PinNumber).text =
-                args.currentItemlistRequest.storagePIN.toString()
+                args.currentItemlistRequest.storagePIN
             dialog.show()
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 

@@ -3,6 +3,7 @@ package com.hidil.fypsmartfoodbank.ui.fragments.donator
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -53,7 +54,6 @@ class ConfirmDonationRequestFragment : Fragment() {
     private var itemListDonation: ArrayList<ItemListDonation> = ArrayList()
     private lateinit var mProgressDialog: Dialog
     private lateinit var mAlertDialog: Dialog
-    private lateinit var alertDialogView: View
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,7 +80,6 @@ class ConfirmDonationRequestFragment : Fragment() {
             ColorDrawable(Color.TRANSPARENT)
         )
 
-        alertDialogView = inflater.inflate(R.layout.alert_dialog_complete_request, container, false)
 
         var totalItems = 0
         for (i in args.proposedRequest.items) {
@@ -135,6 +134,12 @@ class ConfirmDonationRequestFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        mAlertDialogText = view.findViewById(R.id.tv_textadcr)
+//        mAlertDialogButton = view.findViewById(R.id.btn_okadcr)
     }
 
 
@@ -252,18 +257,19 @@ class ConfirmDonationRequestFragment : Fragment() {
             CoroutineScope(IO).launch {
                 val activeRequest = DatabaseRepo().getActiveRequestDonatorAsync()
 
-                if (activeRequest.size > 1) {
-                    mProgressDialog.dismiss()
-                    requireActivity().runOnUiThread {
-                        mAlertDialog.show()
-                    }
-                    requireActivity().findViewById<Button>(R.id.btn_okadcr).setOnClickListener {
-                        mAlertDialog.dismiss()
-                    }
-                } else {
+//                if (activeRequest.size > 1) {
+//                    mProgressDialog.dismiss()
+//                    requireActivity().runOnUiThread {
+//                        mAlertDialogText.text = "You already have an active request"
+//                        mAlertDialog.show()
+//                        mAlertDialogButton.setOnClickListener{
+//                            mAlertDialog.dismiss()
+//                        }
+//                    }
+//                } else {
                     withContext(Dispatchers.Default) { uploadImages() }
                     uploadRequest()
-                }
+//                }
             }
         }
     }
@@ -290,6 +296,11 @@ class ConfirmDonationRequestFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
             }
+            val sp = requireActivity().getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+            val name = sp.getString(Constants.LOGGED_IN_USER, "")
+            val userImage = sp.getString(Constants.USER_PROFILE_IMAGE, "")
+            val mobileNumber = sp.getString(Constants.MOBILE_NUMBER, "")
+
             currentRequest = DonationRequest(
                 args.proposedRequest.id,
                 false,
@@ -300,6 +311,9 @@ class ConfirmDonationRequestFragment : Fragment() {
                 System.currentTimeMillis(),
                 System.currentTimeMillis(),
                 AuthenticationRepo().getCurrentUserID(),
+                userImage.toString(),
+                mobileNumber.toString(),
+                name.toString(),
                 itemListDonation,
                 args.proposedRequest.address,
                 args.proposedRequest.lat,
