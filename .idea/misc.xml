@@ -7,6 +7,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/alert_dialog_background.xml" value="0.2375" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/complete_tag.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/default_button.xml" value="0.121" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/failure_tag.xml" value="0.192" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/ic_arrow_back.xml" value="0.263" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/ic_chevron_right.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/drawable/ic_launcher_background.xml" value="0.192" />
@@ -31,6 +32,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/alert_dialog_complete_qr_scan.xml" value="0.21462163317657118" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/alert_dialog_complete_request.xml" value="0.17058572039333048" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/alert_dialog_confirm_approve.xml" value="0.21376656690893545" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/alert_dialog_confirm_cancel.xml" value="0.21376656690893545" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/alert_dialog_pin_number.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/claim_request_details_fragment.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/confim_request_fragment.xml" value="0.3625" />
@@ -40,14 +42,14 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/dropdown_userrole_item.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/food_bank_info_fragment.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_claim_request.xml" value="0.22" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_claim_request_details.xml" value="0.18" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_claim_request_details.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_confirm_donation_request.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_confirm_request.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard2.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard_admin.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard_beneficiary.xml" value="0.1" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard_donator.xml" value="0.3625" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_dashboard_donator.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_detail_verification_claim.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_detail_verification_donation.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_donation_request.xml" value="0.22" />

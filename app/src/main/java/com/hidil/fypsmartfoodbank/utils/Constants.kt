@@ -3,12 +3,12 @@ package com.hidil.fypsmartfoodbank.utils
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
 
 object Constants {
+
     val CURRENT_LONG: String = "current_long"
     val CURRENT_LAT: String = "current_lat"
     val USER_CITY = "city"
@@ -28,7 +28,7 @@ object Constants {
     val USER_PROFILE_IMAGE: String = "User_Profile_Image"
     val ITEM_IMAGE: String = "Item_Image"
 
-//    Firebase database field names
+    //    Firebase database field names
     const val NAME: String = "name"
     const val USER_ROLE: String = "userRole"
     const val EMAIL: String = "email"
@@ -44,10 +44,13 @@ object Constants {
     const val STORAGE: String = "foodBankStorage"
     const val REQUEST_COMPLETE: String = "completed"
     const val REQUEST_APPROVED: String = "approved"
+    const val IS_DENIED: String = "denied"
+    const val IS_CANCEL: String = "cancel"
 
     fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(
-            Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI )
+            Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
 
         activity.startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
     }

@@ -100,4 +100,7 @@ dependencies {
 
     // location library
     implementation "com.google.android.gms:play-services-location:19.0.1"
+
+    // swipe to refresh library
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }

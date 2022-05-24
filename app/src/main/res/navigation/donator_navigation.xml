@@ -97,6 +97,9 @@
         <argument
             android:name="proposedRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <argument
+            android:name="currentFoodBank"
+            app:argType="com.hidil.fypsmartfoodbank.model.FoodBank" />
     </fragment>
     <fragment
         android:id="@+id/userInfoFragment2"

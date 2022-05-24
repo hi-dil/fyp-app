@@ -19,10 +19,8 @@ import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.UserInfoFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -152,9 +150,6 @@ class DatabaseRepo {
                 }
 
                 when (fragment) {
-                    is DashboardFragment -> {
-                        fragment.successRequestFromFirestore(activeRequestList)
-                    }
                     is ClaimRequestFragment -> fragment.successRequestFromFirestore(
                         activeRequestList
                     )
@@ -169,6 +164,8 @@ class DatabaseRepo {
             val querySnapshot = mFirestore.collection(Constants.REQUEST)
                 .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
                 .whereEqualTo(Constants.REQUEST_COMPLETE, false)
+                .whereEqualTo(Constants.IS_DENIED, false)
+                .whereEqualTo(Constants.IS_CANCEL, false)
                 .get()
                 .await()
 
@@ -270,7 +267,28 @@ class DatabaseRepo {
                     fragment.getFoodBankData(foodBankRequest[0])
                 }
             }
+    }
 
+    suspend fun searchFoodBank(fragment: Fragment, id: String): ArrayList<FoodBank> {
+        return withContext(Dispatchers.IO) {
+            val foodbankList: ArrayList<FoodBank> = ArrayList()
+            mFirestore.collection(Constants.FOODBANK)
+                .whereEqualTo(FieldPath.documentId(), id)
+                .get()
+                .addOnSuccessListener { document ->
+                    for (i in document.documents) {
+                        val data = i.toObject(FoodBank::class.java)
+                        data!!.id = i.id
+                        foodbankList.add(data)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(fragment.javaClass.simpleName.toString(), e.message.toString())
+                }
+                .await()
+
+            return@withContext foodbankList
+        }
     }
 
     fun searchStorageDetails(fragment: StorageInfoFragment, id: String) {
@@ -284,27 +302,30 @@ class DatabaseRepo {
                     data!!.id = i.id
                     storageList.add(data)
                 }
-                Log.i("storage", storageList.toString())
                 fragment.getStorageData(storageList[0])
             }
     }
 
-    fun searchRequest(fragment: ClaimRequestDetailsFragment, id: String) {
-        mFirestore.collection(Constants.REQUEST)
-            .whereEqualTo(FieldPath.documentId(), id)
-            .get()
-            .addOnSuccessListener { document ->
-                val requestList: ArrayList<Request> = ArrayList()
-                for (i in document.documents) {
-                    val request = i.toObject(Request::class.java)
-                    request!!.id = i.id
-
-                    requestList.add(request)
+    suspend fun searchRequestAsync(fragment: Fragment, id: String): ArrayList<Request> {
+        return withContext(Dispatchers.IO) {
+            val requestList: ArrayList<Request> = ArrayList()
+            mFirestore.collection(Constants.REQUEST)
+                .whereEqualTo(FieldPath.documentId(), id)
+                .get()
+                .addOnSuccessListener { document ->
+                    for (i in document.documents) {
+                        val request = i.toObject(Request::class.java)
+                        request!!.id = i.id
+                        requestList.add(request)
+                    }
                 }
+                .addOnFailureListener { e ->
+                    Log.e(fragment.javaClass.simpleName.toString(), e.message.toString())
+                }
+                .await()
 
-                fragment.refreshList(requestList[0].items)
-
-            }
+            return@withContext requestList
+        }
     }
 
     fun searchUser(fragment: UserInfoFragment, id: String) {
@@ -324,20 +345,44 @@ class DatabaseRepo {
             }
     }
 
-    fun saveRequest(fragment: Fragment, request: Request) {
-        mFirestore.collection(Constants.REQUEST)
-            .document()
-            .set(request, SetOptions.merge())
-            .addOnSuccessListener {
-                Toast.makeText(
-                    fragment.requireContext(),
-                    "You have successfully save the data to the firestore",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            .addOnFailureListener {
-                Log.e(fragment.javaClass.simpleName, "Error while uploading file to database")
-            }
+    suspend fun updateFoodBank(fragment: Fragment, foodBank: FoodBank): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+
+            mFirestore.collection(Constants.FOODBANK)
+                .document(foodBank.id)
+                .set(foodBank)
+                .addOnSuccessListener {
+                    success = true
+                    Log.i("testfirst", "in")
+                }
+                .addOnFailureListener {
+                    Log.e(fragment.javaClass.simpleName.toString(), it.message.toString())
+                }
+                .await()
+            Log.i("testfirst", success.toString())
+
+            return@withContext success
+        }
+    }
+
+    suspend fun saveRequest(fragment: Fragment, request: Request): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+            mFirestore.collection(Constants.REQUEST)
+                .document()
+                .set(request, SetOptions.merge())
+                .addOnSuccessListener {
+                    success = true
+                    Log.i("test", "in")
+                }
+                .addOnFailureListener {
+                    Log.e(fragment.javaClass.simpleName.toString(), it.message.toString())
+                }
+                .await()
+
+            return@withContext success
+        }
     }
 
 
@@ -368,6 +413,8 @@ class DatabaseRepo {
             val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
                 .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
                 .whereEqualTo(Constants.REQUEST_COMPLETE, false)
+                .whereEqualTo(Constants.IS_DENIED, false)
+                .whereEqualTo(Constants.IS_CANCEL, false)
                 .get()
                 .await()
 

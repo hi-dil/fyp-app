@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_claimRequestDetailsFragment_to_unlockOptionsFragment"
             app:destination="@id/unlockOptionsFragment" />
+        <action
+            android:id="@+id/action_claimRequestDetailsFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment"
@@ -134,6 +137,12 @@
         <argument
             android:name="proposedRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.Request" />
+        <argument
+            android:name="currentFoodBank"
+            app:argType="com.hidil.fypsmartfoodbank.model.FoodBank" />
+        <action
+            android:id="@+id/action_confimRequestFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
     </fragment>
     <fragment
         android:id="@+id/userInfoFragment"

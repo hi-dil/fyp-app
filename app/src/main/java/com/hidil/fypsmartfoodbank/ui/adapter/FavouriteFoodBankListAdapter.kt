@@ -53,7 +53,7 @@ class FavouriteFoodBankListAdapter(
             holder.binding.ivFoodBankImage
         )
         holder.binding.tvFbName.text = model.foodBankName
-        holder.binding.tvAddress.text = model.address
+//        holder.binding.tvAddress.text = model.address
         holder.binding.tvProgress.visibility = View.GONE
         holder.binding.tvDistance.visibility = View.VISIBLE
 

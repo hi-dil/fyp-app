@@ -44,7 +44,7 @@ class ActiveRequestListAdapter(
             holder.binding.ivFoodBankImage
         )
         holder.binding.tvFbName.text = model.foodBankName
-        holder.binding.tvAddress.text = model.address
+//        holder.binding.tvAddress.text = model.address
 
         holder.itemView.setOnClickListener { view ->
             when (fragment) {

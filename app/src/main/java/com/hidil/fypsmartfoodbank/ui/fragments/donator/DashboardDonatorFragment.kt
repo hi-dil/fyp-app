@@ -12,6 +12,7 @@ import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.model.User
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.FavouriteFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.NearbyFoodBankListAdapter
@@ -19,6 +20,14 @@ import com.hidil.fypsmartfoodbank.ui.adapter.donator.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.donator.DashboardViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 class DashboardDonatorFragment : Fragment() {
 
@@ -37,12 +46,10 @@ class DashboardDonatorFragment : Fragment() {
         _binding = FragmentDashboardDonatorBinding.inflate(inflater, container, false)
 
         val activeRequest =
-            requireActivity().intent.getParcelableExtra<DonationRequest>("activeRequest")
+            requireActivity().intent.getParcelableArrayListExtra<DonationRequest>("activeRequest")
         val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
         val locationList =
             requireActivity().intent.getParcelableArrayListExtra<Location>("locationList")
-
-        val activeRequestList: ArrayList<DonationRequest> = ArrayList()
 
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val name = userDetails?.name
@@ -53,14 +60,33 @@ class DashboardDonatorFragment : Fragment() {
         currentLong = sp.getString(Constants.CURRENT_LONG, "")!!.toDouble()
 
         if (activeRequest != null) {
-            activeRequestList.add(activeRequest)
-            attachActiveRequest(activeRequestList)
+            attachActiveRequest(activeRequest)
         }
 
         val favouriteFoodBankList = userDetails.favouriteFoodBank
         attachFavFoodBank(favouriteFoodBankList)
         if (locationList != null) {
             attachNearbyFoodBank(locationList)
+        }
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val updatedActiveRequest = DatabaseRepo().getActiveRequestDonatorAsync()
+                    val updatedUserDetails = DatabaseRepo().getUserDetailAsync()
+                    val location = DatabaseRepo().getLocationAsync()
+                    val sortList = sortLocation(location)
+                    val updatedLocationList = ArrayList(sortList)
+
+                    requireActivity().runOnUiThread {
+                        attachActiveRequest(updatedActiveRequest)
+                        attachFavFoodBank(updatedUserDetails.favouriteFoodBank)
+                        attachNearbyFoodBank(updatedLocationList)
+
+                        binding.swipeToRefresh.isRefreshing = false
+                    }
+                }
+            }
         }
 
 
@@ -84,8 +110,7 @@ class DashboardDonatorFragment : Fragment() {
     }
 
     private fun attachActiveRequest(activeRequestList: ArrayList<DonationRequest>) {
-        if (activeRequestList.size > 0 && activeRequestList[0] != DonationRequest()) {
-
+        if (activeRequestList.size > 0 ) {
             binding.rvActiveRequest.visibility = View.VISIBLE
             binding.tvNoActiveRequest.visibility = View.GONE
 
@@ -94,6 +119,9 @@ class DashboardDonatorFragment : Fragment() {
             val activeRequestAdapter =
                 ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
+        } else {
+            binding.rvActiveRequest.visibility = View.GONE
+            binding.tvNoActiveRequest.visibility = View.VISIBLE
         }
     }
 
@@ -153,6 +181,37 @@ class DashboardDonatorFragment : Fragment() {
         val nearbyFoodBankAdapter =
             NearbyFoodBankListAdapter(requireContext(), compactLocationList, this)
         binding.rvNearbyFoodBank.adapter = nearbyFoodBankAdapter
+    }
+
+    private fun sortLocation(list: ArrayList<Location>): List<Location> {
+        for (i in list) {
+            val distance =
+                distanceInKm(currentLat, currentLong, i.lat.toDouble(), i.long.toDouble())
+            i.distance = distance
+        }
+
+        return list.sortedWith(compareBy { it.distance })
+    }
+
+    private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val theta = lon1 - lon2
+        var dist =
+            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
+                deg2rad(theta)
+            )
+        dist = acos(dist)
+        dist = rad2deg(dist)
+        dist *= 60 * 1.1515
+        dist *= 1.609344
+        return dist
+    }
+
+    private fun deg2rad(deg: Double): Double {
+        return deg * Math.PI / 180.0
+    }
+
+    private fun rad2deg(rad: Double): Double {
+        return rad * 180.0 / Math.PI
     }
 
 }

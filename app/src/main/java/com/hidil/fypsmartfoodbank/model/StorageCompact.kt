@@ -11,6 +11,6 @@ data class StorageCompact(
     val itemImage: String = "",
     val item: String = "",
     val itemTypes: String = "",
-    val itemQuantity: Int = 0,
+    var itemQuantity: Int = 0,
     val maximumCapacity: Int = 0
 ) : Parcelable

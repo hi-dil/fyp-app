@@ -303,22 +303,25 @@ class ConfirmDonationRequestFragment : Fragment() {
 
             currentRequest = DonationRequest(
                 args.proposedRequest.id,
-                false,
-                false,
-                args.proposedRequest.foodBankImage,
-                args.proposedRequest.foodBankID,
-                args.proposedRequest.foodBankName,
-                System.currentTimeMillis(),
-                System.currentTimeMillis(),
-                AuthenticationRepo().getCurrentUserID(),
-                userImage.toString(),
-                mobileNumber.toString(),
-                name.toString(),
-                itemListDonation,
-                args.proposedRequest.address,
-                args.proposedRequest.lat,
-                args.proposedRequest.long,
-                imageURL
+                completed = false,
+                approved = false,
+                isCancel = false,
+                isDenied = false,
+                deniedMessage = "",
+                foodBankImage = args.proposedRequest.foodBankImage,
+                foodBankID = args.proposedRequest.foodBankID,
+                foodBankName = args.proposedRequest.foodBankName,
+                requestDate = System.currentTimeMillis(),
+                lastUpdate = System.currentTimeMillis(),
+                userID = AuthenticationRepo().getCurrentUserID(),
+                userImage = userImage.toString(),
+                userMobile = mobileNumber.toString(),
+                userName = name.toString(),
+                items = itemListDonation,
+                address = args.proposedRequest.address,
+                lat = args.proposedRequest.lat,
+                long = args.proposedRequest.long,
+                requestImages = imageURL
             )
 
             val saveStatus = DatabaseRepo().saveRequestDonation(this, currentRequest)

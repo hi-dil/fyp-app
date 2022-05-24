@@ -30,7 +30,7 @@ class PastRequestListAdapter(
 
         GlideLoader(context).loadFoodBankPicture(model.foodBankImage, holder.itemView.findViewById(R.id.iv_foodBankImage))
         holder.binding.tvFbName.text = model.foodBankName
-        holder.binding.tvAddress.text = model.address
+//        holder.binding.tvAddress.text = model.address
         holder.binding.tvProgress.text = "Completed"
         holder.binding.tvProgress.background = ContextCompat.getDrawable(context, R.drawable.complete_tag)
         holder.binding.tvProgress.setTextColor(ContextCompat.getColor(context, R.color.white))

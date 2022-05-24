@@ -73,7 +73,10 @@ class FoodBankInfoFragment : Fragment() {
                 isFavouriteFoodbank = true
                 alreadyFavourite = true
             }
-            Log.i("test", "favourite ${args.foodBankID} ${list.foodBankID} ${list.foodBankID == args.foodBankID}")
+            Log.i(
+                "test",
+                "favourite ${args.foodBankID} ${list.foodBankID} ${list.foodBankID == args.foodBankID}"
+            )
         }
 
         if (isFavouriteFoodbank) {
@@ -173,25 +176,28 @@ class FoodBankInfoFragment : Fragment() {
                 val currentRequest = Request(
                     "",
                     false,
-                    false,
-                    mFoodBank.foodBankImage,
-                    mFoodBank.id,
-                    mFoodBank.foodBankName,
-                    0,
-                    0,
-                    AuthenticationRepo().getCurrentUserID(),
-                    "",
-                    "",
-                    "",
-                    requestItemList,
-                    mFoodBank.address,
-                    mFoodBank.lat,
-                    mFoodBank.long
+                    approved = false,
+                    cancel = false,
+                    denied = false,
+                    deniedMessage = "",
+                    foodBankImage = mFoodBank.foodBankImage,
+                    foodBankID = mFoodBank.id,
+                    foodBankName = mFoodBank.foodBankName,
+                    requestDate = 0,
+                    lastUpdate = 0,
+                    userID = AuthenticationRepo().getCurrentUserID(),
+                    userImage = "",
+                    userName = "",
+                    userMobile = "",
+                    items = requestItemList,
+                    address = mFoodBank.address,
+                    lat = mFoodBank.lat,
+                    long = mFoodBank.long
                 )
 
                 view.findNavController().navigate(
                     FoodBankInfoFragmentDirections.actionFoodBankInfoFragmentToConfimRequestFragment(
-                        currentRequest
+                        currentRequest, mFoodBank
                     )
                 )
             }

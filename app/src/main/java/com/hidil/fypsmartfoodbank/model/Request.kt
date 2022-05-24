@@ -6,8 +6,11 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Request(
     var id: String = "",
-    val completed: Boolean = false,
+    var completed: Boolean = false,
     var approved: Boolean = false,
+    var cancel: Boolean = false,
+    var denied: Boolean = false,
+    var deniedMessage: String = "",
     val foodBankImage: String = "",
     val foodBankID: String = "",
     val foodBankName: String = "",

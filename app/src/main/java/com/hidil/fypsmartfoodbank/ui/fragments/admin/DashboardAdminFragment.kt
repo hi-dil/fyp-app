@@ -10,11 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardAdminBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.AdminMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.DonationRequestListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.RequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DashboardAdminFragment : Fragment() {
 
@@ -50,36 +56,27 @@ class DashboardAdminFragment : Fragment() {
         }
 
         if (claimRequest != null) {
-            if (claimRequest.size > 0) {
-                binding.rvOldClaimRequest.visibility = View.VISIBLE
-                binding.tvOldClaimRequest.visibility = View.GONE
-
-                binding.rvOldClaimRequest.layoutManager = LinearLayoutManager(requireActivity())
-                binding.rvOldClaimRequest.setHasFixedSize(true)
-                val oldClaimRequestAdapter =
-                    RequestListAdapter(requireContext(), claimRequest, this)
-                binding.rvOldClaimRequest.adapter = oldClaimRequestAdapter
-            } else {
-                binding.rvOldClaimRequest.visibility = View.GONE
-                binding.tvOldClaimRequest.visibility = View.VISIBLE
-            }
+            attachClaimRequest(claimRequest)
         }
-
         if (donationRequest != null) {
-            if (donationRequest.size > 0) {
-                binding.tvOldDonationRequest.visibility = View.GONE
-                binding.rvOldDonationRequest.visibility = View.VISIBLE
+            attachDonationRequest(donationRequest)
+        }
 
-                binding.rvOldDonationRequest.layoutManager = LinearLayoutManager(requireActivity())
-                binding.rvOldDonationRequest.setHasFixedSize(true)
-                val oldDonationRequestAdapter =
-                    DonationRequestListAdapter(requireContext(), donationRequest, this)
-                binding.rvOldDonationRequest.adapter = oldDonationRequestAdapter
-            } else {
-                binding.rvOldDonationRequest.visibility = View.GONE
-                binding.tvOldDonationRequest.visibility = View.VISIBLE
+        binding.swipeToRefresh.setOnRefreshListener {
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val oldestDonationRequest = DatabaseRepo().getOldDonationRequest()
+                    val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest()
+
+                    requireActivity().runOnUiThread {
+                        attachClaimRequest(oldestClaimRequest)
+                        attachDonationRequest(oldestDonationRequest)
+                        binding.swipeToRefresh.isRefreshing = false
+                    }
+                }
             }
         }
+
 
         return binding.root
     }
@@ -92,6 +89,38 @@ class DashboardAdminFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (requireActivity() is AdminMainActivity) (requireActivity() as AdminMainActivity).showBottomNavigationView()
+    }
+
+    private fun attachClaimRequest(request: ArrayList<Request>) {
+        if (request.size > 0) {
+            binding.rvOldClaimRequest.visibility = View.VISIBLE
+            binding.tvOldClaimRequest.visibility = View.GONE
+
+            binding.rvOldClaimRequest.layoutManager = LinearLayoutManager(requireActivity())
+            binding.rvOldClaimRequest.setHasFixedSize(true)
+            val oldClaimRequestAdapter =
+                RequestListAdapter(requireContext(), request, this)
+            binding.rvOldClaimRequest.adapter = oldClaimRequestAdapter
+        } else {
+            binding.rvOldClaimRequest.visibility = View.GONE
+            binding.tvOldClaimRequest.visibility = View.VISIBLE
+        }
+    }
+
+    private fun attachDonationRequest(request: ArrayList<DonationRequest>) {
+        if (request.size > 0) {
+            binding.tvOldDonationRequest.visibility = View.GONE
+            binding.rvOldDonationRequest.visibility = View.VISIBLE
+
+            binding.rvOldDonationRequest.layoutManager = LinearLayoutManager(requireActivity())
+            binding.rvOldDonationRequest.setHasFixedSize(true)
+            val oldDonationRequestAdapter =
+                DonationRequestListAdapter(requireContext(), request, this)
+            binding.rvOldDonationRequest.adapter = oldDonationRequestAdapter
+        } else {
+            binding.rvOldDonationRequest.visibility = View.GONE
+            binding.tvOldDonationRequest.visibility = View.VISIBLE
+        }
     }
 
 }

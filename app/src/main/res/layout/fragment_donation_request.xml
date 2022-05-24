@@ -81,7 +81,9 @@
                 android:id="@+id/rv_activeRequest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin_padding"
                 android:layout_marginTop="@dimen/medium_margin_padding"
+                android:layout_marginEnd="@dimen/medium_margin_padding"
                 android:overScrollMode="never"
                 android:visibility="gone" />
 

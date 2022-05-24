@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -78,7 +77,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                                 BeneficiaryMainActivity::class.java
                             )
                             if (activeRequest.size > 0) {
-                                intent.putExtra("activeRequest", activeRequest[0])
+                                intent.putExtra("activeRequest", activeRequest)
                             }
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
@@ -95,9 +94,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                                 this@SplashScreenActivity,
                                 DonatorActivity::class.java
                             )
-                            if (activeRequest.size > 0) {
-                                intent.putExtra("activeRequest", activeRequest[0])
-                            }
+                            intent.putExtra("activeRequest", activeRequest)
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)
@@ -108,8 +105,6 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                         val oldestDonationRequest = DatabaseRepo().getOldDonationRequest()
                         val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest()
 
-                        Log.i("request", oldestClaimRequest.toString())
-                        Log.i("request", oldestDonationRequest.toString())
                         if (currentUserID.isNotEmpty()) {
                             val intent =
                                 Intent(this@SplashScreenActivity, AdminMainActivity::class.java)
