@@ -113,7 +113,8 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                             startActivity(intent)
                         }
                         finish()
-
+                    } else {
+                        startActivity(Intent(this@SplashScreenActivity, Login::class.java))
                     }
                 } else {
                     startActivity(Intent(this@SplashScreenActivity, Login::class.java))
