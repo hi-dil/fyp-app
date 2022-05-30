@@ -1,23 +1,26 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.donator
 
 import android.content.Context
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentDonationRequestBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.ActiveRequestListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.donator.PastRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
-import com.hidil.fypsmartfoodbank.viewModel.donator.DonationRequestViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DonationRequestFragment : Fragment() {
 
@@ -37,6 +40,7 @@ class DonationRequestFragment : Fragment() {
         binding.tvAddress.text = "$city, $state"
 
         DatabaseRepo().getDonationActiveRequest(this, AuthenticationRepo().getCurrentUserID())
+        getPastRequest()
 
         return binding.root
     }
@@ -60,7 +64,8 @@ class DonationRequestFragment : Fragment() {
 
             binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
             binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter = ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
+            val activeRequestAdapter =
+                ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
             binding.rvActiveRequest.adapter = activeRequestAdapter
         } else {
             binding.rvActiveRequest.visibility = View.GONE
@@ -68,23 +73,32 @@ class DonationRequestFragment : Fragment() {
         }
     }
 
-    fun getPastRequest(pastRequestList: ArrayList<DonationRequest>) {
-        if (pastRequestList.size > 0) {
-            binding.rvActiveRequest.visibility = View.VISIBLE
-            binding.tvNoActiveRequest.visibility = View.GONE
+    fun getPastRequest() {
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val pastRequestList =
+                    DatabaseRepo().getOldCompleteDonationRequest(this@DonationRequestFragment)
 
-            binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
-            binding.rvActiveRequest.setHasFixedSize(true)
-            val activeRequestAdapter =
-                ActiveRequestListAdapter(
-                    requireActivity(),
-                    pastRequestList,
-                    this
-                )
-            binding.rvActiveRequest.adapter = activeRequestAdapter
-        } else {
-            binding.rvActiveRequest.visibility = View.GONE
-            binding.tvNoActiveRequest.visibility = View.VISIBLE
+                requireActivity().runOnUiThread {
+                    if (pastRequestList.size > 0) {
+                        binding.rvPastRequest.visibility = View.VISIBLE
+                        binding.tvNoPastRequest.visibility = View.GONE
+
+                        binding.rvPastRequest.layoutManager = LinearLayoutManager(activity)
+                        binding.rvPastRequest.setHasFixedSize(true)
+                        val activeRequestAdapter =
+                            PastRequestListAdapter(
+                                requireActivity(),
+                                pastRequestList,
+                                this@DonationRequestFragment
+                            )
+                        binding.rvPastRequest.adapter = activeRequestAdapter
+                    } else {
+                        binding.rvPastRequest.visibility = View.GONE
+                        binding.tvNoPastRequest.visibility = View.VISIBLE
+                    }
+                }
+            }
         }
     }
 

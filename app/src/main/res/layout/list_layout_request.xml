@@ -59,7 +59,7 @@
             android:paddingTop="2dp"
             android:paddingEnd="5dp"
             android:paddingBottom="2dp"
-            android:text="pending"
+            android:text="Waiting for approval"
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/tv_fbName"

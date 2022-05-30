@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentDetailVerificationClaimBinding
+import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.RealtimeDBPIN
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
@@ -22,9 +24,11 @@ import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.ClaimRequestDetailsListAdapter
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -97,6 +101,26 @@ class DetailVerificationClaimFragment : Fragment() {
                 dialog.dismiss()
             }
         }
+
+        binding.btnDeny.setOnClickListener {
+            val views = View.inflate(requireContext(), R.layout.alert_dialog_deny_request, null)
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setView(views)
+
+            val dialog = builder.create()
+            dialog.show()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            views.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            views.findViewById<Button>(R.id.btn_denyRequest).setOnClickListener {
+                val reason = views.findViewById<TextInputEditText>(R.id.et_reason).text.toString()
+                denyRequest(reason)
+                dialog.dismiss()
+            }
+        }
         return binding.root
     }
 
@@ -130,7 +154,7 @@ class DetailVerificationClaimFragment : Fragment() {
 
                 for (i in currentRequest.items) {
                     val pinData =
-                        RealtimeDBPIN(System.currentTimeMillis(), currentRequest.id, "claim")
+                        RealtimeDBPIN(System.currentTimeMillis(), currentRequest.id, "claim", 0)
                     updateRD = RealtimeDBRepo().updatePin(
                         i.storageID,
                         pinData,
@@ -178,6 +202,70 @@ class DetailVerificationClaimFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun denyRequest(reason: String) {
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                currentRequest.denied = true
+                currentRequest.deniedMessage = reason
+                currentRequest.completed = true
+
+                val getFoodBank = DatabaseRepo().searchFoodBank(this@DetailVerificationClaimFragment, currentRequest.foodBankID)
+                var foodbankData: FoodBank = FoodBank()
+                if (getFoodBank.size > 0){
+                    foodbankData = getFoodBank[0]
+                }
+
+                for (storageItem in foodbankData.storage) {
+                    for (requestItem in currentRequest.items) {
+                        if (storageItem.id == requestItem.storageID) {
+                            storageItem.itemQuantity += requestItem.itemQuantity
+                        }
+                    }
+                }
+
+                val updateRequest = DatabaseRepo().updateUserClaimRequest(
+                    currentRequest,
+                    this@DetailVerificationClaimFragment
+                )
+
+                val updateFoodBank =
+                    DatabaseRepo().updateFoodBank(this@DetailVerificationClaimFragment, foodbankData)
+
+                requireActivity().runOnUiThread {
+
+                    val viewsUpdate =
+                        View.inflate(
+                            requireContext(),
+                            R.layout.alert_dialog_complete_request,
+                            null
+                        )
+                    val builderUpdate = AlertDialog.Builder(requireActivity())
+                    builderUpdate.setView(viewsUpdate)
+                    val dialogUpdate = builderUpdate.create()
+                    dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                    if (updateRequest && updateFoodBank) {
+
+                        viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                            "Successfully deny user request"
+
+                        viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialogUpdate.dismiss()
+                        }
+                    } else {
+                        viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                            "Fail to deny user's request"
+
+                        viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialogUpdate.dismiss()
+                        }
+                    }
+                    dialogUpdate.show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

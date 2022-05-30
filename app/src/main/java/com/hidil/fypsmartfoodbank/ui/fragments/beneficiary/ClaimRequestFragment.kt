@@ -14,10 +14,17 @@ import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
+import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
+import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.PastRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.viewModel.beneficiary.ClaimRequestViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ClaimRequestFragment : Fragment() {
 
@@ -42,8 +49,19 @@ class ClaimRequestFragment : Fragment() {
         val state = sp.getString(Constants.USER_STATE, "")!!
         binding.tvAddress.text = "$city, $state"
 
-        DatabaseRepo().getActiveRequest(this, AuthenticationRepo().getCurrentUserID())
-        DatabaseRepo().getPastRequest(this, AuthenticationRepo().getCurrentUserID())
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                requireActivity().runOnUiThread { requireActivity().showProgressDialog() }
+                val activeRequest = DatabaseRepo().getActiveRequestAsync()
+                val pastRequest = DatabaseRepo().getPastRequestAsync()
+
+                requireActivity().runOnUiThread {
+                    requireActivity().hideProgressDialog()
+                    bindActiveRequest(activeRequest)
+                    bindPastRequest(pastRequest)
+                }
+            }
+        }
 
         return binding.root
     }
@@ -60,7 +78,7 @@ class ClaimRequestFragment : Fragment() {
         }
     }
 
-    fun successRequestFromFirestore(activeRequestList: ArrayList<Request>) {
+    private fun bindActiveRequest(activeRequestList: ArrayList<Request>) {
         if (activeRequestList.size > 0) {
             binding.rvActiveRequest.visibility = View.VISIBLE
             binding.tvNoActiveRequest.visibility = View.GONE
@@ -76,7 +94,7 @@ class ClaimRequestFragment : Fragment() {
         }
     }
 
-    fun successGetPastRequest(pastRequestList: ArrayList<Request>) {
+    private fun bindPastRequest(pastRequestList: ArrayList<Request>) {
         if (pastRequestList.size > 0) {
             binding.rvPastRequest.visibility = View.VISIBLE
             binding.tvNoPastRequest.visibility = View.GONE

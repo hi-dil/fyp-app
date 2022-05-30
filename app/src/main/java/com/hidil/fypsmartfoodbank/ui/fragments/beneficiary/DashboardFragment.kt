@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
@@ -20,7 +19,6 @@ import com.hidil.fypsmartfoodbank.ui.adapter.NearbyFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
-import com.hidil.fypsmartfoodbank.viewModel.beneficiary.DashboardViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -40,7 +38,6 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

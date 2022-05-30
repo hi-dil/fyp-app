@@ -65,8 +65,8 @@ class DashboardAdminFragment : Fragment() {
         binding.swipeToRefresh.setOnRefreshListener {
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
-                    val oldestDonationRequest = DatabaseRepo().getOldDonationRequest()
-                    val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest()
+                    val oldestDonationRequest = DatabaseRepo().getOldDonationRequest(3)
+                    val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest(3)
 
                     requireActivity().runOnUiThread {
                         attachClaimRequest(oldestClaimRequest)

@@ -11,6 +11,8 @@ import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.activity.AdminMainActivity
 import com.hidil.fypsmartfoodbank.ui.fragments.admin.DashboardAdminFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.admin.DashboardAdminFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.RequestVerificationFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.RequestVerificationFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import java.text.SimpleDateFormat
 import java.util.*
@@ -63,6 +65,11 @@ class RequestListAdapter(
             when (fragment) {
                 is DashboardAdminFragment -> view.findNavController().navigate(
                     DashboardAdminFragmentDirections.actionDashboardAdminFragmentToDetailVerificationClaimFragment(
+                        model
+                    )
+                )
+                is RequestVerificationFragment -> view.findNavController().navigate(
+                    RequestVerificationFragmentDirections.actionRequestVerificationFragmentToDetailVerificationClaimFragment(
                         model
                     )
                 )

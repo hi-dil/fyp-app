@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import kotlinx.coroutines.CoroutineScope
@@ -84,6 +85,10 @@ class FavouriteFoodBankListAdapter(
                                 false
                             )
                         )
+
+                        when (fragment.requireActivity()) {
+                            is DonatorActivity -> (fragment.requireActivity() as DonatorActivity).hideBottomNavigationView()
+                        }
                     }
                 }
             }

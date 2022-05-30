@@ -3,14 +3,14 @@ package com.hidil.fypsmartfoodbank.ui.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutStorageItemBinding
-import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.StorageCompact
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
-import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
 class AvailableFoodBankItemsListAdapter(
@@ -56,6 +56,12 @@ class AvailableFoodBankItemsListAdapter(
                     totalItem++
                     holder.binding.tvAmount.text = itemAmount[position].toString()
                     fragment.changeItemAmount(position, true)
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Cannot add more than the current stock",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
@@ -65,6 +71,9 @@ class AvailableFoodBankItemsListAdapter(
                     totalItem--
                     holder.binding.tvAmount.text = itemAmount[position].toString()
                     fragment.changeItemAmount(position, false)
+                } else {
+                    Toast.makeText(context, "The items must not be less than 0", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 

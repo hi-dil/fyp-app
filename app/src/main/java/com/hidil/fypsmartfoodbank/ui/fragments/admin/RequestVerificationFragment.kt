@@ -1,33 +1,132 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
-import com.hidil.fypsmartfoodbank.viewModel.admin.RequestVerificationClaimViewModel
+import com.hidil.fypsmartfoodbank.databinding.FragmentRequestVerificationBinding
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.activity.AdminMainActivity
+import com.hidil.fypsmartfoodbank.ui.adapter.admin.DonationRequestListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.admin.RequestListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RequestVerificationFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = RequestVerificationFragment()
-    }
-
-    private lateinit var viewModel: RequestVerificationClaimViewModel
+    private var _binding: FragmentRequestVerificationBinding? = null
+    private val binding get() = _binding!!
+    private var role = "Beneficiary"
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_request_verification_claim, container, false)
+    ): View {
+        _binding = FragmentRequestVerificationBinding.inflate(inflater, container, false)
+
+        binding.acRequest.setText("Beneficiary")
+        loadRequest()
+
+
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(RequestVerificationClaimViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onResume() {
+        super.onResume()
+        if (requireActivity() is AdminMainActivity) (requireActivity() as AdminMainActivity).showBottomNavigationView()
+
+        loadRequest()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun loadRequest() {
+        if (role == "Beneficiary") {
+            loadBeneficiary()
+            binding.acRequest.setText("Beneficiary")
+        } else if (role == "Donator"){
+            loadDonator()
+            binding.acRequest.setText("Donator")
+        }
+
+        val userRole = resources.getStringArray(R.array.user_role)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_userrole_item, userRole)
+        binding.acRequest.setAdapter(arrayAdapter)
+
+        binding.acRequest.setOnItemClickListener { adapterView, view, i, l ->
+            if (binding.acRequest.text.toString() == "Beneficiary") {
+                role = "Beneficiary"
+                loadBeneficiary()
+            } else if (binding.acRequest.text.toString() == "Donator"){
+                role = "Donator"
+                loadDonator()
+            }
+        }
+    }
+
+    private fun loadDonator() {
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val activeRequest = DatabaseRepo().getOldDonationRequest(10)
+
+                requireActivity().runOnUiThread {
+                    if (activeRequest.size > 0) {
+                        binding.rvActiveClaimRequests.visibility = View.GONE
+                        binding.tvNoActiveClaimRequests.visibility = View.GONE
+                        binding.rvActiveDonationRequests.visibility = View.VISIBLE
+                        binding.tvNoActiveDonationRequests.visibility = View.GONE
+
+                        binding.rvActiveDonationRequests.layoutManager = LinearLayoutManager(requireContext())
+                        binding.rvActiveDonationRequests.setHasFixedSize(true)
+                        val adapter = DonationRequestListAdapter(requireContext(), activeRequest, this@RequestVerificationFragment)
+                        binding.rvActiveDonationRequests.adapter = adapter
+                    } else {
+                        binding.rvActiveClaimRequests.visibility = View.GONE
+                        binding.tvNoActiveClaimRequests.visibility = View.GONE
+                        binding.rvActiveDonationRequests.visibility = View.GONE
+                        binding.tvNoActiveDonationRequests.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun loadBeneficiary() {
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val activeRequest = DatabaseRepo().getOldestClaimRequest(10)
+
+                requireActivity().runOnUiThread {
+                    if (activeRequest.size > 0) {
+                        binding.rvActiveClaimRequests.visibility = View.VISIBLE
+                        binding.tvNoActiveClaimRequests.visibility = View.GONE
+                        binding.rvActiveDonationRequests.visibility = View.GONE
+                        binding.tvNoActiveDonationRequests.visibility = View.GONE
+
+                        binding.rvActiveClaimRequests.layoutManager = LinearLayoutManager(requireContext())
+                        binding.rvActiveClaimRequests.setHasFixedSize(true)
+                        val adapter = RequestListAdapter(requireContext(), activeRequest, this@RequestVerificationFragment)
+                        binding.rvActiveClaimRequests.adapter = adapter
+                    } else {
+                        binding.rvActiveClaimRequests.visibility = View.GONE
+                        binding.tvNoActiveClaimRequests.visibility = View.VISIBLE
+                        binding.rvActiveDonationRequests.visibility = View.GONE
+                        binding.tvNoActiveDonationRequests.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
 }

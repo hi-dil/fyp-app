@@ -1,4 +1,4 @@
-package com.hidil.fypsmartfoodbank.ui.fragments
+package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
 import android.os.Bundle
 import android.util.Log
@@ -235,6 +235,16 @@ class FoodBankInfoFragment : Fragment() {
         for (i in itemAmount) {
             totalItems += i
         }
+
+//        itemAmount.forEachIndexed { index, element ->
+//            val storage = mFoodBank.storage[index]
+//
+//            if (element > storage.itemQuantity) {
+//                Toast.makeText(requireContext(), "cannot add more than current stock", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
+
 
         binding.tvTotalAmount.text = "${totalItems}/20"
         binding.tvAddMore.text = "You can add ${20 - totalItems} more items to your request"

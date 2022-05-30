@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
@@ -75,7 +77,11 @@ class ActiveRequestListAdapter(
             mapIntent.setPackage("com.google.android.apps.maps")
             fragment.requireActivity().startActivity(mapIntent)
         }
-
+        if (model.approved) {
+            holder.binding.tvProgress.text = "Approved"
+            holder.binding.tvProgress.background =
+                ContextCompat.getDrawable(fragment.requireContext(), R.drawable.approved_tag)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -45,6 +45,7 @@ object Constants {
     const val REQUEST_COMPLETE: String = "completed"
     const val REQUEST_APPROVED: String = "approved"
     const val IS_DENIED: String = "denied"
+    const val REQUEST_DATE: String = "requestDate"
     const val IS_CANCEL: String = "cancel"
 
     fun showImageChooser(activity: Activity) {

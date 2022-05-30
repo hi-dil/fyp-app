@@ -56,6 +56,14 @@ open class PastRequestListAdapter(
             mapIntent.setPackage("com.google.android.apps.maps")
             fragment.requireActivity().startActivity(mapIntent)
         }
+
+        if (model.denied) {
+            holder.binding.tvProgress.text = "Denied"
+            holder.binding.tvProgress.background = ContextCompat.getDrawable(context, R.drawable.failure_tag)
+        } else if (model.cancel) {
+            holder.binding.tvProgress.text = "Cancelled"
+            holder.binding.tvProgress.background = ContextCompat.getDrawable(context, R.drawable.failure_tag)
+        }
     }
 
     override fun getItemCount(): Int {

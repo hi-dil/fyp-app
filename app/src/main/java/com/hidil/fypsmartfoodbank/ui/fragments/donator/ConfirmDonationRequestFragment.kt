@@ -2,6 +2,7 @@ package com.hidil.fypsmartfoodbank.ui.fragments.donator
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -136,13 +137,6 @@ class ConfirmDonationRequestFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        mAlertDialogText = view.findViewById(R.id.tv_textadcr)
-//        mAlertDialogButton = view.findViewById(R.id.btn_okadcr)
-    }
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -255,20 +249,8 @@ class ConfirmDonationRequestFragment : Fragment() {
             mProgressDialog.show()
 
             CoroutineScope(IO).launch {
-                val activeRequest = DatabaseRepo().getActiveRequestDonatorAsync()
-
-//                if (activeRequest.size > 1) {
-//                    mProgressDialog.dismiss()
-//                    requireActivity().runOnUiThread {
-//                        mAlertDialogText.text = "You already have an active request"
-//                        mAlertDialog.show()
-//                        mAlertDialogButton.setOnClickListener{
-//                            mAlertDialog.dismiss()
-//                        }
-//                    }
-//                } else {
-                    withContext(Dispatchers.Default) { uploadImages() }
-                    uploadRequest()
+                withContext(Dispatchers.Default) { uploadImages() }
+                uploadRequest()
 //                }
             }
         }
@@ -282,21 +264,14 @@ class ConfirmDonationRequestFragment : Fragment() {
                 Constants.ITEM_IMAGE
             )
             imageURL.add(link)
-            Log.i("imageLink", imageURL.toString())
         }
     }
 
     private fun uploadRequest() {
         if (imagesURI.size == imageURL.size) {
             mProgressDialog.dismiss()
-            requireActivity().runOnUiThread {
-                Toast.makeText(
-                    requireContext(),
-                    "Successfully uploaded all the item",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            val sp = requireActivity().getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+            val sp =
+                requireActivity().getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
             val name = sp.getString(Constants.LOGGED_IN_USER, "")
             val userImage = sp.getString(Constants.USER_PROFILE_IMAGE, "")
             val mobileNumber = sp.getString(Constants.MOBILE_NUMBER, "")
@@ -305,8 +280,8 @@ class ConfirmDonationRequestFragment : Fragment() {
                 args.proposedRequest.id,
                 completed = false,
                 approved = false,
-                isCancel = false,
-                isDenied = false,
+                cancel = false,
+                denied = false,
                 deniedMessage = "",
                 foodBankImage = args.proposedRequest.foodBankImage,
                 foodBankID = args.proposedRequest.foodBankID,
@@ -324,11 +299,45 @@ class ConfirmDonationRequestFragment : Fragment() {
                 requestImages = imageURL
             )
 
-            val saveStatus = DatabaseRepo().saveRequestDonation(this, currentRequest)
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val saveRequest = DatabaseRepo().saveRequestDonation(
+                        currentRequest,
+                        this@ConfirmDonationRequestFragment
+                    )
 
-            if (saveStatus) {
-                findNavController().popBackStack()
+                    requireActivity().runOnUiThread {
+                        val viewsUpdate =
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
+                        val builderUpdate = AlertDialog.Builder(requireActivity())
+                        builderUpdate.setView(viewsUpdate)
+                        val dialogUpdate = builderUpdate.create()
+                        dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        if (saveRequest) {
+                            viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                                "Your request have been saved"
+                        } else {
+                            viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                                "There was an error while saving your request"
+                        }
+
+                        dialogUpdate.show()
+
+                        viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            findNavController().navigate(
+                                ConfirmDonationRequestFragmentDirections.actionConfirmDonationRequestFragmentToDashboardDonatorFragment()
+                            )
+                            dialogUpdate.dismiss()
+                        }
+                    }
+                }
             }
+
         } else {
             mProgressDialog.dismiss()
             requireActivity().runOnUiThread {

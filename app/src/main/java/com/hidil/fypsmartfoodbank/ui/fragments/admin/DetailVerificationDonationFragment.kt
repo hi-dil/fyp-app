@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentDetailVerificationDonationBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
@@ -109,6 +111,27 @@ class DetailVerificationDonationFragment : Fragment() {
                 dialog.dismiss()
             }
         }
+
+        binding.btnDeny.setOnClickListener {
+            val views = View.inflate(requireContext(), R.layout.alert_dialog_deny_request, null)
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setView(views)
+
+            val dialog = builder.create()
+            dialog.show()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            views.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            views.findViewById<Button>(R.id.btn_denyRequest).setOnClickListener {
+                val reason = views.findViewById<TextInputEditText>(R.id.et_reason).text.toString()
+                denyRequest(reason)
+                dialog.dismiss()
+            }
+        }
+
         return binding.root
     }
 
@@ -190,6 +213,54 @@ class DetailVerificationDonationFragment : Fragment() {
                         views.findViewById<TextView>(R.id.tv_text).text =
                             "Fail to update user's request"
                         dialog.show()
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun denyRequest(reason: String) {
+
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                currentRequest.denied = true
+                currentRequest.completed = true
+                currentRequest.deniedMessage = reason
+
+                val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DetailVerificationDonationFragment)
+
+                requireActivity().runOnUiThread {
+                    if (updateRequest) {
+                        val views =
+                            View.inflate(requireContext(), R.layout.alert_dialog_complete_request, null)
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder.setView(views)
+                        val dialog = builder.create()
+                        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialog.dismiss()
+                        }
+
+                        // check if the request successfully update to firestore and rdbs
+                        if (updateRequest) {
+                            views.findViewById<TextView>(R.id.tv_text).text =
+                                "Successfully deny user's request"
+
+                            views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                                findNavController().navigate(
+                                    DetailVerificationDonationFragmentDirections.actionDetailVerificationDonationFragmentToDashboardAdminFragment()
+                                )
+                                dialog.dismiss()
+                            }
+
+                            dialog.show()
+                        } else {
+                            views.findViewById<TextView>(R.id.tv_text).text =
+                                "Fail to deny user's request"
+                            dialog.show()
+                        }
                     }
                 }
             }

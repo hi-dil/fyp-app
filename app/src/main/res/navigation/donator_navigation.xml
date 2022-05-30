@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_donationRequestDetailsFragment_to_unlockOptionsDonatorFragment"
             app:destination="@id/unlockOptionsDonatorFragment" />
+        <action
+            android:id="@+id/action_donationRequestDetailsFragment_to_dashboardDonatorFragment"
+            app:destination="@id/dashboardDonatorFragment" />
     </fragment>
     <fragment
         android:id="@+id/locationFragment2"
@@ -53,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment3"
-        android:name="com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragment"
         android:label="fragment_food_bank_info"
         tools:layout="@layout/fragment_food_bank_info">
         <argument
@@ -100,6 +103,9 @@
         <argument
             android:name="currentFoodBank"
             app:argType="com.hidil.fypsmartfoodbank.model.FoodBank" />
+        <action
+            android:id="@+id/action_confirmDonationRequestFragment_to_dashboardDonatorFragment"
+            app:destination="@id/dashboardDonatorFragment" />
     </fragment>
     <fragment
         android:id="@+id/userInfoFragment2"

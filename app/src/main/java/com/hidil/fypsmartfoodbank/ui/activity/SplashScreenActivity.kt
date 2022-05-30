@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -47,14 +48,17 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         if (hasLocationPermission()) {
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                val spEditor = sp.edit()
-                spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
-                spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
-                spEditor.apply()
 
-                currentLat = location.latitude
-                currentLong = location.longitude
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val spEditor = sp.edit()
+                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                    spEditor.apply()
+
+                    currentLat = location.latitude
+                    currentLong = location.longitude
+                }
             }
         } else {
             requestLocationPermission()
@@ -102,8 +106,8 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
 
                         finish()
                     } else if (userRole.lowercase() == "admin") {
-                        val oldestDonationRequest = DatabaseRepo().getOldDonationRequest()
-                        val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest()
+                        val oldestDonationRequest = DatabaseRepo().getOldDonationRequest(3)
+                        val oldestClaimRequest = DatabaseRepo().getOldestClaimRequest(3)
 
                         if (currentUserID.isNotEmpty()) {
                             val intent =

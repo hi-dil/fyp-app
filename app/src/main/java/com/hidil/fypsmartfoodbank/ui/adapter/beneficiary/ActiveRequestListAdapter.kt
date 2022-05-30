@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
@@ -80,6 +82,11 @@ open class ActiveRequestListAdapter(
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             fragment.requireActivity().startActivity(mapIntent)
+        }
+
+        if (model.approved) {
+            holder.binding.tvProgress.text = "Approved"
+            holder.binding.tvProgress.background = ContextCompat.getDrawable(fragment.requireContext(), R.drawable.approved_tag)
         }
 
     }

@@ -16,11 +16,11 @@ import com.hidil.fypsmartfoodbank.ui.activity.EditProfileActivity
 import com.hidil.fypsmartfoodbank.ui.activity.Login
 import com.hidil.fypsmartfoodbank.ui.activity.SignUp
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
-import com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.UserInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -150,9 +150,6 @@ class DatabaseRepo {
                 }
 
                 when (fragment) {
-                    is ClaimRequestFragment -> fragment.successRequestFromFirestore(
-                        activeRequestList
-                    )
                     is ConfirmRequestFragment -> fragment.assignActiveRequest(activeRequestList)
                     is UserInfoFragment -> fragment.getActiveRequest(activeRequestList)
                 }
@@ -166,6 +163,7 @@ class DatabaseRepo {
                 .whereEqualTo(Constants.REQUEST_COMPLETE, false)
                 .whereEqualTo(Constants.IS_DENIED, false)
                 .whereEqualTo(Constants.IS_CANCEL, false)
+                .orderBy(Constants.REQUEST_DATE, Query.Direction.DESCENDING)
                 .get()
                 .await()
 
@@ -196,9 +194,6 @@ class DatabaseRepo {
                 }
 
                 when (fragment) {
-                    is ClaimRequestFragment -> {
-                        fragment.successGetPastRequest(pastRequestList)
-                    }
                     is UserInfoFragment -> fragment.getPastRequest(pastRequestList)
                 }
             }
@@ -209,6 +204,27 @@ class DatabaseRepo {
                 )
             }
     }
+
+    suspend fun getPastRequestAsync(): ArrayList<Request> {
+        return withContext(Dispatchers.IO) {
+            val querySnapshot = mFirestore.collection(Constants.REQUEST)
+                .whereEqualTo(Constants.USER_ID, AuthenticationRepo().getCurrentUserID())
+                .whereEqualTo(Constants.REQUEST_COMPLETE, true)
+                .orderBy(Constants.REQUEST_DATE, Query.Direction.DESCENDING)
+                .get()
+                .await()
+
+            val activeRequest: ArrayList<Request> = ArrayList()
+            for (i in querySnapshot.documents) {
+                val request = i.toObject(Request::class.java)
+                request!!.id = i.id
+                activeRequest.add(request)
+            }
+            return@withContext activeRequest
+        }
+
+    }
+
 
     fun getLocation(activity: Activity) {
         val dataChunk: ArrayList<DataChunk> = ArrayList()
@@ -415,6 +431,7 @@ class DatabaseRepo {
                 .whereEqualTo(Constants.REQUEST_COMPLETE, false)
                 .whereEqualTo(Constants.IS_DENIED, false)
                 .whereEqualTo(Constants.IS_CANCEL, false)
+                .orderBy(Constants.REQUEST_DATE, Query.Direction.DESCENDING)
                 .get()
                 .await()
 
@@ -432,55 +449,47 @@ class DatabaseRepo {
         }
     }
 
-    fun saveRequestDonation(fragment: Fragment, request: DonationRequest): Boolean {
-        var success = false
-        mFirestore.collection(Constants.DONATION_REQUEST)
-            .document()
-            .set(request, SetOptions.merge())
-            .addOnSuccessListener {
-                Toast.makeText(
-                    fragment.requireContext(),
-                    "Successfully save the request to the database",
-                    Toast.LENGTH_SHORT
-                ).show()
-                success = true
-            }
-            .addOnFailureListener {
-                Toast.makeText(
-                    fragment.requireContext(),
-                    "Error while saving request",
-                    Toast.LENGTH_SHORT
-                ).show()
+    suspend fun getOldCompleteDonationRequest(fragment: Fragment): ArrayList<DonationRequest> {
+        return withContext(Dispatchers.IO) {
+            val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
+                .whereEqualTo(Constants.REQUEST_COMPLETE, true)
+                .orderBy("requestDate", Query.Direction.DESCENDING)
+                .limit(5)
+                .get()
+                .await()
+
+            val donationRequest: ArrayList<DonationRequest> = ArrayList()
+            for (i in querySnapshot.documents) {
+                val request = i.toObject(DonationRequest::class.java)
+                request!!.id = i.id
+                donationRequest.add(request)
             }
 
-        return success
-    }
-
-    fun getPastDonationRequest(fragment: Fragment, id: String) {
-        mFirestore.collection(Constants.DONATION_REQUEST)
-            .whereEqualTo(Constants.USER_ID, id)
-            .whereEqualTo(Constants.REQUEST_COMPLETE, true)
-            .get()
-            .addOnSuccessListener { document ->
-                val pastRequestList: ArrayList<DonationRequest> = ArrayList()
-                for (i in document.documents) {
-                    val request = i.toObject(DonationRequest::class.java)
-                    request!!.id = i.id
-                    pastRequestList.add(request)
-                }
-
-                when (fragment) {
-                    is DonationRequestFragment -> fragment.getPastRequest(pastRequestList)
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(
-                    fragment.javaClass.simpleName,
-                    "Error while getting past request " + e.message.toString()
-                )
-            }
+            return@withContext donationRequest
+        }
 
     }
+
+    suspend fun saveRequestDonation(request: DonationRequest, fragment: Fragment): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+
+            mFirestore.collection(Constants.DONATION_REQUEST)
+                .document()
+                .set(request, SetOptions.merge())
+                .addOnSuccessListener { success = true }
+                .addOnFailureListener {
+                    Log.e(
+                        fragment.javaClass.simpleName.toString(),
+                        it.message.toString()
+                    )
+                }
+                .await()
+
+            return@withContext success
+        }
+    }
+
 
     fun updateUserProfile(fragment: Fragment, user: User) {
         mFirestore.collection(Constants.USERS)
@@ -493,12 +502,13 @@ class DatabaseRepo {
 
     // admin
 
-    suspend fun getOldestClaimRequest(): ArrayList<Request> {
+    suspend fun getOldestClaimRequest(count: Long): ArrayList<Request> {
         return withContext(Dispatchers.IO) {
             val querySnapshot = mFirestore.collection(Constants.REQUEST)
                 .whereEqualTo(Constants.REQUEST_APPROVED, false)
+                .whereEqualTo(Constants.REQUEST_COMPLETE, false)
                 .orderBy("requestDate", Query.Direction.DESCENDING)
-                .limit(3)
+                .limit(count)
                 .get()
                 .await()
 
@@ -513,12 +523,13 @@ class DatabaseRepo {
         }
     }
 
-    suspend fun getOldDonationRequest(): ArrayList<DonationRequest> {
+    suspend fun getOldDonationRequest(count: Long): ArrayList<DonationRequest> {
         return withContext(Dispatchers.IO) {
             val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
                 .whereEqualTo(Constants.REQUEST_APPROVED, false)
+                .whereEqualTo(Constants.REQUEST_COMPLETE, false)
                 .orderBy("requestDate", Query.Direction.DESCENDING)
-                .limit(3)
+                .limit(count)
                 .get()
                 .await()
 
@@ -576,5 +587,4 @@ class DatabaseRepo {
             return@withContext success
         }
     }
-
 }

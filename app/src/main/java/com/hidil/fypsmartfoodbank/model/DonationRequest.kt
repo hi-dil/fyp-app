@@ -6,10 +6,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class DonationRequest(
     var id: String = "",
-    val completed: Boolean = false,
+    var completed: Boolean = false,
     var approved: Boolean = false,
-    var isCancel: Boolean = false,
-    var isDenied: Boolean = false,
+    var cancel: Boolean = false,
+    var denied: Boolean = false,
     var deniedMessage: String = "",
     val foodBankImage: String = "",
     val foodBankID: String = "",

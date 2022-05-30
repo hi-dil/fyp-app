@@ -21,7 +21,14 @@
         android:id="@+id/requestVerificationFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.RequestVerificationFragment"
         android:label="fragment_request_verification_claim"
-        tools:layout="@layout/fragment_request_verification_claim" />
+        tools:layout="@layout/fragment_request_verification" >
+        <action
+            android:id="@+id/action_requestVerificationFragment_to_detailVerificationClaimFragment"
+            app:destination="@id/detailVerificationClaimFragment" />
+        <action
+            android:id="@+id/action_requestVerificationFragment_to_detailVerificationDonationFragment"
+            app:destination="@id/detailVerificationDonationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/locationFragment3"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"

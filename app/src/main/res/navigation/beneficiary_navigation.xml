@@ -57,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment"
-        android:name="com.hidil.fypsmartfoodbank.ui.fragments.FoodBankInfoFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragment"
         android:label="food_bank_info_fragment"
         tools:layout="@layout/fragment_food_bank_info" >
         <action

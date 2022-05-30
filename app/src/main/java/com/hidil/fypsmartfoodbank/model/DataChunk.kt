@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class DataChunk (
+data class DataChunk (
     val collectionName: String = "",
     val location: ArrayList<Location> = ArrayList()
 ): Parcelable

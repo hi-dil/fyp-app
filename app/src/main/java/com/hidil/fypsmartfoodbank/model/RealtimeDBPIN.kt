@@ -4,8 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class RealtimeDBPIN(
+data class RealtimeDBPIN(
     val dayCreated: Long = 0,
     val requestID: String = "",
-    val requestType: String = ""
+    val requestType: String = "",
+    val currentPin: Int = 0
 ) : Parcelable

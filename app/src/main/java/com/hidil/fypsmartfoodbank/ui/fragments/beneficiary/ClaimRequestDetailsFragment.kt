@@ -42,7 +42,7 @@ class ClaimRequestDetailsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentClaimRequestDetailsBinding.inflate(inflater, container, false)
         itemList = args.currentRequest.items
         currentRequest = args.currentRequest
@@ -61,6 +61,15 @@ class ClaimRequestDetailsFragment : Fragment() {
 
         if (currentRequest.cancel) {
             binding.tvFailureTag.visibility = View.VISIBLE
+            binding.btnCancelRequest.visibility = View.GONE
+        } else if (currentRequest.denied) {
+            binding.tvFailureTag.visibility = View.VISIBLE
+            binding.tvFailureTag.text = "Denied"
+            binding.btnShowReason.visibility = View.VISIBLE
+            binding.btnCancelRequest.visibility = View.GONE
+        } else if (currentRequest.completed) {
+            binding.btnCancelRequest.visibility = View.GONE
+            binding.btnComplete.visibility = View.VISIBLE
         }
 
         binding.fabBack.setOnClickListener {
@@ -103,10 +112,25 @@ class ClaimRequestDetailsFragment : Fragment() {
             binding.btnTakeItem.visibility = View.VISIBLE
         }
 
-        if (currentRequest.completed) {
-            binding.btnCancelRequest.visibility = View.GONE
-            binding.btnComplete.visibility = View.VISIBLE
+        binding.btnShowReason.setOnClickListener {
+            val viewsUpdate =
+                View.inflate(
+                    requireContext(),
+                    R.layout.alert_dialog_complete_request,
+                    null
+                )
+            val builderUpdate = AlertDialog.Builder(requireActivity())
+            builderUpdate.setView(viewsUpdate)
+            val dialogUpdate = builderUpdate.create()
+            dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            viewsUpdate.findViewById<TextView>(R.id.tv_text).text = currentRequest.deniedMessage
+            viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                dialogUpdate.dismiss()
+            }
+            dialogUpdate.show()
         }
+
 
         return binding.root
     }
@@ -172,9 +196,12 @@ class ClaimRequestDetailsFragment : Fragment() {
             currentRequest.completed = true
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
-                    val getFoodBank = DatabaseRepo().searchFoodBank(this@ClaimRequestDetailsFragment, currentRequest.foodBankID)
+                    val getFoodBank = DatabaseRepo().searchFoodBank(
+                        this@ClaimRequestDetailsFragment,
+                        currentRequest.foodBankID
+                    )
                     var foodbankData: FoodBank = FoodBank()
-                    if (getFoodBank.size > 0){
+                    if (getFoodBank.size > 0) {
                         foodbankData = getFoodBank[0]
                     }
 
@@ -192,7 +219,10 @@ class ClaimRequestDetailsFragment : Fragment() {
                     )
 
                     val updateFoodBank =
-                        DatabaseRepo().updateFoodBank(this@ClaimRequestDetailsFragment, foodbankData)
+                        DatabaseRepo().updateFoodBank(
+                            this@ClaimRequestDetailsFragment,
+                            foodbankData
+                        )
 
                     requireActivity().runOnUiThread {
                         requireActivity().hideProgressDialog()
