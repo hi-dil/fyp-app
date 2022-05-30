@@ -227,6 +227,7 @@ class DetailVerificationDonationFragment : Fragment() {
                 currentRequest.denied = true
                 currentRequest.completed = true
                 currentRequest.deniedMessage = reason
+                currentRequest.lastUpdate = System.currentTimeMillis()
 
                 val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DetailVerificationDonationFragment)
 

@@ -2,6 +2,7 @@ package com.hidil.fypsmartfoodbank.ui.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
@@ -72,6 +75,9 @@ class FavouriteFoodBankListAdapter(
             mapIntent.setPackage("com.google.android.apps.maps")
             fragment.requireActivity().startActivity(mapIntent)
         }
+
+        val address = Geocoder(context, Locale.getDefault()).getFromLocation(model.lat.toDouble(), model.long.toDouble(), 1)
+        holder.binding.tvAddress.text = "${address[0].locality}, ${address[0].adminArea}"
 
         holder.itemView.setOnClickListener { view ->
             CoroutineScope(IO).launch {

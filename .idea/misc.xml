@@ -113,7 +113,7 @@
         <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_list_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_request_list_layout.xml" value="0.16160081053698075" />
-        <entry key="app/src/main/res/layout/list_layout_request.xml" value="0.16160081053698075" />
+        <entry key="app/src/main/res/layout/list_layout_request.xml" value="0.33" />
         <entry key="app/src/main/res/layout/location_list_view_fragment.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/request_list_layout.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/storage_info_fragment.xml" value="0.22" />

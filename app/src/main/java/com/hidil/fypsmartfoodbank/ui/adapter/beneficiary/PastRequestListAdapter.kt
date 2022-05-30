@@ -18,6 +18,9 @@ import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class PastRequestListAdapter(
     private val context: Context,
@@ -40,6 +43,15 @@ open class PastRequestListAdapter(
         holder.binding.tvProgress.text = "Completed"
         holder.binding.tvProgress.background = ContextCompat.getDrawable(context, R.drawable.complete_tag)
         holder.binding.tvProgress.setTextColor(ContextCompat.getColor(context, R.color.white))
+
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = model.lastUpdate
+        val date = formatter.format(calendar.time)
+
+        holder.binding.tvAddress.text = "Last update - $date"
 
         holder.itemView.setOnClickListener { view ->
             view.findNavController().navigate(ClaimRequestFragmentDirections.actionClaimRequestFragmentToClaimRequestDetailsFragment(model))

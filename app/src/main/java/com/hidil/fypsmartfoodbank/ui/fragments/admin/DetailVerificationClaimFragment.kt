@@ -210,6 +210,7 @@ class DetailVerificationClaimFragment : Fragment() {
                 currentRequest.denied = true
                 currentRequest.deniedMessage = reason
                 currentRequest.completed = true
+                currentRequest.lastUpdate = System.currentTimeMillis()
 
                 val getFoodBank = DatabaseRepo().searchFoodBank(this@DetailVerificationClaimFragment, currentRequest.foodBankID)
                 var foodbankData: FoodBank = FoodBank()

@@ -2,7 +2,9 @@ package com.hidil.fypsmartfoodbank.ui.adapter.beneficiary
 
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -18,6 +20,9 @@ import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragmentD
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 open class ActiveRequestListAdapter(
     private val context: Context,
@@ -47,6 +52,16 @@ open class ActiveRequestListAdapter(
         )
         holder.binding.tvFbName.text = model.foodBankName
 //        holder.binding.tvAddress.text = model.address
+
+
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = model.lastUpdate
+        val date = formatter.format(calendar.time)
+
+        holder.binding.tvAddress.text = "Last update - $date"
 
         holder.itemView.setOnClickListener { view ->
             when (fragment) {

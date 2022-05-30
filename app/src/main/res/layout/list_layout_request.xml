@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/iv_foodBankImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:scaleType="centerCrop"
             android:src="@drawable/img_placeholder"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,6 +37,15 @@
             app:layout_constraintHorizontal_bias="0.084"
             app:layout_constraintStart_toEndOf="@id/iv_foodBankImage"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="address"
+            app:layout_constraintStart_toStartOf="@id/tv_fbName"
+            app:layout_constraintTop_toBottomOf="@id/tv_fbName"
+            />
 
         <!--        <TextView-->
         <!--            android:id="@+id/tv_address"-->
@@ -63,7 +72,7 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@id/tv_fbName"
-            app:layout_constraintTop_toBottomOf="@id/tv_fbName" />
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
             android:id="@+id/tv_distance"
@@ -73,7 +82,7 @@
             android:text="2 km"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/tv_fbName"
-            app:layout_constraintTop_toBottomOf="@id/tv_fbName" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <ImageView
             android:id="@+id/iv_navigate"

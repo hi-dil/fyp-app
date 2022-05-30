@@ -133,9 +133,9 @@ class DonationRequestDetailsFragment : Fragment() {
         }
 
         if (currentRequest.approved && !currentRequest.completed) {
-            binding.tvProgress.text = "verified"
+            binding.tvProgress.text = "Approved"
             binding.tvProgress.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.complete_tag)
+                ContextCompat.getDrawable(requireContext(), R.drawable.approved_tag)
             binding.btnDonateItem.visibility = View.VISIBLE
         }
 
@@ -164,6 +164,7 @@ class DonationRequestDetailsFragment : Fragment() {
             requireActivity().showProgressDialog()
             currentRequest.cancel = true
             currentRequest.completed = true
+            currentRequest.lastUpdate = System.currentTimeMillis()
 
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {

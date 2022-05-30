@@ -453,7 +453,7 @@ class DatabaseRepo {
         return withContext(Dispatchers.IO) {
             val querySnapshot = mFirestore.collection(Constants.DONATION_REQUEST)
                 .whereEqualTo(Constants.REQUEST_COMPLETE, true)
-                .orderBy("requestDate", Query.Direction.DESCENDING)
+                .orderBy("lastUpdate", Query.Direction.DESCENDING)
                 .limit(5)
                 .get()
                 .await()

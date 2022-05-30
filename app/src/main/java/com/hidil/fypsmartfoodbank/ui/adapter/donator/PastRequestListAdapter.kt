@@ -15,6 +15,9 @@ import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PastRequestListAdapter(
     private val context: Context,
@@ -37,6 +40,15 @@ class PastRequestListAdapter(
         holder.binding.tvProgress.text = "Completed"
         holder.binding.tvProgress.background = ContextCompat.getDrawable(context, R.drawable.complete_tag)
         holder.binding.tvProgress.setTextColor(ContextCompat.getColor(context, R.color.white))
+
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = model.lastUpdate
+        val date = formatter.format(calendar.time)
+
+        holder.binding.tvAddress.text = "Last update - $date"
 
         holder.binding.ivNavigate.setOnClickListener {
             val gmmIntentUri =

@@ -106,9 +106,9 @@ class ClaimRequestDetailsFragment : Fragment() {
         }
 
         if (currentRequest.approved && !currentRequest.completed) {
-            binding.tvProgress.text = "verified"
+            binding.tvProgress.text = "Approve"
             binding.tvProgress.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.complete_tag)
+                ContextCompat.getDrawable(requireContext(), R.drawable.approved_tag)
             binding.btnTakeItem.visibility = View.VISIBLE
         }
 
@@ -194,6 +194,7 @@ class ClaimRequestDetailsFragment : Fragment() {
             requireActivity().showProgressDialog()
             currentRequest.cancel = true
             currentRequest.completed = true
+            currentRequest.lastUpdate = System.currentTimeMillis()
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
                     val getFoodBank = DatabaseRepo().searchFoodBank(

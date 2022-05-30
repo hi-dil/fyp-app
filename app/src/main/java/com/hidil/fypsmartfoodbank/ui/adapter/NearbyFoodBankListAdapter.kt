@@ -2,6 +2,7 @@ package com.hidil.fypsmartfoodbank.ui.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class NearbyFoodBankListAdapter(
     private val context: Context,
@@ -52,6 +55,9 @@ class NearbyFoodBankListAdapter(
         df.roundingMode = RoundingMode.DOWN
         val rfDistance = df.format(distance)
         holder.binding.tvDistance.text = "${rfDistance} km"
+
+        val address = Geocoder(context, Locale.getDefault()).getFromLocation(model.lat.toDouble(), model.long.toDouble(), 1)
+        holder.binding.tvAddress.text = "${address[0].locality}, ${address[0].adminArea}"
 
         holder.binding.ivNavigate.setOnClickListener {
             val gmmIntentUri =

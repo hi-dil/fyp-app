@@ -18,6 +18,9 @@ import com.hidil.fypsmartfoodbank.ui.fragments.donator.DashboardDonatorFragmentD
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ActiveRequestListAdapter(
     private val context: Context,
@@ -47,6 +50,15 @@ class ActiveRequestListAdapter(
         )
         holder.binding.tvFbName.text = model.foodBankName
 //        holder.binding.tvAddress.text = model.address
+
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+
+        calendar.timeInMillis = model.lastUpdate
+        val date = formatter.format(calendar.time)
+
+        holder.binding.tvAddress.text = "Last update - $date"
 
         holder.itemView.setOnClickListener { view ->
             when (fragment) {
