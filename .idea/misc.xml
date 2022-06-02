@@ -95,7 +95,7 @@
         <entry key="app/src/main/res/drawable/success_tag.xml" value="0.2745" />
         <entry key="app/src/main/res/layout/active_request_list_layout.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_beneficiary_main.xml" value="0.3333333333333333" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.16109422492401215" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/alert_dialog.xml" value="0.2441123188405797" />
         <entry key="app/src/main/res/layout/alert_dialog_complete_qr_scan.xml" value="0.1" />
         <entry key="app/src/main/res/layout/alert_dialog_complete_request.xml" value="0.1" />
@@ -113,7 +113,13 @@
         <entry key="app/src/main/res/layout/fragment_user_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_list_layout.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_request_list_layout.xml" value="0.16160081053698075" />
+        <entry key="app/src/main/res/layout/list_layout_donation_item.xml" value="0.33229166666666665" />
+        <entry key="app/src/main/res/layout/list_layout_image.xml" value="0.33229166666666665" />
+        <entry key="app/src/main/res/layout/list_layout_item.xml" value="0.33229166666666665" />
         <entry key="app/src/main/res/layout/list_layout_request.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/list_layout_request_verification.xml" value="0.33229166666666665" />
+        <entry key="app/src/main/res/layout/list_layout_storage_item.xml" value="0.33229166666666665" />
+        <entry key="app/src/main/res/layout/list_layout_user_access.xml" value="0.33229166666666665" />
         <entry key="app/src/main/res/layout/location_list_view_fragment.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/request_list_layout.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/storage_info_fragment.xml" value="0.22" />

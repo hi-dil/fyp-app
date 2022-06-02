@@ -6,6 +6,9 @@
     android:layout_marginTop="@dimen/normal_margin_padding"
     android:layout_marginBottom="@dimen/small_margin_padding"
     android:overScrollMode="never"
+    android:layout_marginStart="@dimen/medium_margin_padding"
+    android:layout_marginEnd="@dimen/medium_margin_padding"
+    app:cardBackgroundColor="@color/cardBackground"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp">
 

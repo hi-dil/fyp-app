@@ -7,6 +7,7 @@
     android:layout_marginTop="@dimen/normal_margin_padding"
     android:layout_marginEnd="@dimen/medium_margin_padding"
     android:layout_marginBottom="@dimen/small_margin_padding"
+    app:cardBackgroundColor="@color/cardBackground"
     android:overScrollMode="never"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp">
@@ -78,6 +79,7 @@
         <TextView
             android:id="@+id/tv_amount"
             android:layout_width="wrap_content"
+            android:backgroundTint="@color/cardBackground"
             android:layout_height="wrap_content"
             android:background="@drawable/textview_border"
             android:paddingStart="@dimen/small_margin_padding"

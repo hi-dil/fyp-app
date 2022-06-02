@@ -9,12 +9,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="secondaryColor">#FABB51</color>
     <color name="primaryColor">#3E8E7E</color>
-    <color name="primaryText">#262626</color>
-    <color name="secondaryText">#5C5C5C</color>
+    <color name="primaryText">#F3F3F3</color>
+    <color name="secondaryText">#B6B6B6</color>
     <color name="link">#4871AF</color>
     <color name="danger">#E04040</color>
     <color name="dangerFill">#FFEDED</color>
     <color name="background">#FAEDC6</color>
     <color name="gray">#C2C2C2</color>
-    <color name="cardBackground">#F3F3F3</color>
+    <color name="cardBackground">#222222</color>
 </resources>

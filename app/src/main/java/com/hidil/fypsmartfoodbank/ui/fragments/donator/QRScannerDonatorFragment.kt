@@ -22,10 +22,15 @@ import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentQrScannerDonatorBinding
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
+import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.QRScannerFragmentArgs
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.QRScannerFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QRScannerDonatorFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
@@ -86,10 +91,28 @@ class QRScannerDonatorFragment : Fragment(), EasyPermissions.PermissionCallbacks
         codeScanner.isFlashEnabled = true
         codeScanner.scanMode = ScanMode.SINGLE
 
-        codeScanner.decodeCallback = DecodeCallback {
+        codeScanner.decodeCallback = DecodeCallback { scanResult ->
             requireActivity().runOnUiThread{
-                if (it.text == args.storageID) {
-                    RealtimeDBRepo().unlockStorage(this, args.storageID)
+                if (scanResult.text == args.storageID) {
+                    var currentPin = 0
+                    for (i in args.currentRequest.items) {
+                        if (scanResult.text == i.storageID) {
+                            currentPin = i.storagePIN.toInt()
+                        }
+                    }
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        withContext(Dispatchers.Default) {
+                            val unlockStorage = RealtimeDBRepo().unlockStorageAsync(this@QRScannerDonatorFragment, args.storageID)
+                            val currentPin = RealtimeDBRepo().setCurrentPin(currentPin, args.storageID, this@QRScannerDonatorFragment)
+
+                            if (unlockStorage && currentPin) {
+                                showSuccessDialog()
+                            } else {
+                                showFailureDialog()
+                            }
+                        }
+                    }
                 } else {
                     val views = View.inflate(requireContext(), R.layout.alert_dialog_complete_qr_scan, null)
 

@@ -24,6 +24,11 @@ import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
@@ -81,10 +86,28 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         codeScanner.isFlashEnabled = true
         codeScanner.scanMode = ScanMode.SINGLE
 
-        codeScanner.decodeCallback = DecodeCallback {
+        codeScanner.decodeCallback = DecodeCallback { scanResult ->
             requireActivity().runOnUiThread{
-                if (it.text == args.storageID) {
-                    RealtimeDBRepo().unlockStorage(this, args.storageID)
+                if (scanResult.text == args.storageID) {
+                    var currentPin = 0
+                    for (i in args.currentRequest.items) {
+                        if (scanResult.text == i.storageID) {
+                            currentPin = i.storagePIN.toInt()
+                        }
+                    }
+
+                    CoroutineScope(IO).launch {
+                        withContext(Dispatchers.Default) {
+                            val unlockStorage = RealtimeDBRepo().unlockStorageAsync(this@QRScannerFragment, args.storageID)
+                            val currentPin = RealtimeDBRepo().setCurrentPin(currentPin, args.storageID, this@QRScannerFragment)
+
+                            if (unlockStorage && currentPin) {
+                                showSuccessDialog()
+                            } else {
+                                showFailureDialog()
+                            }
+                        }
+                    }
                 } else {
                     val views = View.inflate(requireContext(), R.layout.alert_dialog_complete_qr_scan, null)
 

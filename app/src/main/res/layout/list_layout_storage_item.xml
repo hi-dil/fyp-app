@@ -3,10 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/medium_margin_padding"
+    android:layout_marginEnd="@dimen/medium_margin_padding"
     android:layout_marginTop="@dimen/normal_margin_padding"
     android:layout_marginBottom="@dimen/small_margin_padding"
     android:overScrollMode="never"
     app:cardCornerRadius="10dp"
+    app:cardBackgroundColor="@color/cardBackground"
     app:cardElevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,6 +99,7 @@
                 android:id="@+id/tv_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/cardBackground"
                 android:background="@drawable/textview_border"
                 android:paddingStart="@dimen/small_margin_padding"
                 android:paddingEnd="@dimen/small_margin_padding"

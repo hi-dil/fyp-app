@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/normal_margin_padding"
+    app:cardBackgroundColor="@color/cardBackground"
     android:layout_marginTop="@dimen/normal_margin_padding"
     android:layout_marginEnd="@dimen/normal_margin_padding"
     android:layout_marginBottom="@dimen/small_margin_padding"

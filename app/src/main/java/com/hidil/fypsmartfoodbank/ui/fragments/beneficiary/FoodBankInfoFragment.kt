@@ -23,6 +23,11 @@ import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.AvailableFoodBankItemsListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FoodBankInfoFragment : Fragment() {
     private var _binding: FragmentFoodBankInfoBinding? = null
@@ -43,7 +48,7 @@ class FoodBankInfoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentFoodBankInfoBinding.inflate(inflater, container, false)
-        DatabaseRepo().searchFoodBankDetails(this, args.foodBankID)
+        getFoodBankData()
 
         binding.fabBack.setOnClickListener {
             requireActivity().onBackPressed()
@@ -206,22 +211,33 @@ class FoodBankInfoFragment : Fragment() {
     }
 
 
-    fun getFoodBankData(foodBank: FoodBank) {
-        mFoodBank = foodBank
-        Log.i("test", mFoodBank.id)
-        GlideLoader(requireContext()).loadFoodBankPicture(foodBank.foodBankImage, binding.ivHeader)
-        binding.tvAddress.text = foodBank.address
-        binding.tvTitle.text = foodBank.foodBankName
+    private fun getFoodBankData() {
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val foodbank = DatabaseRepo().searchFoodBank(this@FoodBankInfoFragment, args.foodBankID)
+                if (foodbank.size > 0) {
+                    val foodBank = foodbank[0]
+                    mFoodBank = foodBank
 
-        binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
-        binding.rvAvailableItems.setHasFixedSize(true)
-        val availableListAdapter =
-            AvailableFoodBankItemsListAdapter(requireActivity(), foodBank.storage, this)
-        binding.rvAvailableItems.adapter = availableListAdapter
+                    requireActivity().runOnUiThread {
+                        GlideLoader(requireContext()).loadFoodBankPicture(foodBank.foodBankImage, binding.ivHeader)
+                        binding.tvAddress.text = foodBank.address
+                        binding.tvTitle.text = foodBank.foodBankName
 
-        for (i in foodBank.storage) {
-            itemAmount.add(0)
+                        binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
+                        binding.rvAvailableItems.setHasFixedSize(true)
+                        val availableListAdapter =
+                            AvailableFoodBankItemsListAdapter(requireActivity(), foodBank.storage, this@FoodBankInfoFragment)
+                        binding.rvAvailableItems.adapter = availableListAdapter
+
+                        for (i in foodBank.storage) {
+                            itemAmount.add(0)
+                        }
+                    }
+                }
+            }
         }
+
     }
 
     fun changeItemAmount(position: Int, isAdd: Boolean) {

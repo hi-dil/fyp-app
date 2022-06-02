@@ -7,6 +7,7 @@
     android:layout_marginBottom="@dimen/small_margin_padding"
     android:overScrollMode="never"
     app:cardCornerRadius="10dp"
+    app:cardBackgroundColor="@color/cardBackground"
     android:layout_marginStart="@dimen/small_margin_padding"
     android:layout_marginEnd="@dimen/small_margin_padding"
     app:cardElevation="5dp">

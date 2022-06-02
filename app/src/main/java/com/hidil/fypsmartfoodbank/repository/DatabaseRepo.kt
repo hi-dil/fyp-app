@@ -266,25 +266,6 @@ class DatabaseRepo {
         }
     }
 
-    fun searchFoodBankDetails(fragment: FoodBankInfoFragment, id: String) {
-        Log.i("test", id)
-        mFirestore.collection(Constants.FOODBANK)
-            .whereEqualTo(FieldPath.documentId(), id)
-            .get()
-            .addOnSuccessListener { document ->
-                val foodBankRequest: ArrayList<FoodBank> = ArrayList()
-                for (i in document.documents) {
-                    val data = i.toObject(FoodBank::class.java)
-                    data!!.id = i.id
-
-                    foodBankRequest.add(data)
-                }
-                if (foodBankRequest.size > 0) {
-                    fragment.getFoodBankData(foodBankRequest[0])
-                }
-            }
-    }
-
     suspend fun searchFoodBank(fragment: Fragment, id: String): ArrayList<FoodBank> {
         return withContext(Dispatchers.IO) {
             val foodbankList: ArrayList<FoodBank> = ArrayList()
