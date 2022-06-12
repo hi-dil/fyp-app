@@ -1,12 +1,17 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.donator
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardDonatorBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
@@ -20,6 +25,8 @@ import com.hidil.fypsmartfoodbank.ui.adapter.donator.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.viewModel.donator.DashboardViewModel
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -29,15 +36,17 @@ import kotlin.math.acos
 import kotlin.math.cos
 import kotlin.math.sin
 
-class DashboardDonatorFragment : Fragment() {
+class DashboardDonatorFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentDashboardDonatorBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var viewModel: DashboardViewModel
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
 
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,25 +57,46 @@ class DashboardDonatorFragment : Fragment() {
         val activeRequest =
             requireActivity().intent.getParcelableArrayListExtra<DonationRequest>("activeRequest")
         val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
-        val locationList =
+        val foodbankList =
             requireActivity().intent.getParcelableArrayListExtra<Location>("locationList")
+
 
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val name = userDetails?.name
         val userImage = userDetails!!.image
         val city = userDetails.city
         val state = userDetails.state
-        currentLat = sp?.getString(Constants.CURRENT_LAT, "")!!.toDouble()
-        currentLong = sp.getString(Constants.CURRENT_LONG, "")!!.toDouble()
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        if (hasLocationPermission()) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val spEditor = sp!!.edit()
+                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                    spEditor.apply()
+
+                    currentLat = location.latitude
+                    currentLong = location.longitude
+
+                    val locationList: ArrayList<Location>
+
+                    if (foodbankList != null) {
+                        val sortList = sortLocation(foodbankList)
+                        locationList = ArrayList(sortList)
+                        attachNearbyFoodBank(locationList)
+                    }
+
+                    val favouriteFoodBankList = userDetails.favouriteFoodBank
+                    attachFavFoodBank(favouriteFoodBankList)
+                }
+            }
+        } else {
+            requestLocationPermission()
+        }
 
         if (activeRequest != null) {
             attachActiveRequest(activeRequest)
-        }
-
-        val favouriteFoodBankList = userDetails.favouriteFoodBank
-        attachFavFoodBank(favouriteFoodBankList)
-        if (locationList != null) {
-            attachNearbyFoodBank(locationList)
         }
 
         binding.swipeToRefresh.setOnRefreshListener {
@@ -107,6 +137,41 @@ class DashboardDonatorFragment : Fragment() {
         if (requireActivity() is DonatorActivity) {
             (activity as DonatorActivity?)!!.showBottomNavigationView()
         }
+    }
+
+    private fun hasLocationPermission() = (
+            EasyPermissions.hasPermissions(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            )
+
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(
+            this, "This application cannot work without location permission",
+            Constants.LOCATION_REQUEST_CODE,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(requireContext()).build().show()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Toast.makeText(requireContext(), "Permission granted", Toast.LENGTH_SHORT).show()
     }
 
     private fun attachActiveRequest(activeRequestList: ArrayList<DonationRequest>) {

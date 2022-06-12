@@ -96,18 +96,21 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                         }
                     }
 
-                    CoroutineScope(IO).launch {
-                        withContext(Dispatchers.Default) {
-                            val unlockStorage = RealtimeDBRepo().unlockStorageAsync(this@QRScannerFragment, args.storageID)
-                            val currentPin = RealtimeDBRepo().setCurrentPin(currentPin, args.storageID, this@QRScannerFragment)
+                    RealtimeDBRepo().unlockStorage(this, args.storageID, currentPin)
 
-                            if (unlockStorage && currentPin) {
-                                showSuccessDialog()
-                            } else {
-                                showFailureDialog()
-                            }
-                        }
-                    }
+
+//                    CoroutineScope(IO).launch {
+//                        withContext(Dispatchers.Default) {
+//                            val unlockStorage = RealtimeDBRepo().unlockStorageAsync(this@QRScannerFragment, args.storageID)
+//                            val currentPin = RealtimeDBRepo().setCurrentPin(currentPin, args.storageID, this@QRScannerFragment)
+//
+//                            if (unlockStorage && currentPin) {
+//                                showSuccessDialog()
+//                            } else {
+//                                showFailureDialog()
+//                            }
+//                        }
+//                    }
                 } else {
                     val views = View.inflate(requireContext(), R.layout.alert_dialog_complete_qr_scan, null)
 

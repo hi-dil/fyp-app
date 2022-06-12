@@ -243,49 +243,49 @@
                 android:layout_marginEnd="@dimen/normal_margin_padding"
                 android:overScrollMode="never" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin_padding"
-                android:layout_marginTop="@dimen/verylarge_margin_padding"
-                android:layout_marginEnd="@dimen/medium_margin_padding"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/medium_margin_padding"-->
+<!--                android:layout_marginTop="@dimen/verylarge_margin_padding"-->
+<!--                android:layout_marginEnd="@dimen/medium_margin_padding"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/fire" />
+<!--                <ImageView-->
+<!--                    android:layout_width="20dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:src="@drawable/fire" />-->
 
-                <TextView
-                    style="@style/defaultTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="@dimen/normal_margin_padding"
-                    android:layout_marginTop="0dp"
-                    android:text="Most Popular Items Claimed"
-                    android:textColor="@color/primaryColor"
-                    android:textSize="@dimen/large_text_size"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    style="@style/defaultTextView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="bottom"-->
+<!--                    android:layout_marginStart="@dimen/normal_margin_padding"-->
+<!--                    android:layout_marginTop="0dp"-->
+<!--                    android:text="Most Popular Items Claimed"-->
+<!--                    android:textColor="@color/primaryColor"-->
+<!--                    android:textSize="@dimen/large_text_size"-->
+<!--                    android:textStyle="bold" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="View All"
-                    android:textColor="@color/link"
-                    android:textStyle="bold" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="bottom"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="end"-->
+<!--                    android:text="View All"-->
+<!--                    android:textColor="@color/link"-->
+<!--                    android:textStyle="bold" />-->
+<!--            </LinearLayout>-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_mostPopularItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/normal_margin_padding"
-                android:layout_marginEnd="@dimen/normal_margin_padding"
-                android:layout_marginBottom="@dimen/verylarge_margin_padding" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rv_mostPopularItems"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/normal_margin_padding"-->
+<!--                android:layout_marginEnd="@dimen/normal_margin_padding"-->
+<!--                android:layout_marginBottom="@dimen/verylarge_margin_padding" />-->
         </LinearLayout>
 
 

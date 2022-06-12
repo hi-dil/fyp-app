@@ -102,40 +102,40 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin_padding"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/small_margin_padding"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/normal_margin_padding"
-                    android:src="@drawable/fire" />
+<!--                <ImageView-->
+<!--                    android:layout_width="25dp"-->
+<!--                    android:layout_height="25dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginRight="@dimen/normal_margin_padding"-->
+<!--                    android:src="@drawable/fire" />-->
 
-                <TextView
-                    style="@style/titleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:text="Most Taken Item" />
+<!--                <TextView-->
+<!--                    style="@style/titleTextView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="0dp"-->
+<!--                    android:text="Most Taken Item" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="See available items"
-                android:textColor="@color/secondaryText"
-                android:textSize="@dimen/normal_text_size" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="See available items"-->
+<!--                android:textColor="@color/secondaryText"-->
+<!--                android:textSize="@dimen/normal_text_size" />-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_mostTakenItems"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rv_mostTakenItems"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:overScrollMode="never" />-->
 
 
             <LinearLayout

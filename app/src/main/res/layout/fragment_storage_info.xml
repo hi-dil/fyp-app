@@ -60,55 +60,55 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_storageInfoTitle" />
 
-        <ImageView
-            android:id="@+id/iv_battery"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="@dimen/medium_margin_padding"
-            android:scaleType="fitStart"
-            android:src="@drawable/battery"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_address" />
+<!--        <ImageView-->
+<!--            android:id="@+id/iv_battery"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginTop="@dimen/medium_margin_padding"-->
+<!--            android:scaleType="fitStart"-->
+<!--            android:src="@drawable/battery"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_address" />-->
 
-        <TextView
-            android:id="@+id/tv_arduinoBatteryTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Arduino Battery - "
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/medium_text_size"
-            app:layout_constraintStart_toEndOf="@id/iv_battery"
-            app:layout_constraintTop_toTopOf="@id/iv_battery" />
+<!--        <TextView-->
+<!--            android:id="@+id/tv_arduinoBatteryTitle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Arduino Battery - "-->
+<!--            android:textColor="@color/primaryText"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            app:layout_constraintStart_toEndOf="@id/iv_battery"-->
+<!--            app:layout_constraintTop_toTopOf="@id/iv_battery" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20%"
-            android:textColor="@color/danger"
-            android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/tv_arduinoBatteryTitle"
-            app:layout_constraintTop_toTopOf="@id/tv_arduinoBatteryTitle" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="20%"-->
+<!--            android:textColor="@color/danger"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintStart_toEndOf="@id/tv_arduinoBatteryTitle"-->
+<!--            app:layout_constraintTop_toTopOf="@id/tv_arduinoBatteryTitle" />-->
 
-        <TextView
-            android:id="@+id/tv_lockBatteryTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lock Battery - "
-            android:textColor="@color/primaryText"
-            android:textSize="@dimen/medium_text_size"
-            app:layout_constraintBottom_toBottomOf="@id/iv_battery"
-            app:layout_constraintStart_toEndOf="@id/iv_battery" />
+<!--        <TextView-->
+<!--            android:id="@+id/tv_lockBatteryTitle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Lock Battery - "-->
+<!--            android:textColor="@color/primaryText"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/iv_battery"-->
+<!--            app:layout_constraintStart_toEndOf="@id/iv_battery" />-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20%"
-            android:textColor="@color/danger"
-            android:textSize="@dimen/medium_text_size"
-            android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/tv_lockBatteryTitle"
-            app:layout_constraintTop_toTopOf="@id/tv_lockBatteryTitle" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="20%"-->
+<!--            android:textColor="@color/danger"-->
+<!--            android:textSize="@dimen/medium_text_size"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintStart_toEndOf="@id/tv_lockBatteryTitle"-->
+<!--            app:layout_constraintTop_toTopOf="@id/tv_lockBatteryTitle" />-->
 
         <LinearLayout
             android:id="@+id/ll_ultrasonicDetails"
@@ -118,7 +118,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_battery">
+            app:layout_constraintTop_toBottomOf="@id/tv_address">
 
             <TextView
                 android:layout_width="wrap_content"

@@ -67,9 +67,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 if (userRole != null && userRole.isNotEmpty()) {
-                    val location = DatabaseRepo().getLocationAsync()
-                    val sortList = sortLocation(location)
-                    val locationList = ArrayList(sortList)
+                    val locationList = DatabaseRepo().getLocationAsync()
 
                     if (userRole.lowercase() == "beneficiary") {
                         val activeRequest = DatabaseRepo().getActiveRequestAsync()
@@ -86,6 +84,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)
+                            finish()
                         }
 
                         finish()
@@ -102,6 +101,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                             intent.putExtra("userDetails", userDetails)
                             intent.putExtra("locationList", locationList)
                             startActivity(intent)
+                            finish()
                         }
 
                         finish()
@@ -115,8 +115,8 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                             intent.putExtra("claimRequest", oldestClaimRequest)
                             intent.putExtra("donationRequest", oldestDonationRequest)
                             startActivity(intent)
+                            finish()
                         }
-                        finish()
                     } else {
                         startActivity(Intent(this@SplashScreenActivity, Login::class.java))
                     }

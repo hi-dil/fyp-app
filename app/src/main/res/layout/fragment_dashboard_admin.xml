@@ -211,56 +211,56 @@
                 android:overScrollMode="never"
                 android:visibility="gone" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin_padding"
-                android:layout_marginTop="@dimen/verylarge_margin_padding"
-                android:layout_marginEnd="@dimen/medium_margin_padding"
-                android:text="FoodBank Status"
-                android:textColor="@color/primaryColor"
-                android:textSize="@dimen/title_text_size"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/medium_margin_padding"-->
+<!--                android:layout_marginTop="@dimen/verylarge_margin_padding"-->
+<!--                android:layout_marginEnd="@dimen/medium_margin_padding"-->
+<!--                android:text="FoodBank Status"-->
+<!--                android:textColor="@color/primaryColor"-->
+<!--                android:textSize="@dimen/title_text_size"-->
+<!--                android:textStyle="bold" />-->
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin_padding"
-                android:layout_marginTop="@dimen/medium_margin_padding"
-                android:layout_marginEnd="@dimen/medium_margin_padding"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="@dimen/medium_margin_padding"-->
+<!--                android:layout_marginTop="@dimen/medium_margin_padding"-->
+<!--                android:layout_marginEnd="@dimen/medium_margin_padding"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_expiry_date" />
+<!--                <ImageView-->
+<!--                    android:layout_width="20dp"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:src="@drawable/ic_expiry_date" />-->
 
-                <TextView
-                    android:id="@+id/tv_nearestExpiryDate"
-                    style="@style/defaultTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/normal_margin_padding"
-                    android:layout_marginTop="0dp"
-                    android:text="Items Nearing Expiry Date"
-                    android:textColor="@color/danger"
-                    android:textSize="@dimen/large_text_size"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_nearestExpiryDate"-->
+<!--                    style="@style/defaultTextView"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="@dimen/normal_margin_padding"-->
+<!--                    android:layout_marginTop="0dp"-->
+<!--                    android:text="Items Nearing Expiry Date"-->
+<!--                    android:textColor="@color/danger"-->
+<!--                    android:textSize="@dimen/large_text_size"-->
+<!--                    android:textStyle="bold" />-->
 
-                <TextView
-                    android:id="@+id/tv_viewAllItemNearExpiryDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_weight="1"
-                    android:gravity="end"
-                    android:text="View All"
-                    android:textColor="@color/link"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_viewAllItemNearExpiryDate"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="bottom"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="end"-->
+<!--                    android:text="View All"-->
+<!--                    android:textColor="@color/link"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:visibility="gone" />-->
+<!--            </LinearLayout>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_nearestExpiryDate"

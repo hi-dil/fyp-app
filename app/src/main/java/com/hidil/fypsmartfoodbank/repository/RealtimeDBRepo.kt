@@ -61,7 +61,7 @@ class RealtimeDBRepo {
         }
     }
 
-    suspend fun setCurrentPin(pinNumber: Int, storageID: String, fragment: Fragment): Boolean {
+    suspend fun setCurrentPinAsync(pinNumber: Int, storageID: String, fragment: Fragment): Boolean {
         return withContext(Dispatchers.IO) {
             val ref = mDatabase.getReference(storageID)
             var success = false
@@ -76,6 +76,38 @@ class RealtimeDBRepo {
                 .await()
 
             return@withContext success
+        }
+    }
+
+    fun unlockStorage(fragment: Fragment, storageID: String, currentPin: Int) {
+        val ref = mDatabase.getReference(storageID)
+
+        ref.child("/isUnlock").setValue(true).addOnSuccessListener {
+            when (fragment) {
+                is QRScannerFragment -> setCurrentPin(fragment, storageID, currentPin)
+                is QRScannerDonatorFragment -> fragment.showSuccessDialog()
+            }
+        }.addOnFailureListener {
+            when (fragment) {
+                is QRScannerFragment -> fragment.showFailureDialog()
+                is QRScannerDonatorFragment -> fragment.showFailureDialog()
+            }
+        }
+    }
+
+    fun setCurrentPin(fragment: Fragment, storageID: String, pinNumber: Int) {
+        val ref = mDatabase.getReference(storageID)
+
+        ref.child("/currentPin").setValue(pinNumber).addOnSuccessListener {
+            when (fragment) {
+                is QRScannerFragment -> fragment.showSuccessDialog()
+                is QRScannerDonatorFragment -> fragment.showSuccessDialog()
+            }
+        }.addOnFailureListener {
+            when (fragment) {
+                is QRScannerFragment -> fragment.showFailureDialog()
+                is QRScannerDonatorFragment -> fragment.showFailureDialog()
+            }
         }
     }
 }

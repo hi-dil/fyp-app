@@ -121,6 +121,15 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+           <TextView
+               android:id="@+id/tv_monthlyIncome"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Monthly Income"
+               android:textColor="@color/primaryText"
+               android:textStyle="bold"
+               android:layout_gravity="center_horizontal"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

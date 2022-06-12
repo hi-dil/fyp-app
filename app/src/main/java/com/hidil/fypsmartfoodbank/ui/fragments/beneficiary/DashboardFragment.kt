@@ -1,12 +1,17 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Location
@@ -19,6 +24,8 @@ import com.hidil.fypsmartfoodbank.ui.adapter.NearbyFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -29,16 +36,19 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentDashboardBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
 
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,8 +60,9 @@ class DashboardFragment : Fragment() {
         val activeRequest =
             requireActivity().intent.getParcelableArrayListExtra<Request>("activeRequest")
         val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
-        val locationList =
+        val foodbankList =
             requireActivity().intent.getParcelableArrayListExtra<Location>("locationList")
+
 
         // get user info from shared pref
         val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
@@ -59,8 +70,36 @@ class DashboardFragment : Fragment() {
         val userImage = sp!!.getString(Constants.USER_PROFILE_IMAGE, "")
         val city = sp.getString(Constants.USER_CITY, "")
         val state = sp.getString(Constants.USER_STATE, "")
-        currentLat = sp.getString(Constants.CURRENT_LAT, "")!!.toDouble()
-        currentLong = sp.getString(Constants.CURRENT_LONG, "")!!.toDouble()
+
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        if (hasLocationPermission()) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val spEditor = sp.edit()
+                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                    spEditor.apply()
+
+                    currentLat = location.latitude
+                    currentLong = location.longitude
+
+                    val locationList: ArrayList<Location>
+                    if (foodbankList != null) {
+                        val sortList = sortLocation(foodbankList)
+                        locationList = ArrayList(sortList)
+                        attachNearbyFoodBank(locationList)
+                    }
+
+                    if (userDetails != null) {
+                        val favouriteFoodBankList = userDetails.favouriteFoodBank
+                        attachFavouriteFoodBank(favouriteFoodBankList)
+                    }
+                }
+            }
+        } else {
+            requestLocationPermission()
+        }
 
         // attach info to the views
         binding.tvUserGreeting.text = "Welcome back $name"
@@ -70,14 +109,6 @@ class DashboardFragment : Fragment() {
         }
 
 
-        if (locationList != null) {
-            attachNearbyFoodBank(locationList)
-        }
-
-        if (userDetails != null) {
-            val favouriteFoodBankList = userDetails.favouriteFoodBank
-            attachFavouriteFoodBank(favouriteFoodBankList)
-        }
         if (activeRequest != null) {
             attachActiveRequest(activeRequest)
         }
@@ -116,6 +147,41 @@ class DashboardFragment : Fragment() {
         if (requireActivity() is BeneficiaryMainActivity) {
             (activity as BeneficiaryMainActivity?)!!.showBottomNavigationView()
         }
+    }
+
+    private fun hasLocationPermission() = (
+            EasyPermissions.hasPermissions(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            )
+
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(
+            this, "This application cannot work without location permission",
+            Constants.LOCATION_REQUEST_CODE,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(requireContext()).build().show()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Toast.makeText(requireContext(), "Permission granted", Toast.LENGTH_SHORT).show()
     }
 
     private fun attachActiveRequest(activeRequestList: ArrayList<Request>) {

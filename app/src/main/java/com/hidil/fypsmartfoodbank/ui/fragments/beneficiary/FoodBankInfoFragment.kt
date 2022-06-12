@@ -1,5 +1,6 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,20 +15,23 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankInfoBinding
-import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
-import com.hidil.fypsmartfoodbank.model.FoodBank
-import com.hidil.fypsmartfoodbank.model.ItemList
-import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.model.*
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.AvailableFoodBankItemsListAdapter
+import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sin
 
 class FoodBankInfoFragment : Fragment() {
     private var _binding: FragmentFoodBankInfoBinding? = null
@@ -224,6 +228,26 @@ class FoodBankInfoFragment : Fragment() {
                         binding.tvAddress.text = foodBank.address
                         binding.tvTitle.text = foodBank.foodBankName
 
+                        val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+                        val lat = sp?.getString(Constants.CURRENT_LAT, "")
+                        val long = sp!!.getString(Constants.CURRENT_LONG, "")
+
+                        val distance = distanceInKm(mFoodBank.lat.toDouble(), mFoodBank.long.toDouble(), lat!!.toDouble(), long!!.toDouble())
+                        val df = DecimalFormat("#.##")
+                        df.roundingMode = RoundingMode.DOWN
+                        val rfDistance = df.format(distance)
+
+                        binding.tvHowFar.text = "${rfDistance}km away"
+
+                        val storage = mFoodBank.storage
+                        val mostClaimed = storage.sortedWith(compareBy { it.amountClaimed })
+                        val mostClaimedList = ArrayList(mostClaimed)
+
+//                        binding.rvMostTakenItems.layoutManager = LinearLayoutManager(activity)
+//                        binding.rvMostTakenItems.setHasFixedSize(true)
+                        // TODO: implement mostclaimlist
+
+
                         binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
                         binding.rvAvailableItems.setHasFixedSize(true)
                         val availableListAdapter =
@@ -264,6 +288,27 @@ class FoodBankInfoFragment : Fragment() {
 
         binding.tvTotalAmount.text = "${totalItems}/20"
         binding.tvAddMore.text = "You can add ${20 - totalItems} more items to your request"
+    }
+
+    private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val theta = lon1 - lon2
+        var dist =
+            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
+                deg2rad(theta)
+            )
+        dist = acos(dist)
+        dist = rad2deg(dist)
+        dist *= 60 * 1.1515
+        dist *= 1.609344
+        return dist
+    }
+
+    private fun deg2rad(deg: Double): Double {
+        return deg * Math.PI / 180.0
+    }
+
+    private fun rad2deg(rad: Double): Double {
+        return rad * 180.0 / Math.PI
     }
 
 
