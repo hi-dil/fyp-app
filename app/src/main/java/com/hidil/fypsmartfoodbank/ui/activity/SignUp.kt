@@ -1,13 +1,23 @@
 package com.hidil.fypsmartfoodbank.ui.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ActivitySignUpBinding
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignUp : AppCompatActivity() {
     private lateinit var binding: ActivitySignUpBinding
@@ -35,18 +45,49 @@ class SignUp : AppCompatActivity() {
             if (validateRegisterDetails()) {
                 val email = binding.etEmail.text.toString().trim { it <= ' ' }
                 val password = binding.etPassword.text.toString().trim { it <= ' ' }
-                val user = User(
-                    "",
-                    binding.acUserRole.text.toString().trim { it <= ' ' },
-                    binding.etName.text.toString().trim { it <= ' ' },
-                    binding.etEmail.text.toString().trim { it <= ' ' },
-                    "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
-                    binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
-                    binding.etPhoneNumber.text.toString().trim { it <= ' ' },
-                    binding.etState.text.toString().trim { it <= ' '},
-                    binding.etCity.text.toString().trim { it <= ' '},
-                )
-                AuthenticationRepo().createUser(this, email, password, user)
+//                AuthenticationRepo().createUser(this, email, password, user)
+                CoroutineScope(IO).launch {
+                    withContext(Dispatchers.Default) {
+                        val uid = AuthenticationRepo().createUserAsync(email, password)
+                        Log.i("userid", uid)
+
+                        var token = ""
+                        if (uid.isNotEmpty()) {
+                            FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
+                                if (result != null) {
+                                    token = result
+                                }
+                            }
+                            val user = User(
+                                uid,
+                                binding.acUserRole.text.toString().trim { it <= ' ' },
+                                binding.etName.text.toString().trim { it <= ' ' },
+                                binding.etEmail.text.toString().trim { it <= ' ' },
+                                "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
+                                binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
+                                binding.etPhoneNumber.text.toString().trim { it <= ' ' },
+                                binding.etState.text.toString().trim { it <= ' ' },
+                                binding.etCity.text.toString().trim { it <= ' ' },
+                                token
+                            )
+
+                            val saveUserData = DatabaseRepo().regiserUserAsync(user)
+                            this@SignUp.runOnUiThread {
+                                if (saveUserData) {
+                                    hideProgressDialog()
+                                    Toast.makeText(
+                                        this@SignUp,
+                                        "You have successfully register to the app",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    hideProgressDialog()
+                                }
+                            }
+                        }
+                        FirebaseAuth.getInstance().signOut()
+                    }
+                }
             }
         }
 

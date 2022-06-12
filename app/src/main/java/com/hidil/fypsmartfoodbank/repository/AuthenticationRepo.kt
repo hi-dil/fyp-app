@@ -1,12 +1,15 @@
 package com.hidil.fypsmartfoodbank.repository
 
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
 import com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AuthenticationRepo {
 
@@ -45,6 +48,25 @@ class AuthenticationRepo {
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
                 }
             }
+    }
+
+    suspend fun createUserAsync(email: String, password: String): String {
+        return withContext(Dispatchers.IO) {
+            var uid = ""
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val firebaseUser: FirebaseUser = task.result!!.user!!
+                        uid = firebaseUser.uid
+                    } else {
+                        Log.e("SignUp", task.exception.toString())
+                    }
+                }
+
+            Log.i("userIdCreated", uid)
+            return@withContext uid
+        }
+
     }
 
     fun userLogin(activity: Login, email: String, password: String) {

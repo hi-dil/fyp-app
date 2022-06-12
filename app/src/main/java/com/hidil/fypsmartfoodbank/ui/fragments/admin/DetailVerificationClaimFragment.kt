@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
+import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentDetailVerificationClaimBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
@@ -21,16 +23,20 @@ import com.hidil.fypsmartfoodbank.model.RealtimeDBPIN
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
+import com.hidil.fypsmartfoodbank.repository.RetrofitInstance
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.ClaimRequestDetailsListAdapter
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import com.hidil.fypsmartfoodbank.utils.NotificationData
+import com.hidil.fypsmartfoodbank.utils.PushNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -145,7 +151,7 @@ class DetailVerificationClaimFragment : Fragment() {
         currentRequest.approved = true
         currentRequest.lastUpdate = System.currentTimeMillis()
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
 
                 // will be used to check if the async function return error
@@ -193,6 +199,10 @@ class DetailVerificationClaimFragment : Fragment() {
                         }
 
                         dialog.show()
+                        val title = "Request Update"
+                        val message = "Your request has been approved"
+
+                        PushNotification(NotificationData(title, message), "dfs").also { sendNotification(it) }
                     } else {
                         views.findViewById<TextView>(R.id.tv_text).text =
                             "Fail to update user's request"
@@ -266,6 +276,19 @@ class DetailVerificationClaimFragment : Fragment() {
                     dialogUpdate.show()
                 }
             }
+        }
+    }
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(IO).launch {
+        try {
+            val response = RetrofitInstance.api.PostNotification(notification)
+            if (response.isSuccessful) {
+                Log.d(this.javaClass.simpleName.toString(), "Response: ${Gson().toJson(response)}")
+            } else {
+                Log.e(this.javaClass.simpleName.toString(), response.errorBody().toString())
+            }
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName.toString(), e.toString())
         }
     }
 

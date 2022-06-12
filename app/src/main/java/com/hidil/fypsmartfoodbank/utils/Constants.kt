@@ -48,6 +48,12 @@ object Constants {
     const val REQUEST_DATE: String = "requestDate"
     const val IS_CANCEL: String = "cancel"
 
+    const val FCM_SERVER_KEY =
+        "AAAA6GJnW2E:APA91bH6BNPcH9BBxw_2SKzMLmiTPugnTiTQRUVt65dl5sFzyvH-wV3Eq4FqoHMbRuYxnz0hftQFsc3IYtY3auEc_1mwE-NW1VNGbjMJNHWNSuV5B-G52cZeWcQQksPf0GIrF1VL1CSU"
+
+    const val FCM_BASE_URL = "https://fcm.googleapis.com"
+    const val FCM_CONTENT_TYPE = "application/json"
+
     fun showImageChooser(activity: Activity) {
         val galleryIntent = Intent(
             Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI

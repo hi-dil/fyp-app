@@ -49,6 +49,25 @@ class DatabaseRepo {
             }
     }
 
+    suspend fun regiserUserAsync(user: User) : Boolean{
+       return withContext(Dispatchers.IO) {
+           var success = false
+           Log.i("userId", user.id)
+
+           mFirestore.collection(Constants.USERS)
+               .document(user.id)
+               .set(user, SetOptions.merge())
+               .addOnSuccessListener {
+                   success = true
+               }
+               .addOnFailureListener {
+                   Log.e("SignUp", "Error while saving user data to firestore", it)
+               }
+
+           return@withContext success
+       }
+    }
+
     fun getUserDetails(activity: Activity) {
         mFirestore.collection(Constants.USERS)
             .document(AuthenticationRepo().getCurrentUserID())

@@ -48,6 +48,9 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
 
+    private lateinit var userDetails: User
+    private lateinit var foodbankList: ArrayList<Location>
+
     @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,8 +62,8 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         // get info from intent
         val activeRequest =
             requireActivity().intent.getParcelableArrayListExtra<Request>("activeRequest")
-        val userDetails = requireActivity().intent.getParcelableExtra<User>("userDetails")
-        val foodbankList =
+        val userDetailsTemp = requireActivity().intent.getParcelableExtra<User>("userDetails")
+        val foodbankListTemp =
             requireActivity().intent.getParcelableArrayListExtra<Location>("locationList")
 
 
@@ -71,32 +74,19 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val city = sp.getString(Constants.USER_CITY, "")
         val state = sp.getString(Constants.USER_STATE, "")
 
+        if (userDetailsTemp != null) {
+            userDetails = userDetailsTemp
+        }
+
+        if (foodbankListTemp != null) {
+            foodbankList = foodbankListTemp
+        }
+
+
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         if (hasLocationPermission()) {
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    val spEditor = sp.edit()
-                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
-                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
-                    spEditor.apply()
-
-                    currentLat = location.latitude
-                    currentLong = location.longitude
-
-                    val locationList: ArrayList<Location>
-                    if (foodbankList != null) {
-                        val sortList = sortLocation(foodbankList)
-                        locationList = ArrayList(sortList)
-                        attachNearbyFoodBank(locationList)
-                    }
-
-                    if (userDetails != null) {
-                        val favouriteFoodBankList = userDetails.favouriteFoodBank
-                        attachFavouriteFoodBank(favouriteFoodBankList)
-                    }
-                }
-            }
+            loadFoodBank()
         } else {
             requestLocationPermission()
         }
@@ -181,7 +171,30 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
-        Toast.makeText(requireContext(), "Permission granted", Toast.LENGTH_SHORT).show()
+        loadFoodBank()
+    }
+
+    private fun loadFoodBank() {
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+                val spEditor = sp!!.edit()
+                spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                spEditor.apply()
+
+                currentLat = location.latitude
+                currentLong = location.longitude
+
+                val locationList: ArrayList<Location>
+                val sortList = sortLocation(foodbankList)
+                locationList = ArrayList(sortList)
+                attachNearbyFoodBank(locationList)
+
+                val favouriteFoodBankList = userDetails.favouriteFoodBank
+                attachFavouriteFoodBank(favouriteFoodBankList)
+            }
+        }
     }
 
     private fun attachActiveRequest(activeRequestList: ArrayList<Request>) {

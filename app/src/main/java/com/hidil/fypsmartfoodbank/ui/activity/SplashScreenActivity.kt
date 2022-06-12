@@ -46,23 +46,23 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         val sp = getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val userRole = sp.getString(Constants.USER_ROLE, "")
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        if (hasLocationPermission()) {
-
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                if (location != null) {
-                    val spEditor = sp.edit()
-                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
-                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
-                    spEditor.apply()
-
-                    currentLat = location.latitude
-                    currentLong = location.longitude
-                }
-            }
-        } else {
-            requestLocationPermission()
-        }
+//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+//        if (hasLocationPermission()) {
+//
+//            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+//                if (location != null) {
+//                    val spEditor = sp.edit()
+//                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+//                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+//                    spEditor.apply()
+//
+//                    currentLat = location.latitude
+//                    currentLong = location.longitude
+//                }
+//            }
+//        } else {
+//            requestLocationPermission()
+//        }
 
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
