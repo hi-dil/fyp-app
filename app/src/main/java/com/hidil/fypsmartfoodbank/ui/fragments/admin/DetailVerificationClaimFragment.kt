@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentDetailVerificationClaimBinding
 import com.hidil.fypsmartfoodbank.model.FoodBank
@@ -27,7 +26,6 @@ import com.hidil.fypsmartfoodbank.repository.RetrofitInstance
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.ClaimRequestDetailsListAdapter
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestDetailsFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import com.hidil.fypsmartfoodbank.utils.NotificationData
 import com.hidil.fypsmartfoodbank.utils.PushNotification
@@ -36,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -131,83 +128,108 @@ class DetailVerificationClaimFragment : Fragment() {
     }
 
     // generate a random number from 0 to 999999 with "000000" / 6 digit format
-    private fun generateRand(): String {
+    // it a recursive function - it will repeat until the digit value doesnt match with the database value
+    private suspend fun generateRand(storageID: String): String {
         val rnd = Random()
         val number = rnd.nextInt(999999)
-        return String.format("%06d", number)
+        val numberString = String.format("%06d", number)
+        var finalNumber = ""
+        var listOfPin = HashMap<String, Any>()
+
+        return withContext(Dispatchers.Default) {
+            listOfPin = RealtimeDBRepo().getListOfPin(storageID)
+            Log.i("listOfPinCoroutine", listOfPin.toString())
+
+            for (key in listOfPin.keys) {
+                if (numberString == key) {
+                    generateRand(storageID)
+                } else {
+                    finalNumber = numberString
+                    Log.i("pinNumber", finalNumber)
+                }
+            }
+
+            return@withContext finalNumber
+        }
     }
 
     // run fun to approve user's request
     private fun approveRequest() {
         // generate the pin number
-        for (i in currentRequest.items) {
-            val pinNumber = generateRand()
-            i.storagePIN = pinNumber
-        }
-
-        requireActivity().showProgressDialog()
-
-        // update user's request
-        currentRequest.approved = true
-        currentRequest.lastUpdate = System.currentTimeMillis()
-
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
-
-                // will be used to check if the async function return error
-                var updateRD = false
-                var updateRequest = false
-
                 for (i in currentRequest.items) {
-                    val pinData =
-                        RealtimeDBPIN(System.currentTimeMillis(), currentRequest.id, "claim", 0)
-                    updateRD = RealtimeDBRepo().updatePin(
-                        i.storageID,
-                        pinData,
-                        i.storagePIN,
-                        this@DetailVerificationClaimFragment
-                    )
-                    updateRequest = DatabaseRepo().updateUserClaimRequest(
-                        currentRequest,
-                        this@DetailVerificationClaimFragment
-                    )
+                    val pinNumber = generateRand(i.storageID)
+                    i.storagePIN = pinNumber
+                }
+            }
+
+            requireActivity().runOnUiThread {
+                requireActivity().showProgressDialog()
+            }
+
+            // update user's request
+            currentRequest.approved = true
+            currentRequest.lastUpdate = System.currentTimeMillis()
+
+            // will be used to check if the async function return error
+            var updateRD = false
+            var updateRequest = false
+            val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
+
+            for (i in currentRequest.items) {
+                val pinData =
+                    RealtimeDBPIN(System.currentTimeMillis(), currentRequest.id, "claim")
+                updateRD = RealtimeDBRepo().updatePin(
+                    i.storageID,
+                    pinData,
+                    i.storagePIN,
+                    this@DetailVerificationClaimFragment
+                )
+                updateRequest = DatabaseRepo().updateUserClaimRequest(
+                    currentRequest,
+                    this@DetailVerificationClaimFragment
+                )
+            }
+
+            requireActivity().runOnUiThread {
+                requireActivity().hideProgressDialog()
+                val views =
+                    View.inflate(requireContext(), R.layout.alert_dialog_complete_request, null)
+                val builder = AlertDialog.Builder(requireActivity())
+                builder.setView(views)
+                val dialog = builder.create()
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                    dialog.dismiss()
                 }
 
-                requireActivity().runOnUiThread {
-                    requireActivity().hideProgressDialog()
-                    val views =
-                        View.inflate(requireContext(), R.layout.alert_dialog_complete_request, null)
-                    val builder = AlertDialog.Builder(requireActivity())
-                    builder.setView(views)
-                    val dialog = builder.create()
-                    dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                // check if the request successfully update to firestore and rdbs
+                if (updateRD && updateRequest) {
+                    val title = "Request Update"
+                    val message = "Your request has been approved"
+
+                    PushNotification(
+                        NotificationData(title, message),
+                        userDetails.tokenID
+                    ).also { sendNotification(it) }
+
+                    views.findViewById<TextView>(R.id.tv_text).text =
+                        "Successfully approve user's request"
 
                     views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                        findNavController().navigate(
+                            DetailVerificationClaimFragmentDirections.actionDetailVerificationClaimFragmentToDashboardAdminFragment()
+                        )
                         dialog.dismiss()
                     }
 
-                    // check if the request successfully update to firestore and rdbs
-                    if (updateRD && updateRequest) {
-                        views.findViewById<TextView>(R.id.tv_text).text =
-                            "Successfully approve user's request"
-
-                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
-                            findNavController().navigate(
-                                DetailVerificationClaimFragmentDirections.actionDetailVerificationClaimFragmentToDashboardAdminFragment()
-                            )
-                            dialog.dismiss()
-                        }
-
-                        dialog.show()
-                        val title = "Request Update"
-                        val message = "Your request has been approved"
-
-                        PushNotification(NotificationData(title, message), "dfs").also { sendNotification(it) }
-                    } else {
-                        views.findViewById<TextView>(R.id.tv_text).text =
-                            "Fail to update user's request"
-                        dialog.show()
-                    }
+                    dialog.show()
+                } else {
+                    views.findViewById<TextView>(R.id.tv_text).text =
+                        "Fail to update user's request"
+                    dialog.show()
                 }
             }
         }
@@ -222,9 +244,12 @@ class DetailVerificationClaimFragment : Fragment() {
                 currentRequest.completed = true
                 currentRequest.lastUpdate = System.currentTimeMillis()
 
-                val getFoodBank = DatabaseRepo().searchFoodBank(this@DetailVerificationClaimFragment, currentRequest.foodBankID)
+                val getFoodBank = DatabaseRepo().searchFoodBank(
+                    this@DetailVerificationClaimFragment,
+                    currentRequest.foodBankID
+                )
                 var foodbankData: FoodBank = FoodBank()
-                if (getFoodBank.size > 0){
+                if (getFoodBank.size > 0) {
                     foodbankData = getFoodBank[0]
                 }
 
@@ -242,7 +267,12 @@ class DetailVerificationClaimFragment : Fragment() {
                 )
 
                 val updateFoodBank =
-                    DatabaseRepo().updateFoodBank(this@DetailVerificationClaimFragment, foodbankData)
+                    DatabaseRepo().updateFoodBank(
+                        this@DetailVerificationClaimFragment,
+                        foodbankData
+                    )
+
+                val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
 
                 requireActivity().runOnUiThread {
 
@@ -258,6 +288,13 @@ class DetailVerificationClaimFragment : Fragment() {
                     dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
                     if (updateRequest && updateFoodBank) {
+                        val title = "Request Update"
+                        val message = "Your request has been deny"
+
+                        PushNotification(
+                            NotificationData(title, message),
+                            userDetails.tokenID
+                        ).also { sendNotification(it) }
 
                         viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
                             "Successfully deny user request"
@@ -281,9 +318,9 @@ class DetailVerificationClaimFragment : Fragment() {
 
     private fun sendNotification(notification: PushNotification) = CoroutineScope(IO).launch {
         try {
-            val response = RetrofitInstance.api.PostNotification(notification)
+            val response = RetrofitInstance.api.postNotification(notification)
             if (response.isSuccessful) {
-                Log.d(this.javaClass.simpleName.toString(), "Response: ${Gson().toJson(response)}")
+//                Log.d(this.javaClass.simpleName.toString(), "Response: ${Gson().toJson(response)}")
             } else {
                 Log.e(this.javaClass.simpleName.toString(), response.errorBody().toString())
             }

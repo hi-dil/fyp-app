@@ -9,11 +9,11 @@ import retrofit2.http.POST
 interface NotificationAPI {
 
     @Headers(
-        "Authorization: key=${Constants.FCM_SERVER_KEY}",
-        "Content-Type:${Constants.FCM_CONTENT_TYPE}"
+        "Authorization: key=AAAA6GJnW2E:APA91bH6BNPcH9BBxw_2SKzMLmiTPugnTiTQRUVt65dl5sFzyvH-wV3Eq4FqoHMbRuYxnz0hftQFsc3IYtY3auEc_1mwE-NW1VNGbjMJNHWNSuV5B-G52cZeWcQQksPf0GIrF1VL1CSU",
+        "Content-Type: application/json"
     )
     @POST("fcm/send")
-    suspend fun PostNotification(
+    suspend fun postNotification(
         @Body notification: PushNotification
     ): Response<ResponseBody>
 }

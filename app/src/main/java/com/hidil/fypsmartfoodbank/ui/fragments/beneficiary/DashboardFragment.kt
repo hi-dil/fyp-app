@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.messaging.FirebaseMessaging
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.Location
@@ -82,6 +84,8 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             foodbankList = foodbankListTemp
         }
 
+        val token = FirebaseMessaging.getInstance().token
+        Log.i("tokenfcm", token.toString())
 
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -174,6 +178,7 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         loadFoodBank()
     }
 
+    @SuppressLint("MissingPermission")
     private fun loadFoodBank() {
         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {

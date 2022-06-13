@@ -63,6 +63,7 @@ class DatabaseRepo {
                .addOnFailureListener {
                    Log.e("SignUp", "Error while saving user data to firestore", it)
                }
+               .await()
 
            return@withContext success
        }
@@ -133,6 +134,16 @@ class DatabaseRepo {
         return withContext(Dispatchers.IO) {
             mFirestore.collection(Constants.USERS)
                 .document(AuthenticationRepo().getCurrentUserID())
+                .get()
+                .await()
+                .toObject(User::class.java)!!
+        }
+    }
+
+    suspend fun getAnotherUserDetails(user: String): User {
+        return withContext(Dispatchers.IO) {
+            mFirestore.collection(Constants.USERS)
+                .document(user)
                 .get()
                 .await()
                 .toObject(User::class.java)!!

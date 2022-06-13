@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.hidil.fypsmartfoodbank.R
@@ -17,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class SignUp : AppCompatActivity() {
@@ -53,11 +55,12 @@ class SignUp : AppCompatActivity() {
 
                         var token = ""
                         if (uid.isNotEmpty()) {
-                            FirebaseMessaging.getInstance().token.addOnSuccessListener { result ->
-                                if (result != null) {
-                                    token = result
-                                }
-                            }
+
+                            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                                token = task.result
+                                Log.i("tokenfcm", token)
+                            }.await()
+
                             val user = User(
                                 uid,
                                 binding.acUserRole.text.toString().trim { it <= ' ' },
@@ -82,6 +85,11 @@ class SignUp : AppCompatActivity() {
                                     ).show()
                                 } else {
                                     hideProgressDialog()
+                                    Toast.makeText(
+                                        this@SignUp,
+                                        "There was an error while saving the data",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         }

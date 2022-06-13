@@ -21,16 +21,20 @@ import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.RealtimeDBPIN
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
+import com.hidil.fypsmartfoodbank.repository.RetrofitInstance
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.DonationRequestedItemListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.ShowImageLinkAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import com.hidil.fypsmartfoodbank.utils.NotificationData
+import com.hidil.fypsmartfoodbank.utils.PushNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -141,17 +145,34 @@ class DetailVerificationDonationFragment : Fragment() {
     }
 
     // generate a random number from 0 to 999999 with "000000" / 6 digit format
-    private fun generateRand(): String {
+    private fun generateRand(storageID: String): String {
         val rnd = Random()
         val number = rnd.nextInt(999999)
-        return String.format("%06d", number)
+        val numberString = String.format("%06d", number)
+        var finalNumber = ""
+
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val listOfPin = RealtimeDBRepo().getListOfPin(storageID)
+
+                for (key in listOfPin.keys) {
+                    if (key == numberString) {
+                        generateRand(storageID)
+                    } else {
+                        finalNumber = numberString
+                    }
+                }
+
+            }
+        }
+        return finalNumber
     }
 
     // run fun to approve user's request
     private fun approveRequest() {
         // generate the pin number
         for (i in currentRequest.items) {
-            val pinNumber = generateRand()
+            val pinNumber = generateRand(i.storageID)
             i.storagePIN = pinNumber
         }
 
@@ -167,6 +188,8 @@ class DetailVerificationDonationFragment : Fragment() {
                 // will be used to check if the async function return error
                 var updateRD = false
                 var updateRequest = false
+
+                val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
 
                 for (i in currentRequest.items) {
                     val pinData =
@@ -198,6 +221,11 @@ class DetailVerificationDonationFragment : Fragment() {
 
                     // check if the request successfully update to firestore and rdbs
                     if (updateRD && updateRequest) {
+                        val title = "Request Update"
+                        val message = "Your request has been approved"
+
+                        PushNotification(NotificationData(title, message), userDetails.tokenID).also { sendNotification(it) }
+
                         views.findViewById<TextView>(R.id.tv_text).text =
                             "Successfully approve user's request"
 
@@ -221,7 +249,6 @@ class DetailVerificationDonationFragment : Fragment() {
     }
 
     private fun denyRequest(reason: String) {
-
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 currentRequest.denied = true
@@ -229,6 +256,7 @@ class DetailVerificationDonationFragment : Fragment() {
                 currentRequest.deniedMessage = reason
                 currentRequest.lastUpdate = System.currentTimeMillis()
 
+                val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
                 val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DetailVerificationDonationFragment)
 
                 requireActivity().runOnUiThread {
@@ -246,6 +274,11 @@ class DetailVerificationDonationFragment : Fragment() {
 
                         // check if the request successfully update to firestore and rdbs
                         if (updateRequest) {
+                            val title = "Request Update"
+                            val message = "Your request has been deny"
+
+                            PushNotification(NotificationData(title, message), userDetails.tokenID).also { sendNotification(it) }
+
                             views.findViewById<TextView>(R.id.tv_text).text =
                                 "Successfully deny user's request"
 
@@ -267,6 +300,19 @@ class DetailVerificationDonationFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if (response.isSuccessful) {
+//                Log.d(this.javaClass.simpleName.toString(), "Response: ${Gson().toJson(response)}")
+            } else {
+                Log.e(this.javaClass.simpleName.toString(), response.errorBody().toString())
+            }
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName.toString(), e.toString())
+        }
     }
 
 }

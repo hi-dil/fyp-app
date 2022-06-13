@@ -32,12 +32,16 @@ class RealtimeDBRepo {
         }
     }
 
-    suspend fun getListOfPin(storageID: String) {
-        withContext(Dispatchers.IO) {
+    suspend fun getListOfPin(storageID: String): HashMap<String, Any> {
+        return withContext(Dispatchers.IO) {
             val ref = mDatabase.getReference(storageID)
 
-            val data = ref.child("/PIN").get().await().value
-            Log.i("data", data.toString())
+            val data: HashMap<String, Any> = ref.child("/PIN").get().await().value as HashMap<String, Any>
+
+            for (key in data.keys) {
+                Log.i("data", key)
+            }
+            return@withContext data
         }
     }
 

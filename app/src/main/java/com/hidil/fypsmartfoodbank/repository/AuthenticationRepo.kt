@@ -9,6 +9,7 @@ import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.ui.activity.*
 import com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class AuthenticationRepo {
@@ -62,8 +63,8 @@ class AuthenticationRepo {
                         Log.e("SignUp", task.exception.toString())
                     }
                 }
+                .await()
 
-            Log.i("userIdCreated", uid)
             return@withContext uid
         }
 
