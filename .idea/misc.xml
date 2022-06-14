@@ -108,6 +108,7 @@
         <entry key="app/src/main/res/layout/fragment_claim_request.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/fragment_claim_request_details.xml" value="0.16160081053698075" />
         <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_detail_verification_claim.xml" value="0.33229166666666665" />
         <entry key="app/src/main/res/layout/fragment_detail_verification_donation.xml" value="0.16109422492401215" />
         <entry key="app/src/main/res/layout/fragment_donation_request_details.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_request_verification.xml" value="0.33" />

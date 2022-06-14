@@ -164,6 +164,21 @@ class DatabaseRepo {
             }
     }
 
+    suspend fun updateUserData(userID: String, userData: User): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+
+            mFirestore.collection(Constants.USERS)
+                .document(userID)
+                .set(userData)
+                .addOnSuccessListener { success = true }
+                .addOnFailureListener { e -> Log.e("updateUserData", "Error while updating user details", e) }
+                .await()
+
+            return@withContext success
+        }
+    }
+
     fun getActiveRequest(fragment: Fragment, id: String) {
         mFirestore.collection(Constants.REQUEST)
             .whereEqualTo(Constants.USER_ID, id)

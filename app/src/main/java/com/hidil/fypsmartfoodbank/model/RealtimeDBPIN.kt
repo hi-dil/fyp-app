@@ -7,6 +7,5 @@ import kotlinx.parcelize.Parcelize
 data class RealtimeDBPIN(
     val dayCreated: Long = 0,
     val requestID: String = "",
-    val requestType: String = "",
-    val currentPin: Int = 0
+    val requestType: String = ""
 ) : Parcelable

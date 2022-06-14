@@ -20,6 +20,7 @@ import com.hidil.fypsmartfoodbank.databinding.FragmentDetailVerificationClaimBin
 import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.RealtimeDBPIN
 import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.repository.RetrofitInstance
@@ -44,6 +45,8 @@ class DetailVerificationClaimFragment : Fragment() {
     private val args by navArgs<DetailVerificationClaimFragmentArgs>()
     private lateinit var currentRequest: Request
 
+    private lateinit var userDetails: User
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +59,18 @@ class DetailVerificationClaimFragment : Fragment() {
         GlideLoader(requireContext()).loadUserPicture(currentRequest.userImage, binding.ivUserImage)
         binding.tvUserName.text = currentRequest.userName
         binding.tvMobileNumber.text = currentRequest.userMobile
+
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
+                requireActivity().runOnUiThread {
+                    if (userDetails.isVerified) {
+                        binding.ivVerified.visibility = View.VISIBLE
+                        binding.cbVerifiedBeneficiary.isChecked = true
+                    }
+                }
+            }
+        }
 
         val dateFormat = "dd MMMM yyyy"
         val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
@@ -164,6 +179,11 @@ class DetailVerificationClaimFragment : Fragment() {
                 }
             }
 
+            if (binding.cbVerifiedBeneficiary.isChecked != userDetails.isVerified) {
+                userDetails.isVerified = binding.cbVerifiedBeneficiary.isChecked
+                DatabaseRepo().updateUserData(currentRequest.userID, userDetails)
+            }
+
             requireActivity().runOnUiThread {
                 requireActivity().showProgressDialog()
             }
@@ -175,7 +195,6 @@ class DetailVerificationClaimFragment : Fragment() {
             // will be used to check if the async function return error
             var updateRD = false
             var updateRequest = false
-            val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
 
             for (i in currentRequest.items) {
                 val pinData =

@@ -18,7 +18,14 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.hidil.fypsmartfoodbank.R
+import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.SplashScreenActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 private const val CHANNEL_ID = "my_channel"
@@ -60,6 +67,13 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d("refreshedToken", token)
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val userDetails = DatabaseRepo().getAnotherUserDetails(AuthenticationRepo().getCurrentUserID())
+                userDetails.tokenID = token
+                DatabaseRepo().updateUserData(AuthenticationRepo().getCurrentUserID(), userDetails)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

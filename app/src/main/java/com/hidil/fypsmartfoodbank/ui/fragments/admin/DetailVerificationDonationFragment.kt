@@ -34,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -145,45 +144,48 @@ class DetailVerificationDonationFragment : Fragment() {
     }
 
     // generate a random number from 0 to 999999 with "000000" / 6 digit format
-    private fun generateRand(storageID: String): String {
+    // it a recursive function - it will repeat until the digit value doesnt match with the database value
+    private suspend fun generateRand(storageID: String): String {
         val rnd = Random()
         val number = rnd.nextInt(999999)
         val numberString = String.format("%06d", number)
         var finalNumber = ""
+        var listOfPin = HashMap<String, Any>()
 
-        CoroutineScope(IO).launch {
-            withContext(Dispatchers.Default) {
-                val listOfPin = RealtimeDBRepo().getListOfPin(storageID)
+        return withContext(Dispatchers.Default) {
+            listOfPin = RealtimeDBRepo().getListOfPin(storageID)
+            Log.i("listOfPinCoroutine", listOfPin.toString())
 
-                for (key in listOfPin.keys) {
-                    if (key == numberString) {
-                        generateRand(storageID)
-                    } else {
-                        finalNumber = numberString
-                    }
+            for (key in listOfPin.keys) {
+                if (numberString == key) {
+                    generateRand(storageID)
+                } else {
+                    finalNumber = numberString
+                    Log.i("pinNumber", finalNumber)
                 }
-
             }
+
+            return@withContext finalNumber
         }
-        return finalNumber
     }
 
     // run fun to approve user's request
     private fun approveRequest() {
-        // generate the pin number
-        for (i in currentRequest.items) {
-            val pinNumber = generateRand(i.storageID)
-            i.storagePIN = pinNumber
-        }
-
-        requireActivity().showProgressDialog()
-
-        // update user's request
-        currentRequest.approved = true
-        currentRequest.lastUpdate = System.currentTimeMillis()
-
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
+                // generate the pin number
+                for (i in currentRequest.items) {
+                    val pinNumber = generateRand(i.storageID)
+                    i.storagePIN = pinNumber
+                }
+
+                requireActivity().runOnUiThread {
+                    requireActivity().showProgressDialog()
+                }
+
+                // update user's request
+                currentRequest.approved = true
+                currentRequest.lastUpdate = System.currentTimeMillis()
 
                 // will be used to check if the async function return error
                 var updateRD = false
@@ -224,7 +226,10 @@ class DetailVerificationDonationFragment : Fragment() {
                         val title = "Request Update"
                         val message = "Your request has been approved"
 
-                        PushNotification(NotificationData(title, message), userDetails.tokenID).also { sendNotification(it) }
+                        PushNotification(
+                            NotificationData(title, message),
+                            userDetails.tokenID
+                        ).also { sendNotification(it) }
 
                         views.findViewById<TextView>(R.id.tv_text).text =
                             "Successfully approve user's request"
@@ -245,7 +250,6 @@ class DetailVerificationDonationFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun denyRequest(reason: String) {
@@ -257,12 +261,19 @@ class DetailVerificationDonationFragment : Fragment() {
                 currentRequest.lastUpdate = System.currentTimeMillis()
 
                 val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
-                val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DetailVerificationDonationFragment)
+                val updateRequest = DatabaseRepo().updateUserDonationRequest(
+                    currentRequest,
+                    this@DetailVerificationDonationFragment
+                )
 
                 requireActivity().runOnUiThread {
                     if (updateRequest) {
                         val views =
-                            View.inflate(requireContext(), R.layout.alert_dialog_complete_request, null)
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
                         val builder = AlertDialog.Builder(requireActivity())
                         builder.setView(views)
                         val dialog = builder.create()
@@ -277,7 +288,10 @@ class DetailVerificationDonationFragment : Fragment() {
                             val title = "Request Update"
                             val message = "Your request has been deny"
 
-                            PushNotification(NotificationData(title, message), userDetails.tokenID).also { sendNotification(it) }
+                            PushNotification(
+                                NotificationData(title, message),
+                                userDetails.tokenID
+                            ).also { sendNotification(it) }
 
                             views.findViewById<TextView>(R.id.tv_text).text =
                                 "Successfully deny user's request"
