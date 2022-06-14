@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_donationRequestDetailsFragment_to_dashboardDonatorFragment"
             app:destination="@id/dashboardDonatorFragment" />
+        <action
+            android:id="@+id/action_donationRequestDetailsFragment_self"
+            app:destination="@id/donationRequestDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/locationFragment2"

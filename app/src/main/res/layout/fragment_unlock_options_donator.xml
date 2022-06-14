@@ -97,7 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="75dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_qr_code" />
+                    android:src="@drawable/ic_qr_code"
+                    app:tint="@color/primaryText" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -124,7 +125,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="75dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_pin_code" />
+                    android:src="@drawable/ic_pin_code"
+                    app:tint="@color/primaryText" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -52,10 +52,6 @@ class FirebaseService : FirebaseMessagingService() {
             .setSmallIcon(R.drawable.notification_icon)
             .setColor(ContextCompat.getColor(this, R.color.primaryColor))
             .setLargeIcon(generateBitmapFromVectorDrawable(this, R.drawable.notification_icon))
-            .setStyle(
-                NotificationCompat.BigPictureStyle()
-                    .bigPicture(generateBitmapFromVectorDrawable(this, R.drawable.congrats_image))
-            )
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()

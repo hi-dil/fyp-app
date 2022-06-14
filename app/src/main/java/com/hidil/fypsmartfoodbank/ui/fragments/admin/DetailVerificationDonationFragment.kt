@@ -156,12 +156,16 @@ class DetailVerificationDonationFragment : Fragment() {
             listOfPin = RealtimeDBRepo().getListOfPin(storageID)
             Log.i("listOfPinCoroutine", listOfPin.toString())
 
-            for (key in listOfPin.keys) {
-                if (numberString == key) {
-                    generateRand(storageID)
-                } else {
-                    finalNumber = numberString
-                    Log.i("pinNumber", finalNumber)
+            if (listOfPin == HashMap<String, Any>()) {
+                finalNumber = numberString
+            } else {
+                for (key in listOfPin.keys) {
+                    if (numberString == key) {
+                        generateRand(storageID)
+                    } else {
+                        finalNumber = numberString
+                        Log.i("pinNumber", finalNumber)
+                    }
                 }
             }
 

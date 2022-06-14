@@ -49,24 +49,24 @@ class DatabaseRepo {
             }
     }
 
-    suspend fun regiserUserAsync(user: User) : Boolean{
-       return withContext(Dispatchers.IO) {
-           var success = false
-           Log.i("userId", user.id)
+    suspend fun regiserUserAsync(user: User): Boolean {
+        return withContext(Dispatchers.IO) {
+            var success = false
+            Log.i("userId", user.id)
 
-           mFirestore.collection(Constants.USERS)
-               .document(user.id)
-               .set(user, SetOptions.merge())
-               .addOnSuccessListener {
-                   success = true
-               }
-               .addOnFailureListener {
-                   Log.e("SignUp", "Error while saving user data to firestore", it)
-               }
-               .await()
+            mFirestore.collection(Constants.USERS)
+                .document(user.id)
+                .set(user, SetOptions.merge())
+                .addOnSuccessListener {
+                    success = true
+                }
+                .addOnFailureListener {
+                    Log.e("SignUp", "Error while saving user data to firestore", it)
+                }
+                .await()
 
-           return@withContext success
-       }
+            return@withContext success
+        }
     }
 
     fun getUserDetails(activity: Activity) {
@@ -172,7 +172,13 @@ class DatabaseRepo {
                 .document(userID)
                 .set(userData)
                 .addOnSuccessListener { success = true }
-                .addOnFailureListener { e -> Log.e("updateUserData", "Error while updating user details", e) }
+                .addOnFailureListener { e ->
+                    Log.e(
+                        "updateUserData",
+                        "Error while updating user details",
+                        e
+                    )
+                }
                 .await()
 
             return@withContext success
@@ -363,6 +369,31 @@ class DatabaseRepo {
                 }
                 .addOnFailureListener { e ->
                     Log.e(fragment.javaClass.simpleName.toString(), e.message.toString())
+                }
+                .await()
+
+            return@withContext requestList
+        }
+    }
+
+    suspend fun searchDonationRequestAsync(
+        fragment: Fragment,
+        id: String
+    ): ArrayList<DonationRequest> {
+        return withContext(Dispatchers.IO) {
+            var requestList = ArrayList<DonationRequest>()
+            mFirestore.collection(Constants.DONATION_REQUEST)
+                .whereEqualTo(FieldPath.documentId(), id)
+                .get()
+                .addOnSuccessListener { document ->
+                    for (i in document.documents) {
+                        val request = i.toObject(DonationRequest::class.java)
+                        request!!.id = i.id
+                        requestList.add(request)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e(fragment.javaClass.simpleName.toString(), "Error while getting data", e)
                 }
                 .await()
 

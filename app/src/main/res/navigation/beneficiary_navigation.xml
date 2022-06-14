@@ -54,6 +54,9 @@
         <action
             android:id="@+id/action_claimRequestDetailsFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment" />
+        <action
+            android:id="@+id/action_claimRequestDetailsFragment_self"
+            app:destination="@id/claimRequestDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment"
