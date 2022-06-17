@@ -33,6 +33,10 @@ class UserInfoFragment : Fragment() {
         DatabaseRepo().getActiveRequest(this, args.userID)
         DatabaseRepo().getPastRequest(this, args.userID)
 
+        binding.fabBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         return binding.root
     }
 

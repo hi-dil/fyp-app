@@ -1,3 +1,7 @@
+@file:Suppress("OverrideDeprecatedMigration", "OverrideDeprecatedMigration",
+    "OverrideDeprecatedMigration", "OverrideDeprecatedMigration", "OverrideDeprecatedMigration"
+)
+
 package com.hidil.fypsmartfoodbank.ui.activity
 
 import android.Manifest

@@ -16,6 +16,7 @@ data class User(
     val city: String = "",
     var tokenID: String = "",
     var isVerified: Boolean = false,
-    var favouriteFoodBank: ArrayList<FavouriteFoodBank> = ArrayList()
+    var favouriteFoodBank: ArrayList<FavouriteFoodBank> = ArrayList(),
+    var ban: Boolean = false
 ) : Parcelable
 

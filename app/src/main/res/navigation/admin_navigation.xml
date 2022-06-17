@@ -33,7 +33,11 @@
         android:id="@+id/locationFragment3"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
         android:label="fragment_location"
-        tools:layout="@layout/fragment_location" />
+        tools:layout="@layout/fragment_location" >
+        <action
+            android:id="@+id/action_locationFragment3_to_foodBankInfoAdminFragment"
+            app:destination="@id/foodBankInfoAdminFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userProfileFragment3"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.UserProfileFragment"
@@ -62,5 +66,38 @@
         <action
             android:id="@+id/action_detailVerificationDonationFragment_to_dashboardAdminFragment"
             app:destination="@id/dashboardAdminFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/foodBankInfoAdminFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.FoodBankInfoAdminFragment"
+        android:label="FoodBankInfoAdminFragment" >
+        <action
+            android:id="@+id/action_foodBankInfoAdminFragment_to_storageInfoFragment3"
+            app:destination="@id/storageInfoFragment3" />
+        <argument
+            android:name="foodBankID"
+            app:argType="string"
+            android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/storageInfoFragment3"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.StorageInfoFragment"
+        android:label="fragment_storage_info_admin"
+        tools:layout="@layout/fragment_storage_info_admin" >
+        <action
+            android:id="@+id/action_storageInfoFragment3_to_userProfileAdminFragment"
+            app:destination="@id/userProfileAdminFragment" />
+        <argument
+            android:name="storageID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileAdminFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.admin.UserProfileAdminFragment"
+        android:label="fragment_user_profile_admin"
+        tools:layout="@layout/fragment_user_profile_admin" >
+        <argument
+            android:name="userID"
+            app:argType="string" />
     </fragment>
 </navigation>
