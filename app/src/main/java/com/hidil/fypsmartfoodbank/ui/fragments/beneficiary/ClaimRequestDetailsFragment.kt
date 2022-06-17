@@ -2,6 +2,7 @@ package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,16 +61,18 @@ class ClaimRequestDetailsFragment : Fragment() {
         binding.rvItems.adapter = itemListAdatper
 
         if (currentRequest.cancel) {
-            binding.tvFailureTag.visibility = View.VISIBLE
             binding.btnCancelRequest.visibility = View.GONE
+            binding.tvCancelTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
         } else if (currentRequest.denied) {
-            binding.tvFailureTag.visibility = View.VISIBLE
-            binding.tvFailureTag.text = "Denied"
+            binding.tvDenyTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
             binding.btnShowReason.visibility = View.VISIBLE
             binding.btnCancelRequest.visibility = View.GONE
         } else if (currentRequest.completed) {
+            binding.tvCompleteTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
             binding.btnCancelRequest.visibility = View.GONE
-            binding.btnComplete.visibility = View.VISIBLE
         }
 
         binding.fabBack.setOnClickListener {
@@ -106,9 +109,8 @@ class ClaimRequestDetailsFragment : Fragment() {
         }
 
         if (currentRequest.approved && !currentRequest.completed) {
-            binding.tvProgress.text = "Approve"
-            binding.tvProgress.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.approved_tag)
+            binding.tvApproveTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
             binding.btnTakeItem.visibility = View.VISIBLE
         }
 
@@ -138,7 +140,6 @@ class ClaimRequestDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (takeItemButton) {
-            binding.btnInProgress.visibility = View.VISIBLE
             binding.btnTakeItem.visibility = View.GONE
         }
         if (args.currentRequest.approved && !args.currentRequest.completed && takeItemButton) {
@@ -156,6 +157,26 @@ class ClaimRequestDetailsFragment : Fragment() {
                             "Error while refreshing list",
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
+
+                    var complete = false
+                    for (storage in data[0].items) {
+                        complete = storage.completed
+                    }
+                    Log.i("isComplete", complete.toString())
+
+                    if (complete) {
+                        currentRequest.completed = complete
+                        val updateRequest = DatabaseRepo().updateUserClaimRequest(currentRequest, this@ClaimRequestDetailsFragment)
+
+                        if (updateRequest) {
+                            val updatedData = DatabaseRepo().searchRequestAsync(this@ClaimRequestDetailsFragment, currentRequest.id)
+                            if (updatedData.size > 0) {
+                                requireActivity().runOnUiThread {
+                                    findNavController().navigate(ClaimRequestDetailsFragmentDirections.actionClaimRequestDetailsFragmentSelf(updatedData[0]))
+                                }
+                            }
+                        }
                     }
 
                     requireActivity().runOnUiThread {
@@ -209,7 +230,9 @@ class ClaimRequestDetailsFragment : Fragment() {
                     for (storageItem in foodbankData.storage) {
                         for (requestItem in currentRequest.items) {
                             if (storageItem.id == requestItem.storageID) {
-                                storageItem.itemQuantity += requestItem.itemQuantity
+                                if (!requestItem.completed) {
+                                    storageItem.itemQuantity += requestItem.itemQuantity
+                                }
                             }
                         }
                     }

@@ -147,6 +147,52 @@ class DonationRequestDetailsFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (donateItemButton) {
+            binding.btnDonateItem.visibility = View.GONE
+        }
+
+        if (args.currentRequest.approved && !args.currentRequest.completed && donateItemButton) {
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val data = DatabaseRepo().searchDonationRequestAsync(this@DonationRequestDetailsFragment, currentRequest.id)
+                    if (data.size > 0) {
+                        currentRequest = data[0]
+                    }
+
+                    var complete = false
+                    for (storage in data[0].items) {
+                        complete = storage.completed
+                    }
+
+                    if (complete) {
+                        currentRequest.completed = complete
+                        val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DonationRequestDetailsFragment)
+
+                        if (updateRequest) {
+                            val updateData = DatabaseRepo().searchDonationRequestAsync(this@DonationRequestDetailsFragment, currentRequest.id)
+
+                            if (updateData.size > 0) {
+                                requireActivity().runOnUiThread {
+                                    findNavController().navigate(DonationRequestDetailsFragmentDirections.actionDonationRequestDetailsFragmentSelf(currentRequest))
+                                }
+                            }
+
+                        }
+                    }
+
+                    requireActivity().runOnUiThread {
+                        val itemStatusAdapter = PendingTakeItemListAdapter(requireActivity(), currentRequest.items, currentRequest)
+                        binding.rvItems.adapter = itemStatusAdapter
+                    }
+                }
+
+
+            }
+        }
+    }
+
     private fun cancelRequest() {
         val views = View.inflate(requireContext(), R.layout.alert_dialog_confirm_cancel, null)
         val builder = AlertDialog.Builder(requireActivity())

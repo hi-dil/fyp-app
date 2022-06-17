@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 class DetailVerificationClaimFragment : Fragment() {
     private var _binding: FragmentDetailVerificationClaimBinding? = null
@@ -155,15 +156,18 @@ class DetailVerificationClaimFragment : Fragment() {
             listOfPin = RealtimeDBRepo().getListOfPin(storageID)
             Log.i("listOfPinCoroutine", listOfPin.toString())
 
-            for (key in listOfPin.keys) {
-                if (numberString == key) {
-                    generateRand(storageID)
-                } else {
-                    finalNumber = numberString
-                    Log.i("pinNumber", finalNumber)
+            if (listOfPin == HashMap<String, Any>()) {
+                finalNumber = numberString
+            } else {
+                for (key in listOfPin.keys) {
+                    if (numberString == key) {
+                        generateRand(storageID)
+                    } else {
+                        finalNumber = numberString
+                        Log.i("pinNumber", finalNumber)
+                    }
                 }
             }
-
             return@withContext finalNumber
         }
     }
