@@ -1,15 +1,15 @@
 package com.hidil.fypsmartfoodbank.ui.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.ActivityLoginBinding
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
-import com.hidil.fypsmartfoodbank.utils.Constants
 
 class Login : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -31,10 +31,10 @@ class Login : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            if(validateLoginDetails()) {
+            if (validateLoginDetails()) {
                 showProgressDialog()
-                val email = binding.etEmail.text.toString().trim{ it <= ' ' }
-                val password = binding.etPassword.text.toString().trim{ it <= ' ' }
+                val email = binding.etEmail.text.toString().trim { it <= ' ' }
+                val password = binding.etPassword.text.toString().trim { it <= ' ' }
                 AuthenticationRepo().userLogin(this, email, password)
             }
         }
@@ -42,12 +42,12 @@ class Login : AppCompatActivity() {
 
     private fun validateLoginDetails(): Boolean {
         return when {
-            TextUtils.isEmpty(binding.etEmail.text.toString().trim{ it <= ' ' }) -> {
+            TextUtils.isEmpty(binding.etEmail.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar(resources.getString(R.string.err_msg_email), true)
                 false
             }
 
-            TextUtils.isEmpty(binding.etPassword.text.toString().trim{ it <= ' ' }) -> {
+            TextUtils.isEmpty(binding.etPassword.text.toString().trim { it <= ' ' }) -> {
                 showErrorSnackBar(resources.getString(R.string.err_msg_password), true)
                 false
             }
@@ -63,10 +63,16 @@ class Login : AppCompatActivity() {
 //        } else {
 //            Intent(this, DonatorActivity::class.java)
 //        }
-        if (user.userRole.lowercase() == "beneficiary" || user.userRole.lowercase() == "donator" || user.userRole.lowercase() == "admin") {
-            val intent = Intent(this, SplashScreenActivity::class.java)
-            startActivity(intent)
-            finish()
+
+        if (user.ban) {
+            Toast.makeText(this, "Your account has been ban!", Toast.LENGTH_SHORT).show()
+            FirebaseAuth.getInstance().signOut()
+        } else if (!user.ban){
+            if (user.userRole.lowercase() == "beneficiary" || user.userRole.lowercase() == "donator" || user.userRole.lowercase() == "admin") {
+                val intent = Intent(this, SplashScreenActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
 
 //        val intent = if (user.userRole.lowercase() == "beneficiary" || user.userRole.lowercase() == "donator") {

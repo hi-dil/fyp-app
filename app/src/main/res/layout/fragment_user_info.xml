@@ -204,59 +204,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/verylarge_margin_padding"
-                android:layout_marginEnd="@dimen/verylarge_margin_padding"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_verifyStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="55dp"
-                    android:text="Verify Start"
-                    android:textColor="@color/primaryText"
-                    android:textSize="@dimen/medium_text_size" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/verylarge_margin_padding"
-                    android:text="3 May 2020"
-                    android:textColor="@color/primaryText"
-                    android:textSize="@dimen/medium_text_size"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/verylarge_margin_padding"
-                android:layout_marginEnd="@dimen/verylarge_margin_padding"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="63dp"
-                    android:text="Verify End"
-                    android:textColor="@color/primaryText"
-                    android:textSize="@dimen/medium_text_size" />
-
-                <TextView
-                    android:id="@+id/tv_verifyEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/verylarge_margin_padding"
-                    android:text="3 November 2020"
-                    android:textColor="@color/primaryText"
-                    android:textSize="@dimen/medium_text_size"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -67,6 +67,15 @@ class DetailVerificationDonationFragment : Fragment() {
         val date = formatter.format(calendar.time)
         binding.tvRequestDate.text = date
 
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
+                requireActivity().runOnUiThread {
+                    binding.tvMonthlyIncome.text = userDetails.monthlyIncome
+                }
+            }
+        }
+
         binding.tvFbName.text = currentRequest.foodBankName
         binding.tvFbAddress.text = currentRequest.address
         GlideLoader(requireContext()).loadFoodBankPicture(

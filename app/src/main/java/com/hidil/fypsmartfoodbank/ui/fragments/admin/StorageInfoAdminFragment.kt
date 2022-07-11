@@ -1,56 +1,62 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.hidil.fypsmartfoodbank.R
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.hidil.fypsmartfoodbank.databinding.FragmentStorageInfoAdminBinding
+import com.hidil.fypsmartfoodbank.model.Storage
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.adapter.AccessHistoryListAdapter
+import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragmentArgs
+import com.hidil.fypsmartfoodbank.utils.GlideLoader
 
-/**
- * A simple [Fragment] subclass.
- * Use the [StorageInfoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class StorageInfoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class StorageInfoAdminFragment : Fragment() {
+    private var _binding: FragmentStorageInfoAdminBinding? = null
+    private val binding get() = _binding!!
+    private val args by navArgs<StorageInfoFragmentArgs>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentStorageInfoAdminBinding.inflate(inflater, container, false)
+        DatabaseRepo().searchStorageDetails(this, args.storageID)
+
+        return binding.root
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_storage_info_admin, container, false)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StorageInfoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic fun newInstance(param1: String, param2: String) =
-                StorageInfoFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
-                }
+    fun getStorageData(storageInfo: Storage) {
+        binding.tvTitle.text = storageInfo.storageName
+        GlideLoader(requireContext()).loadStoragePicture(
+            storageInfo.itemImage,
+            binding.ivStorageItem
+        )
+        binding.tvCurrentlyStoring.text = storageInfo.item
+        binding.tvItemTypes.text = storageInfo.itemTypes
+        binding.maxCapacity.text = "${storageInfo.maximumCapacity} items"
+
+        val sortedAccessHistory = storageInfo.accessHistory.sortedByDescending { it.lastVisited }
+
+        binding.rvFoodBankAccessHistory.layoutManager = LinearLayoutManager(activity)
+        binding.rvFoodBankAccessHistory.setHasFixedSize(true)
+        val accessHistoryListAdapter =
+            AccessHistoryListAdapter(
+                requireActivity(),
+                sortedAccessHistory, this
+            )
+        binding.rvFoodBankAccessHistory.adapter = accessHistoryListAdapter
+
+
     }
 }

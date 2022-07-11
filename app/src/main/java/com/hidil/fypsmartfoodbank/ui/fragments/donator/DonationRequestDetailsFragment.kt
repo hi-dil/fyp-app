@@ -74,16 +74,22 @@ class DonationRequestDetailsFragment : Fragment() {
         }
 
         if (currentRequest.cancel) {
-            binding.tvFailureTag.visibility = View.VISIBLE
             binding.btnCancelRequest.visibility = View.GONE
+            binding.tvCancelTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
         } else if (currentRequest.denied) {
-            binding.tvFailureTag.visibility = View.VISIBLE
-            binding.tvFailureTag.text = "Denied"
+            binding.tvDenyTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
             binding.btnShowReason.visibility = View.VISIBLE
             binding.btnCancelRequest.visibility = View.GONE
         } else if (currentRequest.completed) {
+            binding.tvCompleteTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
             binding.btnCancelRequest.visibility = View.GONE
-            binding.btnComplete.visibility = View.VISIBLE
+        } else if (currentRequest.approved && !currentRequest.completed) {
+            binding.tvApproveTag.visibility = View.VISIBLE
+            binding.tvPendingTag.visibility = View.GONE
+            binding.btnDonateItem.visibility = View.VISIBLE
         }
 
         binding.btnInProgress.setOnClickListener {
@@ -132,12 +138,6 @@ class DonationRequestDetailsFragment : Fragment() {
             dialogUpdate.show()
         }
 
-        if (currentRequest.approved && !currentRequest.completed) {
-            binding.tvProgress.text = "Approved"
-            binding.tvProgress.background =
-                ContextCompat.getDrawable(requireContext(), R.drawable.approved_tag)
-            binding.btnDonateItem.visibility = View.VISIBLE
-        }
 
         return binding.root
     }
@@ -156,7 +156,10 @@ class DonationRequestDetailsFragment : Fragment() {
         if (args.currentRequest.approved && !args.currentRequest.completed && donateItemButton) {
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
-                    val data = DatabaseRepo().searchDonationRequestAsync(this@DonationRequestDetailsFragment, currentRequest.id)
+                    val data = DatabaseRepo().searchDonationRequestAsync(
+                        this@DonationRequestDetailsFragment,
+                        currentRequest.id
+                    )
                     if (data.size > 0) {
                         currentRequest = data[0]
                     }
@@ -168,14 +171,24 @@ class DonationRequestDetailsFragment : Fragment() {
 
                     if (complete) {
                         currentRequest.completed = complete
-                        val updateRequest = DatabaseRepo().updateUserDonationRequest(currentRequest, this@DonationRequestDetailsFragment)
+                        val updateRequest = DatabaseRepo().updateUserDonationRequest(
+                            currentRequest,
+                            this@DonationRequestDetailsFragment
+                        )
 
                         if (updateRequest) {
-                            val updateData = DatabaseRepo().searchDonationRequestAsync(this@DonationRequestDetailsFragment, currentRequest.id)
+                            val updateData = DatabaseRepo().searchDonationRequestAsync(
+                                this@DonationRequestDetailsFragment,
+                                currentRequest.id
+                            )
 
                             if (updateData.size > 0) {
                                 requireActivity().runOnUiThread {
-                                    findNavController().navigate(DonationRequestDetailsFragmentDirections.actionDonationRequestDetailsFragmentSelf(currentRequest))
+                                    findNavController().navigate(
+                                        DonationRequestDetailsFragmentDirections.actionDonationRequestDetailsFragmentSelf(
+                                            updateData[0]
+                                        )
+                                    )
                                 }
                             }
 
@@ -183,7 +196,11 @@ class DonationRequestDetailsFragment : Fragment() {
                     }
 
                     requireActivity().runOnUiThread {
-                        val itemStatusAdapter = PendingTakeItemListAdapter(requireActivity(), currentRequest.items, currentRequest)
+                        val itemStatusAdapter = PendingTakeItemListAdapter(
+                            requireActivity(),
+                            currentRequest.items,
+                            currentRequest
+                        )
                         binding.rvItems.adapter = itemStatusAdapter
                     }
                 }

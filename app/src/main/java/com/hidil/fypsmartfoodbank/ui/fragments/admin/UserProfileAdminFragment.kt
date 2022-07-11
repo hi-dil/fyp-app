@@ -1,60 +1,257 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
+import com.hidil.fypsmartfoodbank.databinding.FragmentUserProfileAdminBinding
+import com.hidil.fypsmartfoodbank.model.Request
+import com.hidil.fypsmartfoodbank.model.User
+import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
+import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.PastRequestListAdapter
+import com.hidil.fypsmartfoodbank.ui.fragments.UserInfoFragmentArgs
+import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UserProfileAdminFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UserProfileAdminFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentUserProfileAdminBinding? = null
+    private val binding get() = _binding!!
+    private val args by navArgs<UserInfoFragmentArgs>()
+    private lateinit var userInfo: User
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentUserProfileAdminBinding.inflate(inflater, container, false)
+        DatabaseRepo().searchUser(this, args.userID)
+        DatabaseRepo().getActiveRequest(this, args.userID)
+        DatabaseRepo().getPastRequest(this, args.userID)
+
+        binding.fabBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+        return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    fun setUserInfo() {
+        if (userInfo.ban) {
+            binding.btnBan.visibility = View.GONE
+            binding.btnUnban.visibility = View.VISIBLE
+        } else {
+            binding.btnBan.visibility = View.VISIBLE
+            binding.btnUnban.visibility = View.GONE
+        }
+
+        GlideLoader(requireContext()).loadUserPicture(userInfo.image, binding.ivUserImage)
+        binding.tvEmail.text = userInfo.email
+        binding.tvUserName.text = userInfo.name
+        binding.tvUserRole.text = userInfo.userRole
+        binding.tvMonthlyIncome.text = userInfo.monthlyIncome
+        binding.tvPhoneNumber.text = userInfo.mobileNumber
+        binding.btnContact.setOnClickListener {
+            val dialIntent = Intent(Intent.ACTION_DIAL)
+            dialIntent.data = Uri.parse("tel: ${userInfo.mobileNumber}")
+            startActivity(dialIntent)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_profile_admin, container, false)
+    fun getUserInfo(user: User) {
+        userInfo = user
+        setUserInfo()
+
+        binding.btnBan.setOnClickListener {
+            val views = View.inflate(requireContext(), R.layout.alert_dialog_confirm_approve, null)
+            views.findViewById<TextView>(R.id.tv_text).text = "Do you want to ban the user?"
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setView(views)
+
+            val dialog = builder.create()
+            dialog.show()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            views.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            views.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+                banUser()
+                setUserInfo()
+                dialog.dismiss()
+            }
+        }
+
+        binding.btnUnban.setOnClickListener {
+            val views = View.inflate(requireContext(), R.layout.alert_dialog_confirm_approve, null)
+            views.findViewById<TextView>(R.id.tv_text).text = "Do you want to unban the user?"
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setView(views)
+
+            val dialog = builder.create()
+            dialog.show()
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            views.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            views.findViewById<Button>(R.id.btn_yes).setOnClickListener {
+                unbanUser()
+                setUserInfo()
+                dialog.dismiss()
+            }
+        }
+
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UserProfileAdminFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UserProfileAdminFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun banUser() {
+        userInfo.ban = true
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val updateUser = DatabaseRepo().updateUserData(args.userID, userInfo)
+
+                requireActivity().runOnUiThread {
+                    if (updateUser) {
+                        val views =
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
+                        views.findViewById<TextView>(R.id.tv_text).text = "Successfully ban user"
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder.setView(views)
+                        val dialog = builder.create()
+                        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialog.dismiss()
+                        }
+                        dialog.show()
+                    } else {
+                        val views =
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
+                        views.findViewById<TextView>(R.id.tv_text).text = "Unsuccessful ban user"
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder.setView(views)
+                        val dialog = builder.create()
+                        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialog.dismiss()
+                        }
+
+                        dialog.show()
+                    }
                 }
             }
+        }
     }
+
+    private fun unbanUser() {
+        userInfo.ban = false
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val updateUser = DatabaseRepo().updateUserData(args.userID, userInfo)
+
+                requireActivity().runOnUiThread {
+                    if (updateUser) {
+                        val views =
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
+                        views.findViewById<TextView>(R.id.tv_text).text = "Successfully unban user"
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder.setView(views)
+                        val dialog = builder.create()
+                        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialog.dismiss()
+                        }
+                        dialog.show()
+                    } else {
+                        val views =
+                            View.inflate(
+                                requireContext(),
+                                R.layout.alert_dialog_complete_request,
+                                null
+                            )
+                        views.findViewById<TextView>(R.id.tv_text).text = "Unsuccessful unban user"
+                        val builder = AlertDialog.Builder(requireActivity())
+                        builder.setView(views)
+                        val dialog = builder.create()
+                        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+                        views.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                            dialog.dismiss()
+                        }
+                        dialog.show()
+
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun getActiveRequest(activeRequestList: ArrayList<Request>) {
+        if (activeRequestList.size > 0) {
+            binding.rvActiveRequest.visibility = View.VISIBLE
+            binding.tvNoActiveRequest.visibility = View.GONE
+
+            binding.rvActiveRequest.layoutManager = LinearLayoutManager(activity)
+            binding.rvActiveRequest.setHasFixedSize(true)
+            val activeRequestAdapter =
+                ActiveRequestListAdapter(requireActivity(), activeRequestList, this)
+            binding.rvActiveRequest.adapter = activeRequestAdapter
+        } else {
+            binding.rvActiveRequest.visibility = View.GONE
+            binding.tvNoActiveRequest.visibility = View.VISIBLE
+        }
+    }
+
+    fun getPastRequest(pastRequestList: ArrayList<Request>) {
+        if (pastRequestList.size > 0) {
+            binding.rvPastRequest.visibility = View.VISIBLE
+            binding.tvNoPastRequest.visibility = View.GONE
+
+            binding.rvPastRequest.layoutManager = LinearLayoutManager(activity)
+            binding.rvPastRequest.setHasFixedSize(true)
+            val pastRequestAdapter =
+                PastRequestListAdapter(requireActivity(), pastRequestList, this)
+            binding.rvPastRequest.adapter = pastRequestAdapter
+        } else {
+            binding.rvPastRequest.visibility = View.GONE
+            binding.tvNoPastRequest.visibility = View.VISIBLE
+        }
+    }
+
 }

@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 class DetailVerificationClaimFragment : Fragment() {
     private var _binding: FragmentDetailVerificationClaimBinding? = null
@@ -65,6 +64,7 @@ class DetailVerificationClaimFragment : Fragment() {
             withContext(Dispatchers.Default) {
                 userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
                 requireActivity().runOnUiThread {
+                    binding.tvMonthlyIncome.text = userDetails.monthlyIncome
                     if (userDetails.isVerified) {
                         binding.ivVerified.visibility = View.VISIBLE
                         binding.cbVerifiedBeneficiary.isChecked = true

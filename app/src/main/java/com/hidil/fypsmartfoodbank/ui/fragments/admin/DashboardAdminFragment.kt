@@ -1,5 +1,6 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
+import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,27 +8,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.hidil.fypsmartfoodbank.databinding.FragmentDashboardAdminBinding
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
-import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.AdminMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.DonationRequestListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.RequestListAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class DashboardAdminFragment : Fragment() {
+class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentDashboardAdminBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
 
@@ -63,6 +68,23 @@ class DashboardAdminFragment : Fragment() {
             attachDonationRequest(donationRequest)
         }
 
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
+        if (hasLocationPermission()) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val sp =
+                        activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+                    val spEditor = sp!!.edit()
+                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                    spEditor.apply()
+                }
+            }
+        } else {
+            requestLocationPermission()
+        }
+
         binding.swipeToRefresh.setOnRefreshListener {
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
@@ -80,6 +102,49 @@ class DashboardAdminFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    private fun hasLocationPermission() = (
+            EasyPermissions.hasPermissions(
+                requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            )
+
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(
+            this, "This application cannot work without location permission",
+            Constants.LOCATION_REQUEST_CODE,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(requireContext()).build().show()
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
+                val spEditor = sp!!.edit()
+                spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
+                spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
+                spEditor.apply()
+            }
+        }
     }
 
     override fun onDestroyView() {

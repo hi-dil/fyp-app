@@ -1,20 +1,18 @@
 package com.hidil.fypsmartfoodbank.ui.fragments
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentStorageInfoBinding
+import com.hidil.fypsmartfoodbank.model.AccessHistory
 import com.hidil.fypsmartfoodbank.model.Storage
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.AccessHistoryListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
-import com.hidil.fypsmartfoodbank.viewModel.StorageInfoViewModel
 
 class StorageInfoFragment : Fragment() {
 
@@ -38,15 +36,28 @@ class StorageInfoFragment : Fragment() {
     }
 
     fun getStorageData(storageInfo: Storage) {
+        val beneficiaryAccessList = ArrayList<AccessHistory>()
+
+        for (list in storageInfo.accessHistory) {
+            if (list.requestType == "claim") {
+                beneficiaryAccessList.add(list)
+            }
+        }
         binding.tvTitle.text = storageInfo.storageName
-        GlideLoader(requireContext()).loadStoragePicture(storageInfo.itemImage, binding.ivStorageItem)
+        GlideLoader(requireContext()).loadStoragePicture(
+            storageInfo.itemImage,
+            binding.ivStorageItem
+        )
         binding.tvCurrentlyStoring.text = storageInfo.item
         binding.tvItemTypes.text = storageInfo.itemTypes
         binding.maxCapacity.text = "${storageInfo.maximumCapacity} items"
 
+        val sortedAccessHistory = beneficiaryAccessList.sortedByDescending { it.lastVisited }
+
         binding.rvFoodBankAccessHistory.layoutManager = LinearLayoutManager(activity)
         binding.rvFoodBankAccessHistory.setHasFixedSize(true)
-        val accessHistoryListAdapter = AccessHistoryListAdapter(requireActivity(), storageInfo.accessHistory, this)
+        val accessHistoryListAdapter =
+            AccessHistoryListAdapter(requireActivity(), sortedAccessHistory, this)
         binding.rvFoodBankAccessHistory.adapter = accessHistoryListAdapter
     }
 

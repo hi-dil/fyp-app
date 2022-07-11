@@ -35,7 +35,7 @@ class RealtimeDBRepo {
     suspend fun getListOfPin(storageID: String): HashMap<String, Any> {
         return withContext(Dispatchers.IO) {
             val ref = mDatabase.getReference(storageID)
-            val data= ref.child("/PIN").get().await().value
+            val data = ref.child("/PIN").get().await().value
             var pinlist = HashMap<String, Any>()
 
 
@@ -91,7 +91,7 @@ class RealtimeDBRepo {
         ref.child("/isUnlock").setValue(true).addOnSuccessListener {
             when (fragment) {
                 is QRScannerFragment -> setCurrentPin(fragment, storageID, currentPin)
-                is QRScannerDonatorFragment -> fragment.showSuccessDialog()
+                is QRScannerDonatorFragment -> setCurrentPin(fragment, storageID, currentPin)
             }
         }.addOnFailureListener {
             when (fragment) {
@@ -101,7 +101,7 @@ class RealtimeDBRepo {
         }
     }
 
-    fun setCurrentPin(fragment: Fragment, storageID: String, pinNumber: Int) {
+    private fun setCurrentPin(fragment: Fragment, storageID: String, pinNumber: Int) {
         val ref = mDatabase.getReference(storageID)
 
         ref.child("/currentPin").setValue(pinNumber).addOnSuccessListener {

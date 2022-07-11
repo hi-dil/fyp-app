@@ -40,16 +40,18 @@
             app:argType="com.hidil.fypsmartfoodbank.model.DonationRequest" />
         <action
             android:id="@+id/action_donationRequestDetailsFragment_to_unlockOptionsDonatorFragment"
-            app:destination="@id/unlockOptionsDonatorFragment" />
+            app:destination="@id/unlockOptionsDonatorFragment"
+            app:popUpTo="@id/donationRequestDetailsFragment" />
         <action
             android:id="@+id/action_donationRequestDetailsFragment_to_dashboardDonatorFragment"
             app:destination="@id/dashboardDonatorFragment" />
         <action
             android:id="@+id/action_donationRequestDetailsFragment_self"
-            app:destination="@id/donationRequestDetailsFragment" />
+            app:destination="@id/donationRequestDetailsFragment"
+            app:popUpTo="@id/dashboardDonatorFragment" />
     </fragment>
     <fragment
-        android:id="@+id/locationFragment2"
+        android:id="@+id/locationFragment"
         android:name="com.hidil.fypsmartfoodbank.ui.fragments.LocationFragment"
         android:label="fragment_location"
         tools:layout="@layout/fragment_location">
@@ -72,7 +74,7 @@
             app:argType="boolean" />
         <action
             android:id="@+id/action_foodBankInfoFragment_to_locationFragment"
-            app:destination="@id/locationFragment2" />
+            app:destination="@id/locationFragment" />
         <action
             android:id="@+id/action_foodBankInfoFragment_to_storageInfoFragment"
             app:destination="@id/storageInfoFragment2" />
@@ -126,7 +128,8 @@
         tools:layout="@layout/fragment_unlock_options_donator" >
         <action
             android:id="@+id/action_unlockOptionsDonatorFragment_to_QRScannerDonatorFragment"
-            app:destination="@id/QRScannerDonatorFragment" />
+            app:destination="@id/QRScannerDonatorFragment"
+            app:popUpTo="@id/donationRequestDetailsFragment" />
         <argument
             android:name="currentRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.DonationRequest" />
@@ -150,7 +153,8 @@
             app:argType="com.hidil.fypsmartfoodbank.model.DonationRequest" />
         <action
             android:id="@+id/action_QRScannerDonatorFragment_self"
-            app:destination="@id/QRScannerDonatorFragment" />
+            app:destination="@id/QRScannerDonatorFragment"
+            app:popUpTo="@id/donationRequestDetailsFragment" />
         <action
             android:id="@+id/action_QRScannerDonatorFragment_to_donationRequestDetailsFragment"
             app:destination="@id/donationRequestDetailsFragment" />

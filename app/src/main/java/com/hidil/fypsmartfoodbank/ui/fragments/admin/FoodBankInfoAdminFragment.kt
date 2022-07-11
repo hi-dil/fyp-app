@@ -134,10 +134,6 @@ class FoodBankInfoAdminFragment : Fragment() {
 
                         binding.tvHowFar.text = "${rfDistance}km away"
 
-                        val storage = mFoodBank.storage
-                        val mostClaimed = storage.sortedWith(compareBy { it.amountClaimed })
-
-
                         binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
                         binding.rvAvailableItems.setHasFixedSize(true)
                         val availableListAdapter =

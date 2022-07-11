@@ -1,5 +1,7 @@
 package com.hidil.fypsmartfoodbank.ui.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -52,6 +54,11 @@ class UserInfoFragment : Fragment() {
         binding.tvUserRole.text = userInfo.userRole
         binding.tvMonthlyIncome.text = userInfo.monthlyIncome
         binding.tvPhoneNumber.text = userInfo.mobileNumber
+        binding.btnContact.setOnClickListener {
+            val dialIntent = Intent(Intent.ACTION_DIAL)
+            dialIntent.data = Uri.parse("tel: ${userInfo.mobileNumber}")
+            startActivity(dialIntent)
+        }
     }
 
 

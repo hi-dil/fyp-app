@@ -56,7 +56,8 @@
             app:destination="@id/dashboardFragment" />
         <action
             android:id="@+id/action_claimRequestDetailsFragment_self"
-            app:destination="@id/claimRequestDetailsFragment" />
+            app:destination="@id/claimRequestDetailsFragment"
+            app:popUpTo="@id/dashboardFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodBankInfoFragment"
@@ -109,7 +110,8 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_unlockOptionsFragment_to_QRScannerFragment"
-            app:destination="@id/QRScannerFragment" />
+            app:destination="@id/QRScannerFragment"
+            app:popUpTo="@id/claimRequestDetailsFragment" />
         <argument
             android:name="currentItemlistRequest"
             app:argType="com.hidil.fypsmartfoodbank.model.ItemList" />

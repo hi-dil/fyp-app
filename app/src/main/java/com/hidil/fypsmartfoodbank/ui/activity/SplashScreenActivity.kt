@@ -4,12 +4,14 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.databinding.ActivitySplashScreenBinding
 import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
@@ -46,28 +48,20 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         val sp = getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val userRole = sp.getString(Constants.USER_ROLE, "")
 
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-//        if (hasLocationPermission()) {
-//
-//            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-//                if (location != null) {
-//                    val spEditor = sp.edit()
-//                    spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
-//                    spEditor.putString(Constants.CURRENT_LONG, location.longitude.toString())
-//                    spEditor.apply()
-//
-//                    currentLat = location.latitude
-//                    currentLong = location.longitude
-//                }
-//            }
-//        } else {
-//            requestLocationPermission()
-//        }
-
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 if (userRole != null && userRole.isNotEmpty()) {
                     val locationList = DatabaseRepo().getLocationAsync()
+
+                    val sharedPreferences = getSharedPreferences(
+                        Constants.APP_PREF,
+                        Context.MODE_PRIVATE
+                    )
+
+                    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+                    val location = Gson().toJson(locationList)
+                    editor.putString(Constants.LOCATION_ARRAYLIST, location)
+                    editor.apply()
 
                     if (userRole.lowercase() == "beneficiary") {
                         val activeRequest = DatabaseRepo().getActiveRequestAsync()

@@ -7,7 +7,7 @@
         android:title="Dashboard" />
 
     <item
-        android:id="@+id/locationFragment2"
+        android:id="@+id/locationFragment"
         android:icon="@drawable/ic_map"
         android:title="Location" />
 

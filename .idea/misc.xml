@@ -59,6 +59,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_food_bank_location.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_location.xml" value="0.14166666666666666" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_location_admin.xml" value="0.12233549582947173" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_notifications.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_qr_scanner.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_qr_scanner_donator.xml" value="0.3484375" />
@@ -67,9 +68,11 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_request_verification_donation.xml" value="0.15220179563916203" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_storage_info.xml" value="0.29379485014774165" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_storage_info2.xml" value="0.2975630611372381" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_storage_info_admin.xml" value="0.18041898247114152" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_unlock_options.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_unlock_options_donator.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_user_info.xml" value="0.22" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_user_profile.xml" value="0.2975630611372381" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_user_profile_admin.xml" value="0.29379485014774165" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/fragment_user_setting.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/item_list_layout.xml" value="0.33" />
@@ -79,6 +82,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/list_layout_request.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/list_layout_request_verification.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/list_layout_storage_item.xml" value="0.12233549582947173" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/list_layout_user_access.xml" value="0.31765711842667804" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/location_list_view_fragment.xml" value="0.3625" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/q_r_scanner_fragment.xml" value="0.1574074074074074" />
         <entry key="..\:/Users/User/AndroidStudioProjects/FYPSmartFoodBank/app/src/main/res/layout/request_list_layout.xml" value="0.1574074074074074" />

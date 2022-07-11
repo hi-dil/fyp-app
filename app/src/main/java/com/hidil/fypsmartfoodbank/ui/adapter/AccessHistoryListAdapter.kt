@@ -2,22 +2,25 @@ package com.hidil.fypsmartfoodbank.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutUserAccessBinding
 import com.hidil.fypsmartfoodbank.model.AccessHistory
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.StorageInfoAdminFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.StorageInfoAdminFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AccessHistoryListAdapter(
     private val context: Context,
-    private val list: ArrayList<AccessHistory>,
-    private val fragment: StorageInfoFragment
+    private val list: List<AccessHistory>,
+    private val fragment: Fragment
 ) : RecyclerView.Adapter<AccessHistoryListAdapter.MyViewHolder>() {
     class MyViewHolder(val binding: ListLayoutUserAccessBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -36,14 +39,42 @@ class AccessHistoryListAdapter(
         val model = list[position]
         GlideLoader(context).loadUserPicture(model.userImage, holder.binding.ivUserImage)
         holder.binding.tvUserName.text = model.userName
-        holder.binding.tvAmountTook.text = "Took ${model.amountTook} items"
         val date = converDateFromMillis(model.lastVisited)
         holder.binding.tvDate.text = date
 
-        holder.itemView.setOnClickListener { view ->
-            view.findNavController().navigate(
-                StorageInfoFragmentDirections.actionStorageInfoFragmentToUserInfoFragment(model.userID)
-            )
+        when (fragment) {
+            is StorageInfoFragment -> {
+                if (model.requestType == "claim") {
+                    holder.binding.tvUserRole.visibility = View.VISIBLE
+                    holder.binding.tvUserRole.text = "Beneficiary"
+                    holder.binding.tvAmountTook.text = "Took ${model.amountTook} items"
+                }
+                holder.itemView.setOnClickListener { view ->
+                    view.findNavController().navigate(
+                        StorageInfoFragmentDirections.actionStorageInfoFragmentToUserInfoFragment(
+                            model.userID
+                        )
+                    )
+                }
+            }
+            is StorageInfoAdminFragment -> {
+                if (model.requestType == "claim") {
+                    holder.binding.tvUserRole.visibility = View.VISIBLE
+                    holder.binding.tvUserRole.text = "Beneficiary"
+                    holder.binding.tvAmountTook.text = "Took ${model.amountTook} items"
+                } else {
+                    holder.binding.tvUserRole.visibility = View.VISIBLE
+                    holder.binding.tvUserRole.text = "Donator"
+                    holder.binding.tvAmountTook.text = "Donated ${model.amountTook} items"
+                }
+                holder.itemView.setOnClickListener { view ->
+                    view.findNavController().navigate(
+                        StorageInfoAdminFragmentDirections.actionStorageInfoAdminFragmentToUserProfileAdminFragment(
+                            model.userID
+                        )
+                    )
+                }
+            }
         }
     }
 

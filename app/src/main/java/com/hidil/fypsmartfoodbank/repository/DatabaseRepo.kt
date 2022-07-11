@@ -18,9 +18,9 @@ import com.hidil.fypsmartfoodbank.ui.activity.SignUp
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.UserInfoFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ClaimRequestFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.StorageInfoAdminFragment
+import com.hidil.fypsmartfoodbank.ui.fragments.admin.UserProfileAdminFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.ConfirmRequestFragment
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragment
 import com.hidil.fypsmartfoodbank.ui.fragments.donator.DonationRequestFragment
 import com.hidil.fypsmartfoodbank.utils.Constants
 import kotlinx.coroutines.Dispatchers
@@ -203,6 +203,7 @@ class DatabaseRepo {
                 when (fragment) {
                     is ConfirmRequestFragment -> fragment.assignActiveRequest(activeRequestList)
                     is UserInfoFragment -> fragment.getActiveRequest(activeRequestList)
+                    is UserProfileAdminFragment -> fragment.getActiveRequest(activeRequestList)
                 }
             }
     }
@@ -246,6 +247,7 @@ class DatabaseRepo {
 
                 when (fragment) {
                     is UserInfoFragment -> fragment.getPastRequest(pastRequestList)
+                    is UserProfileAdminFragment -> fragment.getPastRequest(pastRequestList)
                 }
             }
             .addOnFailureListener { e ->
@@ -339,7 +341,7 @@ class DatabaseRepo {
         }
     }
 
-    fun searchStorageDetails(fragment: StorageInfoFragment, id: String) {
+    fun searchStorageDetails(fragment: Fragment, id: String) {
         mFirestore.collection(Constants.STORAGE)
             .whereEqualTo("id", id)
             .get()
@@ -350,7 +352,10 @@ class DatabaseRepo {
                     data!!.id = i.id
                     storageList.add(data)
                 }
-                fragment.getStorageData(storageList[0])
+                when (fragment) {
+                    is StorageInfoFragment -> fragment.getStorageData(storageList[0])
+                    is StorageInfoAdminFragment -> fragment.getStorageData(storageList[0])
+                }
             }
     }
 
@@ -401,7 +406,7 @@ class DatabaseRepo {
         }
     }
 
-    fun searchUser(fragment: UserInfoFragment, id: String) {
+    fun searchUser(fragment: Fragment, id: String) {
         mFirestore.collection(Constants.USERS)
             .whereEqualTo(FieldPath.documentId(), id)
             .get()
@@ -414,7 +419,10 @@ class DatabaseRepo {
 
                     usersList.add(user)
                 }
-                fragment.getUserInfo(usersList[0])
+                when (fragment) {
+                    is UserInfoFragment -> fragment.getUserInfo(usersList[0])
+                    is UserProfileAdminFragment -> fragment.getUserInfo(usersList[0])
+                }
             }
     }
 
