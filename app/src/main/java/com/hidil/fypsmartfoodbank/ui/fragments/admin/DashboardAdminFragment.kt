@@ -33,8 +33,6 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val binding get() = _binding!!
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var currentLat: Double = 0.0
-    private var currentLong: Double = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +46,7 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val donationRequest =
             requireActivity().intent.getParcelableArrayListExtra<DonationRequest>("donationRequest")
 
+        // update the shared preference to store the user's data locally
         val sp = requireActivity().getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
         val name = sp.getString(Constants.LOGGED_IN_USER, "")
         val userImage = sp.getString(Constants.USER_PROFILE_IMAGE, "")
@@ -57,10 +56,11 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         binding.tvUserGreeting.text = "Welcome back $name"
         binding.tvAddress.text = "$city, $state"
 
+
+        // check if the intent's content is not null
         if (userImage != null) {
             GlideLoader(requireContext()).loadUserPicture(userImage, binding.ivUserProfile)
         }
-
         if (claimRequest != null) {
             attachClaimRequest(claimRequest)
         }
@@ -68,6 +68,7 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             attachDonationRequest(donationRequest)
         }
 
+        // get user's last known location
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         if (hasLocationPermission()) {
@@ -104,6 +105,7 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         return binding.root
     }
 
+    // request for location permission
     private fun hasLocationPermission() = (
             EasyPermissions.hasPermissions(
                 requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
@@ -138,6 +140,7 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
+                // store user's current location to the shared prefs
                 val sp = activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
                 val spEditor = sp!!.edit()
                 spEditor.putString(Constants.CURRENT_LAT, location.latitude.toString())
@@ -152,11 +155,13 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         _binding = null
     }
 
+    // show bottom nav if user has come back to main nav page
     override fun onResume() {
         super.onResume()
         if (requireActivity() is AdminMainActivity) (requireActivity() as AdminMainActivity).showBottomNavigationView()
     }
 
+    // load the claim request data to the admin
     private fun attachClaimRequest(request: ArrayList<Request>) {
         if (request.size > 0) {
             binding.rvOldClaimRequest.visibility = View.VISIBLE
@@ -173,6 +178,7 @@ class DashboardAdminFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
+    // load the donation request data to the admin
     private fun attachDonationRequest(request: ArrayList<DonationRequest>) {
         if (request.size > 0) {
             binding.tvOldDonationRequest.visibility = View.GONE

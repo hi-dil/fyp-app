@@ -49,24 +49,12 @@ class DetailVerificationDonationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDetailVerificationDonationBinding.inflate(inflater, container, false)
-
+        // get the request data from previous fragment
         currentRequest = args.currentRequest
 
-        // attach data to views
-        GlideLoader(requireContext()).loadUserPicture(currentRequest.userImage, binding.ivUserImage)
-        binding.tvUserName.text = currentRequest.userName
-        binding.tvMobileNumber.text = currentRequest.userMobile
-
-        val dateFormat = "dd MMMM yyyy"
-        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
-        val calendar = Calendar.getInstance()
-
-        calendar.timeInMillis = currentRequest.requestDate
-        val date = formatter.format(calendar.time)
-        binding.tvRequestDate.text = date
-
+        // get user's details from firebase and display user's details
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 val userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
@@ -76,20 +64,24 @@ class DetailVerificationDonationFragment : Fragment() {
             }
         }
 
+        // convert millis to date format
+        val dateFormat = "dd MMMM yyyy"
+        val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = currentRequest.requestDate
+        val date = formatter.format(calendar.time)
+
+        // attach data to views
+        GlideLoader(requireContext()).loadUserPicture(currentRequest.userImage, binding.ivUserImage)
+        binding.tvUserName.text = currentRequest.userName
+        binding.tvMobileNumber.text = currentRequest.userMobile
+        binding.tvRequestDate.text = date
         binding.tvFbName.text = currentRequest.foodBankName
         binding.tvFbAddress.text = currentRequest.address
         GlideLoader(requireContext()).loadFoodBankPicture(
             currentRequest.foodBankImage,
             binding.ivFoodBankImage
         )
-        binding.ivNavigate.setOnClickListener {
-            val gmmIntentUri =
-                Uri.parse("google.navigation:q=${currentRequest.lat},${currentRequest.long}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
-            requireActivity().startActivity(mapIntent)
-        }
-
 
         //attaching user's request image
         binding.rvItemImages.layoutManager =
@@ -104,6 +96,15 @@ class DetailVerificationDonationFragment : Fragment() {
         val itemAdapter =
             DonationRequestedItemListAdapter(requireContext(), currentRequest.items, this)
         binding.rvRequestedItem.adapter = itemAdapter
+
+        // set on click listeners to button
+        binding.ivNavigate.setOnClickListener {
+            val gmmIntentUri =
+                Uri.parse("google.navigation:q=${currentRequest.lat},${currentRequest.long}")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            requireActivity().startActivity(mapIntent)
+        }
 
         binding.btnVerify.setOnClickListener {
             val views = View.inflate(requireContext(), R.layout.alert_dialog_confirm_approve, null)
@@ -159,7 +160,7 @@ class DetailVerificationDonationFragment : Fragment() {
         val number = rnd.nextInt(999999)
         val numberString = String.format("%06d", number)
         var finalNumber = ""
-        var listOfPin = HashMap<String, Any>()
+        var listOfPin: HashMap<String, Any>
 
         return withContext(Dispatchers.Default) {
             listOfPin = RealtimeDBRepo().getListOfPin(storageID)
@@ -329,6 +330,7 @@ class DetailVerificationDonationFragment : Fragment() {
 
     }
 
+    // send a notification to the requester's phone of the request status
     private fun sendNotification(notification: PushNotification) = CoroutineScope(IO).launch {
         try {
             val response = RetrofitInstance.api.postNotification(notification)

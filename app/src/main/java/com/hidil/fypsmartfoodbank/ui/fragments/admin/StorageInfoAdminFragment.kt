@@ -1,7 +1,5 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +25,6 @@ class StorageInfoAdminFragment : Fragment() {
     ): View {
         _binding = FragmentStorageInfoAdminBinding.inflate(inflater, container, false)
         DatabaseRepo().searchStorageDetails(this, args.storageID)
-
         return binding.root
     }
 
@@ -46,6 +43,7 @@ class StorageInfoAdminFragment : Fragment() {
         binding.tvItemTypes.text = storageInfo.itemTypes
         binding.maxCapacity.text = "${storageInfo.maximumCapacity} items"
 
+        // sort the access history by date
         val sortedAccessHistory = storageInfo.accessHistory.sortedByDescending { it.lastVisited }
 
         binding.rvFoodBankAccessHistory.layoutManager = LinearLayoutManager(activity)

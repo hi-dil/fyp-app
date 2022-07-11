@@ -37,8 +37,10 @@ class UserProfileAdminFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentUserProfileAdminBinding.inflate(inflater, container, false)
+
+        // fetch data from firebase
         DatabaseRepo().searchUser(this, args.userID)
         DatabaseRepo().getActiveRequest(this, args.userID)
         DatabaseRepo().getPastRequest(this, args.userID)
@@ -55,6 +57,7 @@ class UserProfileAdminFragment : Fragment() {
         _binding = null
     }
 
+    // display user's info
     fun setUserInfo() {
         if (userInfo.ban) {
             binding.btnBan.visibility = View.GONE
@@ -77,6 +80,7 @@ class UserProfileAdminFragment : Fragment() {
         }
     }
 
+    // fetch user info from firebase
     fun getUserInfo(user: User) {
         userInfo = user
         setUserInfo()

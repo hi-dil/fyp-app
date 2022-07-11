@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.R
@@ -32,11 +31,10 @@ class RequestVerificationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRequestVerificationBinding.inflate(inflater, container, false)
-
+        // set the default dropdown as beneficiary
         binding.acRequest.setText("Beneficiary")
+
         loadRequest()
-
-
         return binding.root
     }
 
@@ -53,6 +51,7 @@ class RequestVerificationFragment : Fragment() {
     }
 
     private fun loadRequest() {
+        // load function based on the dropdown items
         if (role == "Beneficiary") {
             loadBeneficiary()
             binding.acRequest.setText("Beneficiary")
@@ -61,11 +60,12 @@ class RequestVerificationFragment : Fragment() {
             binding.acRequest.setText("Donator")
         }
 
+        // set the dropdown items
         val userRole = resources.getStringArray(R.array.user_role)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_userrole_item, userRole)
         binding.acRequest.setAdapter(arrayAdapter)
 
-        binding.acRequest.setOnItemClickListener { adapterView, view, i, l ->
+        binding.acRequest.setOnItemClickListener { _, _, _, _ ->
             if (binding.acRequest.text.toString() == "Beneficiary") {
                 role = "Beneficiary"
                 loadBeneficiary()
@@ -76,6 +76,7 @@ class RequestVerificationFragment : Fragment() {
         }
     }
 
+    // fetch data from firebase and display the donator's request
     private fun loadDonator() {
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
@@ -103,6 +104,7 @@ class RequestVerificationFragment : Fragment() {
         }
     }
 
+    // fetch data from firebase and display the beneficiary's request
     private fun loadBeneficiary() {
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {

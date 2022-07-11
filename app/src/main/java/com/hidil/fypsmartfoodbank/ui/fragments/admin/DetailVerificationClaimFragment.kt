@@ -53,13 +53,10 @@ class DetailVerificationClaimFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDetailVerificationClaimBinding.inflate(inflater, container, false)
-
+        // get the request data from previous fragment
         currentRequest = args.currentRequest
 
-        GlideLoader(requireContext()).loadUserPicture(currentRequest.userImage, binding.ivUserImage)
-        binding.tvUserName.text = currentRequest.userName
-        binding.tvMobileNumber.text = currentRequest.userMobile
-
+        // get user's details from firebase and display user's details
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 userDetails = DatabaseRepo().getAnotherUserDetails(currentRequest.userID)
@@ -73,20 +70,33 @@ class DetailVerificationClaimFragment : Fragment() {
             }
         }
 
+        // convert millis to date format
         val dateFormat = "dd MMMM yyyy"
         val formatter = SimpleDateFormat(dateFormat, Locale.getDefault())
         val calendar = Calendar.getInstance()
-
         calendar.timeInMillis = currentRequest.requestDate
         val date = formatter.format(calendar.time)
-        binding.tvRequestDate.text = date
 
-        binding.tvFbName.text = currentRequest.foodBankName
-        binding.tvFbAddress.text = currentRequest.address
+        // display the request data
+        GlideLoader(requireContext()).loadUserPicture(currentRequest.userImage, binding.ivUserImage)
         GlideLoader(requireContext()).loadFoodBankPicture(
             currentRequest.foodBankImage,
             binding.ivFoodBankImage
         )
+
+        binding.tvUserName.text = currentRequest.userName
+        binding.tvMobileNumber.text = currentRequest.userMobile
+        binding.tvFbName.text = currentRequest.foodBankName
+        binding.tvFbAddress.text = currentRequest.address
+        binding.tvRequestDate.text = date
+
+        // attach the list of user's requested items
+        binding.rvRequestedItem.layoutManager = LinearLayoutManager(requireActivity())
+        binding.rvRequestedItem.setHasFixedSize(true)
+        val adapter = ClaimRequestDetailsListAdapter(requireContext(), currentRequest.items)
+        binding.rvRequestedItem.adapter = adapter
+
+        // set on click listener to the buttons
         binding.ivNavigate.setOnClickListener {
             val gmmIntentUri =
                 Uri.parse("google.navigation:q=${currentRequest.lat},${currentRequest.long}")
@@ -94,15 +104,8 @@ class DetailVerificationClaimFragment : Fragment() {
             mapIntent.setPackage("com.google.android.apps.maps")
             requireActivity().startActivity(mapIntent)
         }
-
-        binding.rvRequestedItem.layoutManager = LinearLayoutManager(requireActivity())
-        binding.rvRequestedItem.setHasFixedSize(true)
-        val adapter = ClaimRequestDetailsListAdapter(requireContext(), currentRequest.items)
-        binding.rvRequestedItem.adapter = adapter
-
         binding.fabBack.setOnClickListener { requireActivity().onBackPressed() }
         binding.btnVerify.setOnClickListener {
-
             val views = View.inflate(requireContext(), R.layout.alert_dialog_confirm_approve, null)
             val builder = AlertDialog.Builder(requireActivity())
             builder.setView(views)
@@ -150,7 +153,7 @@ class DetailVerificationClaimFragment : Fragment() {
         val number = rnd.nextInt(999999)
         val numberString = String.format("%06d", number)
         var finalNumber = ""
-        var listOfPin = HashMap<String, Any>()
+        var listOfPin: HashMap<String, Any>
 
         return withContext(Dispatchers.Default) {
             listOfPin = RealtimeDBRepo().getListOfPin(storageID)
@@ -172,7 +175,6 @@ class DetailVerificationClaimFragment : Fragment() {
         }
     }
 
-    // run fun to approve user's request
     private fun approveRequest() {
         // generate the pin number
         CoroutineScope(IO).launch {
@@ -271,7 +273,7 @@ class DetailVerificationClaimFragment : Fragment() {
                     this@DetailVerificationClaimFragment,
                     currentRequest.foodBankID
                 )
-                var foodbankData: FoodBank = FoodBank()
+                var foodbankData = FoodBank()
                 if (getFoodBank.size > 0) {
                     foodbankData = getFoodBank[0]
                 }
@@ -339,12 +341,11 @@ class DetailVerificationClaimFragment : Fragment() {
         }
     }
 
+    // send a notification to the requester's phone of the request status
     private fun sendNotification(notification: PushNotification) = CoroutineScope(IO).launch {
         try {
             val response = RetrofitInstance.api.postNotification(notification)
-            if (response.isSuccessful) {
-//                Log.d(this.javaClass.simpleName.toString(), "Response: ${Gson().toJson(response)}")
-            } else {
+            if (!response.isSuccessful) {
                 Log.e(this.javaClass.simpleName.toString(), response.errorBody().toString())
             }
         } catch (e: Exception) {

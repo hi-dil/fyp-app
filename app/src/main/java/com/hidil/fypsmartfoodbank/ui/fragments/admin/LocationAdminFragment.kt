@@ -27,7 +27,6 @@ import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentLocationAdminBinding
 import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.model.MarkerCluster
-import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.AdminMainActivity
 import com.hidil.fypsmartfoodbank.ui.adapter.CustomInfoWindowAdapter
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -54,6 +53,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
     ): View {
         _binding = FragmentLocationAdminBinding.inflate(inflater, container, false)
 
+        // get the foodbank locations from shared prefs
         val sharedPreferences = requireActivity().getSharedPreferences(
             Constants.APP_PREF,
             Context.MODE_PRIVATE
@@ -80,6 +80,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         }
     }
 
+    // display the food bank locations in a map view
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
@@ -89,6 +90,8 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         map.uiSettings.apply {
             isMyLocationButtonEnabled = true
         }
+
+        // set the markers and its info window
         clusterManager = ClusterManager(requireActivity(), map)
         map.setOnCameraIdleListener(clusterManager)
         addMarkers()
@@ -97,13 +100,14 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
                 requireActivity()
             )
         )
+
+        // set on click action when user click marker's info window
         clusterManager.markerCollection.setOnInfoWindowClickListener { marker ->
             val type = object : TypeToken<Location>() {}.type
             val item: Location = Gson().fromJson(marker.snippet, type)
             CoroutineScope(Dispatchers.IO).launch {
                 withContext(Dispatchers.Default) {
                     requireActivity().runOnUiThread {
-
                         val action =
                             LocationAdminFragmentDirections.actionLocationAdminFragmentToFoodBankInfoAdminFragment(
                                 item.foodBankID
@@ -124,6 +128,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         checkLocationPermission()
     }
 
+    // zoom in if user click marker
     override fun onClusterItemClick(item: MarkerCluster?): Boolean {
         if (item != null) {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(item.position, 15f), 2000, null)
@@ -131,6 +136,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         return true
     }
 
+    // zoom in if user click cluster marker
     override fun onClusterClick(cluster: Cluster<MarkerCluster>?): Boolean {
         if (cluster != null) {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.position, 12f), 2000, null)
@@ -139,7 +145,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         return true
     }
 
-
+    // add the markers to the map view
     private fun addMarkers() {
         for (i in mLocation) {
             val markerItem = MarkerCluster(
@@ -173,6 +179,7 @@ class LocationAdminFragment : Fragment(), OnMapReadyCallback,
         )
     }
 
+    @Deprecated("Deprecated in Java")
     @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,

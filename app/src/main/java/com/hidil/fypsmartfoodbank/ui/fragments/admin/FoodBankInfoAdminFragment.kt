@@ -2,27 +2,17 @@ package com.hidil.fypsmartfoodbank.ui.fragments.admin
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hidil.fypsmartfoodbank.R
 import com.hidil.fypsmartfoodbank.databinding.FragmentFoodBankInfoAdminBinding
-import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
 import com.hidil.fypsmartfoodbank.model.FoodBank
-import com.hidil.fypsmartfoodbank.model.ItemList
-import com.hidil.fypsmartfoodbank.model.Request
-import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
-import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
-import com.hidil.fypsmartfoodbank.ui.adapter.AvailableFoodBankItemsListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.admin.AvailableFoodBankItemsListAdminAdapter
 import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.FoodBankInfoFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -42,20 +32,12 @@ class FoodBankInfoAdminFragment : Fragment() {
     private var _binding: FragmentFoodBankInfoAdminBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<FoodBankInfoAdminFragmentArgs>()
-    private var favouriteFoodbank: ArrayList<FavouriteFoodBank> = ArrayList()
-
-    private var totalItems = 0
-
     private lateinit var mFoodBank: FoodBank
-    var isFavouriteFoodbank = false
-    var alreadyFavourite = false
-
-    private var itemAmount: ArrayList<Int> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFoodBankInfoAdminBinding.inflate(inflater, container, false)
         getFoodBankData()
 
@@ -76,30 +58,12 @@ class FoodBankInfoAdminFragment : Fragment() {
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        val foodBankData = FavouriteFoodBank(
-            args.foodBankID,
-            mFoodBank.foodBankImage,
-            mFoodBank.foodBankName,
-            mFoodBank.address,
-            mFoodBank.lat,
-            mFoodBank.long
-        )
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    override fun onResume() {
-        super.onResume()
-        totalItems = 0
-        itemAmount = ArrayList()
-    }
-
-
+    // fetch data from firebase and display the data
     private fun getFoodBankData() {
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Default) {
@@ -110,13 +74,8 @@ class FoodBankInfoAdminFragment : Fragment() {
                     mFoodBank = foodBank
 
                     requireActivity().runOnUiThread {
-                        GlideLoader(requireContext()).loadFoodBankPicture(
-                            foodBank.foodBankImage,
-                            binding.ivHeader
-                        )
-                        binding.tvAddress.text = foodBank.address
-                        binding.tvTitle.text = foodBank.foodBankName
 
+                        // get user's location from shared prefs
                         val sp =
                             activity?.getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE)
                         val lat = sp?.getString(Constants.CURRENT_LAT, "")
@@ -128,12 +87,22 @@ class FoodBankInfoAdminFragment : Fragment() {
                             lat!!.toDouble(),
                             long!!.toDouble()
                         )
+
+                        // convert the distance to two decimal points
                         val df = DecimalFormat("#.##")
                         df.roundingMode = RoundingMode.DOWN
                         val rfDistance = df.format(distance)
 
+                        // display the food bank details
+                        GlideLoader(requireContext()).loadFoodBankPicture(
+                            foodBank.foodBankImage,
+                            binding.ivHeader
+                        )
+                        binding.tvAddress.text = foodBank.address
+                        binding.tvTitle.text = foodBank.foodBankName
                         binding.tvHowFar.text = "${rfDistance}km away"
 
+                        // display available items from the foodbank
                         binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
                         binding.rvAvailableItems.setHasFixedSize(true)
                         val availableListAdapter =
@@ -143,10 +112,6 @@ class FoodBankInfoAdminFragment : Fragment() {
                                 this@FoodBankInfoAdminFragment
                             )
                         binding.rvAvailableItems.adapter = availableListAdapter
-
-                        for (i in foodBank.storage) {
-                            itemAmount.add(0)
-                        }
                     }
                 }
             }
@@ -154,6 +119,7 @@ class FoodBankInfoAdminFragment : Fragment() {
 
     }
 
+    // calculate the distance between two locations and return in km
     private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val theta = lon1 - lon2
         var dist =
