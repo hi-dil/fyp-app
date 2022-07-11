@@ -4,21 +4,16 @@ import android.app.Activity
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.hidil.fypsmartfoodbank.R
 
 private lateinit var mProgressDialog: Dialog
 
-private var doubleBackToExitPressedOnce = false
-
+// display custom snackbar view
 fun Activity.showErrorSnackBar(message: String, errorMessage: Boolean) {
     val snackBar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-    val snackBarView = snackBar.view
+    snackBar.view
 
     if (errorMessage) {
         snackBar.setBackgroundTint(ContextCompat.getColor(this, R.color.danger))
@@ -37,23 +32,7 @@ fun Activity.showProgressDialog() {
     mProgressDialog.show()
 }
 
-fun Activity.hideProgressDialog() {
+fun hideProgressDialog() {
     mProgressDialog.dismiss()
 }
 
-fun Activity.doubleBackToExit() {
-    if (doubleBackToExitPressedOnce) {
-        onBackPressed()
-        return
-    }
-    doubleBackToExitPressedOnce = true
-
-    Toast.makeText(
-        this,
-        resources.getString(R.string.please_click_back_again_to_exit),
-        Toast.LENGTH_SHORT
-    ).show()
-
-    @Suppress ("DEPRECATION")
-    Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
-}

@@ -45,12 +45,14 @@ class DonatorActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController, null)
     }
 
+    // hide bottom navigation menu when user's expand navigation
     fun hideBottomNavigationView() {
         binding.navView.clearAnimation()
         binding.navView.animate().translationY(binding.navView.height.toFloat()).duration = 300
         binding.navView.visibility = View.GONE
     }
 
+    // show bottom navigation menu when user's go back to the main nav
     fun showBottomNavigationView() {
         binding.navView.clearAnimation()
         binding.navView.animate().translationY(0f).duration = 300

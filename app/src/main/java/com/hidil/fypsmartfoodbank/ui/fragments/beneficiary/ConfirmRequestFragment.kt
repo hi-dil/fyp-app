@@ -132,7 +132,7 @@ class ConfirmRequestFragment : Fragment() {
                             DatabaseRepo().updateFoodBank(this@ConfirmRequestFragment, foodbank)
 
                         requireActivity().runOnUiThread {
-                            requireActivity().hideProgressDialog()
+                            hideProgressDialog()
                             val viewsUpdate =
                                 View.inflate(
                                     requireContext(),

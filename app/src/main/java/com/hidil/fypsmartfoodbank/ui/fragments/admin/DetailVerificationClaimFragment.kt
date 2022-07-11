@@ -216,7 +216,7 @@ class DetailVerificationClaimFragment : Fragment() {
             }
 
             requireActivity().runOnUiThread {
-                requireActivity().hideProgressDialog()
+                hideProgressDialog()
                 val views =
                     View.inflate(requireContext(), R.layout.alert_dialog_complete_request, null)
                 val builder = AlertDialog.Builder(requireActivity())

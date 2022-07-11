@@ -43,7 +43,7 @@ class StorageRepo {
             .addOnFailureListener { exception ->
                 when (activity) {
                     is EditProfileActivity -> {
-                        activity.hideProgressDialog()
+                        hideProgressDialog()
                     }
                 }
 

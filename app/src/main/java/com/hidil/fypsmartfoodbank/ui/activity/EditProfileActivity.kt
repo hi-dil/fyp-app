@@ -11,11 +11,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.hidil.fypsmartfoodbank.R
@@ -87,6 +87,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
 
+    // request for storage permission to get image from user's gallery
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -104,6 +105,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -166,6 +168,7 @@ class EditProfileActivity : AppCompatActivity() {
         DatabaseRepo().updateUserProfileData(this, userHashMap)
     }
 
+    // validate user's input
     private fun validateRegisterDetails(): Boolean {
         return when {
             TextUtils.isEmpty(binding.acUserRole.text.toString().trim { it <= ' ' }) -> {
@@ -202,6 +205,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
+    // successfully get user's data from firebase and display the data
     fun userDetailsSuccess(user: User) {
         mUserDetails = user
         hideProgressDialog()
@@ -220,22 +224,18 @@ class EditProfileActivity : AppCompatActivity() {
         binding.etName.isEnabled = false
     }
 
+    // update the image url if successfully upload image to firebase
     fun imageUploadSuccess(imageURL: String) {
         mUserProfileImageURL = imageURL
         updateUserProfileDetails()
     }
 
     @SuppressLint("CommitPrefEdits")
-    fun userProfileUpdateSuccess() {
+    fun userProfileUpdateSuccess(user: HashMap<String, Any>) {
         hideProgressDialog()
         Toast.makeText(
             this, "Your profile is updated successfully",
             Toast.LENGTH_SHORT
         ).show()
-
-//        val editSP = getSharedPreferences(Constants.APP_PREF, Context.MODE_PRIVATE).edit()
-//        editSP.putString(Constants.LOGGED_IN_USER, user[Constants.NAME].toString())
-//        editSP.putString(Constants.USER_PROFILE_IMAGE, user[Constants.USER_IMAGE].toString())
-//        editSP.apply()
     }
 }

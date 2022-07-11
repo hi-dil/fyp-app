@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -249,7 +248,7 @@ class ClaimRequestDetailsFragment : Fragment() {
                         )
 
                     requireActivity().runOnUiThread {
-                        requireActivity().hideProgressDialog()
+                        hideProgressDialog()
 
                         val viewsUpdate =
                             View.inflate(

@@ -2,7 +2,6 @@ package com.hidil.fypsmartfoodbank.ui.fragments.beneficiary
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +55,7 @@ class ClaimRequestFragment : Fragment() {
                 val pastRequest = DatabaseRepo().getPastRequestAsync()
 
                 requireActivity().runOnUiThread {
-                    requireActivity().hideProgressDialog()
+                    hideProgressDialog()
                     bindActiveRequest(activeRequest)
                     bindPastRequest(pastRequest)
                 }

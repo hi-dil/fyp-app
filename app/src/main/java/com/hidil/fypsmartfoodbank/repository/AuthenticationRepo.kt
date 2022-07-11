@@ -20,7 +20,7 @@ class AuthenticationRepo {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    activity.hideProgressDialog()
+                    hideProgressDialog()
                     val firebaseUser: FirebaseUser = task.result!!.user!!
 
                     activity.showErrorSnackBar(
@@ -45,7 +45,7 @@ class AuthenticationRepo {
 //                    mAuth.signOut()
 //                    activity.finish()
                 } else {
-                    activity.hideProgressDialog()
+                    hideProgressDialog()
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
                 }
             }
@@ -77,7 +77,7 @@ class AuthenticationRepo {
                 if (task.isSuccessful) {
                     DatabaseRepo().getUserDetails(activity)
                 } else {
-                    activity.hideProgressDialog()
+                    hideProgressDialog()
                     activity.showErrorSnackBar(task.exception!!.message.toString(), true)
                 }
             }
@@ -86,7 +86,7 @@ class AuthenticationRepo {
     fun forgotPassword(activity: ForgotPassword, email: String) {
         mAuth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
-                activity.hideProgressDialog()
+                hideProgressDialog()
                 if (task.isSuccessful) {
                     Toast.makeText(
                         activity,

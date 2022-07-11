@@ -6,14 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.hidil.fypsmartfoodbank.databinding.ActivitySplashScreenBinding
-import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.repository.AuthenticationRepo
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.utils.Constants
@@ -24,18 +20,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private lateinit var binding: ActivitySplashScreenBinding
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
-    private var currentLat: Double = 0.0
-    private var currentLong: Double = 0.0
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +40,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 if (userRole != null && userRole.isNotEmpty()) {
+                    // get all the food bank location and pass the data to the next page through intent
                     val locationList = DatabaseRepo().getLocationAsync()
 
                     val sharedPreferences = getSharedPreferences(
@@ -63,6 +53,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
                     editor.putString(Constants.LOCATION_ARRAYLIST, location)
                     editor.apply()
 
+                    // check user's role and navigate user's to the appropriate page
                     if (userRole.lowercase() == "beneficiary") {
                         val activeRequest = DatabaseRepo().getActiveRequestAsync()
                         val userDetails = DatabaseRepo().getUserDetailAsync()
@@ -123,22 +114,7 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
 
     }
 
-    private fun sortLocation(list: ArrayList<Location>): List<Location> {
-        for (i in list) {
-            val distance =
-                distanceInKm(currentLat, currentLong, i.lat.toDouble(), i.long.toDouble())
-            i.distance = distance
-        }
-
-        return list.sortedWith(compareBy { it.distance })
-    }
-
-    private fun hasLocationPermission() = (
-            EasyPermissions.hasPermissions(
-                this, Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            )
-
+    // request for location permission from user
     private fun requestLocationPermission() {
         EasyPermissions.requestPermissions(
             this, "This application cannot work without location permission",
@@ -168,24 +144,4 @@ class SplashScreenActivity : AppCompatActivity(), EasyPermissions.PermissionCall
         Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
     }
 
-    private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val theta = lon1 - lon2
-        var dist =
-            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
-                deg2rad(theta)
-            )
-        dist = acos(dist)
-        dist = rad2deg(dist)
-        dist *= 60 * 1.1515
-        dist *= 1.609344
-        return dist
-    }
-
-    private fun deg2rad(deg: Double): Double {
-        return deg * Math.PI / 180.0
-    }
-
-    private fun rad2deg(rad: Double): Double {
-        return rad * 180.0 / Math.PI
-    }
 }

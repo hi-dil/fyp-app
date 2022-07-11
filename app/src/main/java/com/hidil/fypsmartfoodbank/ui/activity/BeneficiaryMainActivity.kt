@@ -28,7 +28,7 @@ class BeneficiaryMainActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment_activity_beneficiary_main)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
+        AppBarConfiguration(
             setOf(
                 R.id.dashboardFragment,
                 R.id.locationFragment,
@@ -45,12 +45,14 @@ class BeneficiaryMainActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController, null)
     }
 
+    // hide bottom navigation menu when user's expand navigation
     fun hideBottomNavigationView() {
         binding.navView.clearAnimation()
         binding.navView.animate().translationY(binding.navView.height.toFloat()).duration = 300
         binding.navView.visibility = View.GONE
     }
 
+    // show bottom navigation menu when user's go back to the main nav
     fun showBottomNavigationView() {
         binding.navView.clearAnimation()
         binding.navView.animate().translationY(0f).duration = 300

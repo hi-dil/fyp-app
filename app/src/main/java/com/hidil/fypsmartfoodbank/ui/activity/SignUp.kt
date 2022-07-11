@@ -6,7 +6,6 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.hidil.fypsmartfoodbank.R
@@ -30,10 +29,12 @@ class SignUp : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // create dropdown for user role
         val userRole = resources.getStringArray(R.array.user_role)
         val arrayAdapter = ArrayAdapter(this, R.layout.dropdown_userrole_item, userRole)
         binding.acUserRole.setAdapter(arrayAdapter)
 
+        // create dropdown for monthly income
         val monthlyIncome = resources.getStringArray(R.array.monthly_income)
         val arrayAdapterIncome = ArrayAdapter(this, R.layout.dropdown_userrole_item, monthlyIncome)
         binding.acMonthlyIncome.setAdapter(arrayAdapterIncome)
@@ -44,59 +45,7 @@ class SignUp : AppCompatActivity() {
 
         binding.btnSignUp.setOnClickListener {
             showProgressDialog()
-            if (validateRegisterDetails()) {
-                val email = binding.etEmail.text.toString().trim { it <= ' ' }
-                val password = binding.etPassword.text.toString().trim { it <= ' ' }
-//                AuthenticationRepo().createUser(this, email, password, user)
-                CoroutineScope(IO).launch {
-                    withContext(Dispatchers.Default) {
-                        val uid = AuthenticationRepo().createUserAsync(email, password)
-                        Log.i("userid", uid)
-
-                        var token = ""
-                        if (uid.isNotEmpty()) {
-
-                            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-                                token = task.result
-                                Log.i("tokenfcm", token)
-                            }.await()
-
-                            val user = User(
-                                uid,
-                                binding.acUserRole.text.toString().trim { it <= ' ' },
-                                binding.etName.text.toString().trim { it <= ' ' },
-                                binding.etEmail.text.toString().trim { it <= ' ' },
-                                "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
-                                binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
-                                binding.etPhoneNumber.text.toString().trim { it <= ' ' },
-                                binding.etState.text.toString().trim { it <= ' ' },
-                                binding.etCity.text.toString().trim { it <= ' ' },
-                                token
-                            )
-
-                            val saveUserData = DatabaseRepo().regiserUserAsync(user)
-                            this@SignUp.runOnUiThread {
-                                if (saveUserData) {
-                                    hideProgressDialog()
-                                    Toast.makeText(
-                                        this@SignUp,
-                                        "You have successfully register to the app",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    hideProgressDialog()
-                                    Toast.makeText(
-                                        this@SignUp,
-                                        "There was an error while saving the data",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                        }
-                        FirebaseAuth.getInstance().signOut()
-                    }
-                }
-            }
+            registerUser()
         }
 
 //        binding.ivImageProfile.setOnClickListener {
@@ -211,6 +160,62 @@ class SignUp : AppCompatActivity() {
             }
 
             else -> true
+        }
+    }
+
+    // register the user if all of the input has been validate by the app
+    private fun registerUser() {
+        if (validateRegisterDetails()) {
+            val email = binding.etEmail.text.toString().trim { it <= ' ' }
+            val password = binding.etPassword.text.toString().trim { it <= ' ' }
+            CoroutineScope(IO).launch {
+                withContext(Dispatchers.Default) {
+                    val uid = AuthenticationRepo().createUserAsync(email, password)
+                    Log.i("userid", uid)
+
+                    var token = ""
+                    if (uid.isNotEmpty()) {
+
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                            token = task.result
+                            Log.i("tokenfcm", token)
+                        }.await()
+
+                        val user = User(
+                            uid,
+                            binding.acUserRole.text.toString().trim { it <= ' ' },
+                            binding.etName.text.toString().trim { it <= ' ' },
+                            binding.etEmail.text.toString().trim { it <= ' ' },
+                            "https://firebasestorage.googleapis.com/v0/b/smart-foodbank.appspot.com/o/def_profile.jpg?alt=media&token=61ba0a89-3dec-400e-94d3-bbbb490531e2",
+                            binding.acMonthlyIncome.text.toString().trim { it <= ' ' },
+                            binding.etPhoneNumber.text.toString().trim { it <= ' ' },
+                            binding.etState.text.toString().trim { it <= ' ' },
+                            binding.etCity.text.toString().trim { it <= ' ' },
+                            token
+                        )
+
+                        val saveUserData = DatabaseRepo().regiserUserAsync(user)
+                        this@SignUp.runOnUiThread {
+                            if (saveUserData) {
+                                hideProgressDialog()
+                                Toast.makeText(
+                                    this@SignUp,
+                                    "You have successfully register to the app",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                hideProgressDialog()
+                                Toast.makeText(
+                                    this@SignUp,
+                                    "There was an error while saving the data",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                    FirebaseAuth.getInstance().signOut()
+                }
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ class DatabaseRepo {
             .document(user.id)
             .set(user, SetOptions.merge())
             .addOnSuccessListener {
-                activity.hideProgressDialog()
+                hideProgressDialog()
                 Toast.makeText(
                     activity,
                     "You have successfully register to the app",
@@ -44,7 +44,7 @@ class DatabaseRepo {
                 ).show()
             }
             .addOnFailureListener {
-                activity.hideProgressDialog()
+                hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while registering the user.", it)
             }
     }
@@ -124,7 +124,7 @@ class DatabaseRepo {
             .addOnFailureListener {
                 when (activity) {
                     is Login -> {
-                        activity.hideProgressDialog()
+                        hideProgressDialog()
                     }
                 }
             }
@@ -156,10 +156,10 @@ class DatabaseRepo {
             .update(userHashMap)
             .addOnSuccessListener {
                 getUserDetails(activity)
-                activity.userProfileUpdateSuccess()
+                activity.userProfileUpdateSuccess(userHashMap)
             }
             .addOnFailureListener {
-                activity.hideProgressDialog()
+                hideProgressDialog()
                 Log.e(activity.javaClass.simpleName, "Error while updating the user details")
             }
     }
