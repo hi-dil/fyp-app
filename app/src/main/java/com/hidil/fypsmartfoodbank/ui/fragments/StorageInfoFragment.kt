@@ -1,6 +1,7 @@
 package com.hidil.fypsmartfoodbank.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,14 @@ import com.hidil.fypsmartfoodbank.databinding.FragmentStorageInfoBinding
 import com.hidil.fypsmartfoodbank.model.AccessHistory
 import com.hidil.fypsmartfoodbank.model.Storage
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.AccessHistoryListAdapter
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StorageInfoFragment : Fragment() {
 
@@ -26,6 +33,18 @@ class StorageInfoFragment : Fragment() {
     ): View {
         _binding = FragmentStorageInfoBinding.inflate(inflater, container, false)
         DatabaseRepo().searchStorageDetails(this, args.storageID)
+
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Default) {
+                val distance = RealtimeDBRepo().getDistance(args.storageID)
+
+                requireActivity().runOnUiThread {
+                    binding.tvDistanceValue.text = "$distance cm"
+                }
+            }
+        }
+
+        binding.fabBack.setOnClickListener { requireActivity().onBackPressed() }
 
         return binding.root
     }

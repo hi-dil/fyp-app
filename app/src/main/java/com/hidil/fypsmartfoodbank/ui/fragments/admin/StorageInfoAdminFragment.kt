@@ -10,9 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hidil.fypsmartfoodbank.databinding.FragmentStorageInfoAdminBinding
 import com.hidil.fypsmartfoodbank.model.Storage
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.adapter.AccessHistoryListAdapter
 import com.hidil.fypsmartfoodbank.ui.fragments.StorageInfoFragmentArgs
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StorageInfoAdminFragment : Fragment() {
     private var _binding: FragmentStorageInfoAdminBinding? = null
@@ -25,6 +30,17 @@ class StorageInfoAdminFragment : Fragment() {
     ): View {
         _binding = FragmentStorageInfoAdminBinding.inflate(inflater, container, false)
         DatabaseRepo().searchStorageDetails(this, args.storageID)
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Default) {
+                val distance = RealtimeDBRepo().getDistance(args.storageID)
+
+                requireActivity().runOnUiThread {
+                    binding.tvDistanceValue.text = "$distance cm"
+                }
+            }
+        }
+
+        binding.fabBack.setOnClickListener { requireActivity().onBackPressed() }
         return binding.root
     }
 

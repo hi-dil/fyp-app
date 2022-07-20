@@ -2,6 +2,7 @@ package com.hidil.fypsmartfoodbank.ui.adapter.admin
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +33,6 @@ class AvailableFoodBankItemsListAdminAdapter(
 
     private var itemAmount: ArrayList<Int> = ArrayList()
     private val itemQuantity: Int = 0
-    private var totalItem: Int = 0
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val model = list[position]
@@ -44,11 +44,7 @@ class AvailableFoodBankItemsListAdminAdapter(
             holder.binding.tvItemQuantity.text =
                 "QTY - ${model.itemQuantity}/${model.maximumCapacity}"
             holder.binding.tvAmount.text = itemAmount[position].toString()
-
-            for (i in itemAmount) {
-                totalItem += i
-            }
-
+            holder.binding.llAddRemove.visibility = View.GONE
 
             holder.binding.ivItemImage.setOnClickListener { view ->
                 view.findNavController().navigate(

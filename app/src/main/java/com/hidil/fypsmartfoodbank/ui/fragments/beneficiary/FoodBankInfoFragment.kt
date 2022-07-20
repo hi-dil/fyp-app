@@ -42,8 +42,8 @@ class FoodBankInfoFragment : Fragment() {
     private var totalItems = 0
 
     private lateinit var mFoodBank: FoodBank
-    var isFavouriteFoodbank = false
-    var alreadyFavourite = false
+    private var isFavouriteFoodbank = false
+    private var alreadyFavourite = false
 
     private var itemAmount: ArrayList<Int> = ArrayList()
 
@@ -57,6 +57,8 @@ class FoodBankInfoFragment : Fragment() {
         binding.fabBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        Log.i("foodbankID", args.foodBankID)
 
         if (args.fromLocationFragment) {
             requireActivity().onBackPressedDispatcher.addCallback(
@@ -219,6 +221,7 @@ class FoodBankInfoFragment : Fragment() {
         CoroutineScope(IO).launch {
             withContext(Dispatchers.Default) {
                 val foodbank = DatabaseRepo().searchFoodBank(this@FoodBankInfoFragment, args.foodBankID)
+                Log.i("foodbankDetail", args.foodBankID)
                 if (foodbank.size > 0) {
                     val foodBank = foodbank[0]
                     mFoodBank = foodBank
@@ -241,12 +244,6 @@ class FoodBankInfoFragment : Fragment() {
 
                         val storage = mFoodBank.storage
                         val mostClaimed = storage.sortedWith(compareBy { it.amountClaimed })
-                        val mostClaimedList = ArrayList(mostClaimed)
-
-//                        binding.rvMostTakenItems.layoutManager = LinearLayoutManager(activity)
-//                        binding.rvMostTakenItems.setHasFixedSize(true)
-                        // TODO: implement mostclaimlist
-
 
                         binding.rvAvailableItems.layoutManager = LinearLayoutManager(activity)
                         binding.rvAvailableItems.setHasFixedSize(true)
@@ -275,16 +272,6 @@ class FoodBankInfoFragment : Fragment() {
         for (i in itemAmount) {
             totalItems += i
         }
-
-//        itemAmount.forEachIndexed { index, element ->
-//            val storage = mFoodBank.storage[index]
-//
-//            if (element > storage.itemQuantity) {
-//                Toast.makeText(requireContext(), "cannot add more than current stock", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-
 
         binding.tvTotalAmount.text = "${totalItems}/20"
         binding.tvAddMore.text = "You can add ${20 - totalItems} more items to your request"

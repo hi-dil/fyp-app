@@ -331,6 +331,7 @@ class DatabaseRepo {
                         data!!.id = i.id
                         foodbankList.add(data)
                     }
+                    Log.i("getFoodbank", document.documents.toString())
                 }
                 .addOnFailureListener { e ->
                     Log.e(fragment.javaClass.simpleName.toString(), e.message.toString())

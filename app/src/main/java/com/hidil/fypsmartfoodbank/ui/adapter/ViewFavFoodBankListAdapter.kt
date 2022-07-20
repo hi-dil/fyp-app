@@ -12,33 +12,30 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hidil.fypsmartfoodbank.databinding.ListLayoutRequestBinding
 import com.hidil.fypsmartfoodbank.model.FavouriteFoodBank
+import com.hidil.fypsmartfoodbank.model.Location
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.DonatorActivity
 import com.hidil.fypsmartfoodbank.ui.activity.distanceInKm
-import com.hidil.fypsmartfoodbank.ui.fragments.beneficiary.DashboardFragmentDirections
+import com.hidil.fypsmartfoodbank.ui.fragments.ViewFavFoodBankFragmentDirections
 import com.hidil.fypsmartfoodbank.utils.GlideLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
 
-class FavouriteFoodBankListAdapter(
+class ViewFavFoodBankListAdapter(
     private val context: Context,
-    private var list: ArrayList<FavouriteFoodBank>,
+    private val list: ArrayList<FavouriteFoodBank>,
     private val fragment: Fragment,
     private val currentLat: Double,
     private val currentLong: Double
-) : RecyclerView.Adapter<FavouriteFoodBankListAdapter.MyViewHolder>() {
-    class MyViewHolder(val binding: ListLayoutRequestBinding) :
-        RecyclerView.ViewHolder(binding.root)
+): RecyclerView.Adapter<ViewFavFoodBankListAdapter.MyViewHolder>() {
+    class MyViewHolder(val binding: ListLayoutRequestBinding): RecyclerView.ViewHolder(binding.root)
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return MyViewHolder(
@@ -67,7 +64,7 @@ class FavouriteFoodBankListAdapter(
         val df = DecimalFormat("#.##")
         df.roundingMode = RoundingMode.DOWN
         val rfDistance = df.format(distance)
-        holder.binding.tvDistance.text = "${rfDistance} km"
+        holder.binding.tvDistance.text = "$rfDistance km"
 
         holder.binding.ivNavigate.setOnClickListener {
             val gmmIntentUri =
@@ -81,12 +78,12 @@ class FavouriteFoodBankListAdapter(
         holder.binding.tvAddress.text = "${address[0].locality}, ${address[0].adminArea}"
 
         holder.itemView.setOnClickListener { view ->
-            CoroutineScope(IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 withContext(Dispatchers.Default) {
                     val user = DatabaseRepo().getUserDetailAsync()
                     fragment.requireActivity().runOnUiThread {
                         view.findNavController().navigate(
-                            DashboardFragmentDirections.actionDashboardFragmentToFoodBankInfoFragment(
+                            ViewFavFoodBankFragmentDirections.actionViewFavFoodBankFragmentToFoodBankInfoFragment(
                                 user,
                                 model.foodBankID,
                                 false
@@ -105,5 +102,7 @@ class FavouriteFoodBankListAdapter(
     override fun getItemCount(): Int {
         return list.size
     }
+
+
 
 }

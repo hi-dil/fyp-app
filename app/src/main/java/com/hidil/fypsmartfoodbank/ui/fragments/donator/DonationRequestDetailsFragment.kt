@@ -1,6 +1,7 @@
 package com.hidil.fypsmartfoodbank.ui.fragments.donator
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.hidil.fypsmartfoodbank.databinding.FragmentDonationRequestDetailsBind
 import com.hidil.fypsmartfoodbank.model.DonationRequest
 import com.hidil.fypsmartfoodbank.model.ItemListDonation
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.donator.DonationRequestedItemListAdapter
@@ -28,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class DonationRequestDetailsFragment : Fragment() {
 
@@ -48,6 +51,60 @@ class DonationRequestDetailsFragment : Fragment() {
         itemList = args.currentRequest.items
         currentRequest = args.currentRequest
 
+
+        // convert millis to hours and minutes
+        if (!currentRequest.denied && currentRequest.approved) {
+            var timeLeft = (currentRequest.lastUpdate + 86400000) - System.currentTimeMillis()
+            if (timeLeft > 0) {
+                val hours = TimeUnit.MILLISECONDS.toHours(timeLeft)
+                timeLeft -= TimeUnit.HOURS.toMillis(hours)
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeft)
+
+                binding.tvTimeLeft.text = "$hours hours and $minutes minutes left"
+            } else {
+                currentRequest.denied = true
+                currentRequest.deniedMessage = "Expired request"
+                currentRequest.completed = true
+
+                CoroutineScope(IO).launch {
+                    withContext(Dispatchers.Default) {
+
+                        val updateDatabase = updateDatabase()
+
+                        requireActivity().runOnUiThread {
+                            if (updateDatabase) {
+                                binding.llTimeLeft.visibility = View.GONE
+
+                                val viewsUpdate =
+                                    View.inflate(
+                                        requireContext(),
+                                        R.layout.alert_dialog_complete_request,
+                                        null
+                                    )
+                                val builderUpdate =
+                                    android.app.AlertDialog.Builder(requireActivity())
+                                builderUpdate.setView(viewsUpdate)
+                                val dialogUpdate = builderUpdate.create()
+                                dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                                dialogUpdate.show()
+
+                                viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                                    "Your request has been expired"
+
+                                viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                                    dialogUpdate.dismiss()
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        } else {
+            binding.llTimeLeft.visibility = View.GONE
+        }
+
         GlideLoader(requireContext()).loadUserPicture(
             args.currentRequest.foodBankImage,
             binding.ivHeader
@@ -58,9 +115,9 @@ class DonationRequestDetailsFragment : Fragment() {
         binding.rvItems.layoutManager = LinearLayoutManager(activity)
         binding.rvItems.setHasFixedSize(true)
 
-        val itemListAdatper =
+        val itemListAdapter =
             DonationRequestedItemListAdapter(requireActivity(), args.currentRequest.items, this)
-        binding.rvItems.adapter = itemListAdatper
+        binding.rvItems.adapter = itemListAdapter
 
         binding.rvRequestImage.layoutManager =
             LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
@@ -230,13 +287,10 @@ class DonationRequestDetailsFragment : Fragment() {
 
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
-                    val updateRequest = DatabaseRepo().updateUserDonationRequest(
-                        currentRequest, this@DonationRequestDetailsFragment
-                    )
 
+                    val updateDatabase = updateDatabase()
                     requireActivity().runOnUiThread {
                         hideProgressDialog()
-
 
                         val viewsUpdate =
                             View.inflate(
@@ -249,7 +303,7 @@ class DonationRequestDetailsFragment : Fragment() {
                         val dialogUpdate = builderUpdate.create()
                         dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                        if (updateRequest) {
+                        if (updateDatabase) {
 
                             viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
                                 "Your request has been cancelled"
@@ -275,5 +329,27 @@ class DonationRequestDetailsFragment : Fragment() {
 
             dialog.dismiss()
         }
+    }
+
+    private suspend fun updateDatabase(): Boolean {
+        // to get the status of the deleted pin
+        var successDeletePin = false
+        for (requestItem in currentRequest.items) {
+
+            // delete the pin from the realtime database
+            if (!requestItem.completed && currentRequest.approved) {
+                val storageID = requestItem.storageID
+                val storagePIN = requestItem.storagePIN
+                successDeletePin = RealtimeDBRepo().deletePin(storagePIN, storageID)
+            }
+        }
+
+        val updateRequest = DatabaseRepo().updateUserDonationRequest(
+            currentRequest, this@DonationRequestDetailsFragment
+        )
+
+        Log.i("successDeletePin", successDeletePin.toString())
+
+        return successDeletePin && updateRequest
     }
 }

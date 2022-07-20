@@ -19,6 +19,7 @@ import com.hidil.fypsmartfoodbank.model.FoodBank
 import com.hidil.fypsmartfoodbank.model.ItemList
 import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
+import com.hidil.fypsmartfoodbank.repository.RealtimeDBRepo
 import com.hidil.fypsmartfoodbank.ui.activity.hideProgressDialog
 import com.hidil.fypsmartfoodbank.ui.activity.showProgressDialog
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.PendingTakeItemListAdapter
@@ -29,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class ClaimRequestDetailsFragment : Fragment() {
     private var _binding: FragmentClaimRequestDetailsBinding? = null
@@ -47,6 +49,57 @@ class ClaimRequestDetailsFragment : Fragment() {
         itemList = args.currentRequest.items
         currentRequest = args.currentRequest
 
+        // convert millis to hours and minutes
+        if (!currentRequest.denied && currentRequest.approved) {
+            var timeLeft = (currentRequest.lastUpdate + 86400000) - System.currentTimeMillis()
+            if (timeLeft > 0) {
+                val hours = TimeUnit.MILLISECONDS.toHours(timeLeft)
+                timeLeft -= TimeUnit.HOURS.toMillis(hours)
+                val minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeft)
+
+                binding.tvTimeLeft.text = "$hours hours and $minutes minutes left"
+            } else {
+                currentRequest.denied = true
+                currentRequest.deniedMessage = "Expired request"
+                currentRequest.completed = true
+
+                CoroutineScope(IO).launch {
+                    withContext(Dispatchers.Default) {
+
+                        val updateDatabase = updateDatabase()
+
+                        if (updateDatabase) {
+                            requireActivity().runOnUiThread {
+                                binding.llTimeLeft.visibility = View.GONE
+                                val viewsUpdate =
+                                    View.inflate(
+                                        requireContext(),
+                                        R.layout.alert_dialog_complete_request,
+                                        null
+                                    )
+                                val builderUpdate = AlertDialog.Builder(requireActivity())
+                                builderUpdate.setView(viewsUpdate)
+                                val dialogUpdate = builderUpdate.create()
+                                dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                                dialogUpdate.show()
+
+                                viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
+                                    "Your request has been expired"
+
+                                viewsUpdate.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+                                    dialogUpdate.dismiss()
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        } else {
+            binding.llTimeLeft.visibility = View.GONE
+        }
+
         GlideLoader(requireContext()).loadUserPicture(
             currentRequest.foodBankImage,
             binding.ivHeader
@@ -56,8 +109,8 @@ class ClaimRequestDetailsFragment : Fragment() {
 
         binding.rvItems.layoutManager = LinearLayoutManager(activity)
         binding.rvItems.setHasFixedSize(true)
-        val itemListAdatper = RequestedItemListAdapter(requireActivity(), currentRequest.items)
-        binding.rvItems.adapter = itemListAdatper
+        val itemListAdapter = RequestedItemListAdapter(requireActivity(), currentRequest.items)
+        binding.rvItems.adapter = itemListAdapter
 
         if (currentRequest.cancel) {
             binding.btnCancelRequest.visibility = View.GONE
@@ -217,35 +270,9 @@ class ClaimRequestDetailsFragment : Fragment() {
             currentRequest.lastUpdate = System.currentTimeMillis()
             CoroutineScope(IO).launch {
                 withContext(Dispatchers.Default) {
-                    val getFoodBank = DatabaseRepo().searchFoodBank(
-                        this@ClaimRequestDetailsFragment,
-                        currentRequest.foodBankID
-                    )
-                    var foodbankData: FoodBank = FoodBank()
-                    if (getFoodBank.size > 0) {
-                        foodbankData = getFoodBank[0]
-                    }
 
-                    for (storageItem in foodbankData.storage) {
-                        for (requestItem in currentRequest.items) {
-                            if (storageItem.id == requestItem.storageID) {
-                                if (!requestItem.completed) {
-                                    storageItem.itemQuantity += requestItem.itemQuantity
-                                }
-                            }
-                        }
-                    }
+                    val cancelRequestUpdate = updateDatabase()
 
-                    val updateRequest = DatabaseRepo().updateUserClaimRequest(
-                        currentRequest,
-                        this@ClaimRequestDetailsFragment
-                    )
-
-                    val updateFoodBank =
-                        DatabaseRepo().updateFoodBank(
-                            this@ClaimRequestDetailsFragment,
-                            foodbankData
-                        )
 
                     requireActivity().runOnUiThread {
                         hideProgressDialog()
@@ -261,7 +288,7 @@ class ClaimRequestDetailsFragment : Fragment() {
                         val dialogUpdate = builderUpdate.create()
                         dialogUpdate.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-                        if (updateRequest && updateFoodBank) {
+                        if (cancelRequestUpdate) {
 
                             viewsUpdate.findViewById<TextView>(R.id.tv_text).text =
                                 "Your request has been cancelled"
@@ -286,5 +313,52 @@ class ClaimRequestDetailsFragment : Fragment() {
             }
             dialog.dismiss()
         }
+    }
+
+    private suspend fun updateDatabase(): Boolean {
+        // fetch food bank data from firebase
+        val getFoodBank = DatabaseRepo().searchFoodBank(
+            this@ClaimRequestDetailsFragment,
+            currentRequest.foodBankID
+        )
+        var foodbankData = FoodBank()
+        if (getFoodBank.size > 0) {
+            foodbankData = getFoodBank[0]
+        }
+
+        // to get the status of the deleted pin
+        var successDeletePin = false
+        for (storageItem in foodbankData.storage) {
+            for (requestItem in currentRequest.items) {
+
+                // increase the storage quantity to its original state
+                if (storageItem.id == requestItem.storageID) {
+                    if (!requestItem.completed) {
+                        storageItem.itemQuantity += requestItem.itemQuantity
+                    }
+                }
+
+                // delete the pin from the realtime database
+                if (!requestItem.completed && currentRequest.approved) {
+                    val storageID = requestItem.storageID
+                    val storagePIN = requestItem.storagePIN
+                    successDeletePin = RealtimeDBRepo().deletePin(storagePIN, storageID)
+                }
+            }
+        }
+
+        // update the cancel request data to firebase
+        val updateRequest = DatabaseRepo().updateUserClaimRequest(
+            currentRequest,
+            this@ClaimRequestDetailsFragment
+        )
+
+        val updateFoodBank =
+            DatabaseRepo().updateFoodBank(
+                this@ClaimRequestDetailsFragment,
+                foodbankData
+            )
+
+        return successDeletePin && updateRequest && updateFoodBank
     }
 }

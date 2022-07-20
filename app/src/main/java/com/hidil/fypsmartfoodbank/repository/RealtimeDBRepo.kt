@@ -47,6 +47,17 @@ class RealtimeDBRepo {
         }
     }
 
+    suspend fun getDistance(storageID: String): Double {
+        return withContext(Dispatchers.IO) {
+            val value: Double
+            val ref = mDatabase.getReference(storageID)
+            val data = ref.child("/depth").get().await().value
+            value = data as Double
+
+            return@withContext value
+        }
+    }
+
     suspend fun updatePin(
         storageID: String,
         pinData: RealtimeDBPIN,
@@ -61,6 +72,25 @@ class RealtimeDBRepo {
                 success = true
             }.addOnFailureListener {
                 success = false
+            }.await()
+
+            return@withContext success
+        }
+    }
+
+    suspend fun deletePin(
+        pinID: String,
+        storageID: String
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            val ref = mDatabase.getReference(storageID)
+            var success = false
+
+            ref.child("/PIN").child(pinID).removeValue().addOnSuccessListener {
+                success = true
+            }.addOnFailureListener {
+                success = false
+                Log.e("deletePIN", it.message.toString())
             }.await()
 
             return@withContext success

@@ -314,7 +314,7 @@ class DetailVerificationClaimFragment : Fragment() {
 
                     if (updateRequest && updateFoodBank) {
                         val title = "Request Update"
-                        val message = "Your request has been deny"
+                        val message = "Your request has been denied"
 
                         PushNotification(
                             NotificationData(title, message),

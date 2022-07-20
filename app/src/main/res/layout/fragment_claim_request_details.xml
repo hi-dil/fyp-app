@@ -62,10 +62,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_margin_padding"
-            android:layout_marginTop="@dimen/normal_margin_padding"
+            android:layout_marginBottom="@dimen/normal_margin_padding"
             android:layout_marginEnd="@dimen/medium_margin_padding"
             android:text="2km away"
             android:textColor="@color/secondaryText" />
+
+        <LinearLayout
+            android:id="@+id/ll_timeLeft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/medium_margin_padding"
+            android:layout_marginLeft="@dimen/medium_margin_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please claim within: "
+                android:textColor="@color/secondaryText"
+                />
+
+            <TextView
+                android:id="@+id/tv_timeLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7 minutes and 39 seconds"
+                android:textStyle="bold"
+                android:textColor="@color/primaryText"
+                android:textSize="@dimen/medium_text_size"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

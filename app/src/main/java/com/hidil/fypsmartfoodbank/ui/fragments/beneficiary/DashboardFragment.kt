@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -21,6 +22,7 @@ import com.hidil.fypsmartfoodbank.model.Request
 import com.hidil.fypsmartfoodbank.model.User
 import com.hidil.fypsmartfoodbank.repository.DatabaseRepo
 import com.hidil.fypsmartfoodbank.ui.activity.BeneficiaryMainActivity
+import com.hidil.fypsmartfoodbank.ui.activity.distanceInKm
 import com.hidil.fypsmartfoodbank.ui.adapter.FavouriteFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.NearbyFoodBankListAdapter
 import com.hidil.fypsmartfoodbank.ui.adapter.beneficiary.ActiveRequestListAdapter
@@ -126,6 +128,14 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     }
                 }
             }
+        }
+
+        binding.tvViewAllFavouriteFoodBank.setOnClickListener{
+            findNavController().navigate(
+                DashboardFragmentDirections.actionDashboardFragmentToViewFavFoodBankFragment(
+                    userDetails
+                )
+            )
         }
 
         return binding.root
@@ -241,6 +251,10 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 compactFavouriteFoodBankList = favouriteFoodBankList
             }
 
+            if (compactFavouriteFoodBankList.size < 3) {
+                binding.tvViewAllFavouriteFoodBank.visibility = View.GONE
+            }
+
 
             val favouriteFoodBankAdapter = FavouriteFoodBankListAdapter(
                 requireActivity(),
@@ -286,26 +300,5 @@ class DashboardFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
 
         return list.sortedWith(compareBy { it.distance })
-    }
-
-    private fun distanceInKm(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val theta = lon1 - lon2
-        var dist =
-            sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(
-                deg2rad(theta)
-            )
-        dist = acos(dist)
-        dist = rad2deg(dist)
-        dist *= 60 * 1.1515
-        dist *= 1.609344
-        return dist
-    }
-
-    private fun deg2rad(deg: Double): Double {
-        return deg * Math.PI / 180.0
-    }
-
-    private fun rad2deg(rad: Double): Double {
-        return rad * 180.0 / Math.PI
     }
 }

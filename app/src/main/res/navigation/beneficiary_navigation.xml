@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_dashboardFragment_to_foodBankInfoFragment"
             app:destination="@id/foodBankInfoFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_viewFavFoodBankFragment"
+            app:destination="@id/viewFavFoodBankFragment" />
     </fragment>
     <fragment
         android:id="@+id/claimRequestFragment"
@@ -157,5 +160,17 @@
         <argument
             android:name="userID"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewFavFoodBankFragment"
+        android:name="com.hidil.fypsmartfoodbank.ui.fragments.ViewFavFoodBankFragment"
+        android:label="fragment_view_fav_food_bank"
+        tools:layout="@layout/fragment_view_fav_food_bank" >
+        <action
+            android:id="@+id/action_viewFavFoodBankFragment_to_foodBankInfoFragment"
+            app:destination="@id/foodBankInfoFragment" />
+        <argument
+            android:name="userDetail"
+            app:argType="com.hidil.fypsmartfoodbank.model.User" />
     </fragment>
 </navigation>
