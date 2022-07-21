@@ -115,7 +115,7 @@ class RealtimeDBRepo {
         }
     }
 
-    fun unlockStorage(fragment: Fragment, storageID: String, currentPin: Int) {
+    fun unlockStorage(fragment: Fragment, storageID: String, currentPin: String) {
         val ref = mDatabase.getReference(storageID)
 
         ref.child("/isUnlock").setValue(true).addOnSuccessListener {
@@ -131,7 +131,7 @@ class RealtimeDBRepo {
         }
     }
 
-    private fun setCurrentPin(fragment: Fragment, storageID: String, pinNumber: Int) {
+    private fun setCurrentPin(fragment: Fragment, storageID: String, pinNumber: String) {
         val ref = mDatabase.getReference(storageID)
 
         ref.child("/currentPin").setValue(pinNumber).addOnSuccessListener {

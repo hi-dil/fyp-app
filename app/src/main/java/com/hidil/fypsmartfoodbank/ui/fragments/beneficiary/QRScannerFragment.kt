@@ -89,10 +89,10 @@ class QRScannerFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         codeScanner.decodeCallback = DecodeCallback { scanResult ->
             requireActivity().runOnUiThread{
                 if (scanResult.text == args.storageID) {
-                    var currentPin = 0
+                    var currentPin = ""
                     for (i in args.currentRequest.items) {
                         if (scanResult.text == i.storageID) {
-                            currentPin = i.storagePIN.toInt()
+                            currentPin = i.storagePIN
                         }
                     }
 
